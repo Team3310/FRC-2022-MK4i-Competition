@@ -4,7 +4,10 @@ import java.io.IOException;
 
 import org.frcteam2910.c2020.commands.BasicDriveCommand;
 import org.frcteam2910.c2020.commands.DriveCommand;
+import org.frcteam2910.c2020.commands.IntakeSetRPM;
+import org.frcteam2910.c2020.commands.IntakeSetSpeed;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
+import org.frcteam2910.c2020.subsystems.Intake;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
@@ -20,6 +23,7 @@ public class RobotContainer {
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
 
     private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private final Intake intakeSubsystem = Intake.getInstance();
 
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
@@ -53,10 +57,19 @@ public class RobotContainer {
                 () -> drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO)
         );
 
-        primaryController.getAButton().whenPressed(
-                new BasicDriveCommand(drivetrainSubsystem, new Vector2(-0.5, 0.0), 0.0, false).withTimeout(0.3)
+        primaryController.getRightBumperButton().whenPressed(
+            new IntakeSetRPM(intakeSubsystem, Constants.INTAKE_COLLECT_RPM)
         );
-
+        primaryController.getRightBumperButton().whenReleased(
+            new IntakeSetSpeed(intakeSubsystem, 0.0)
+        );
+        primaryController.getLeftBumperButton().whenPressed(
+            new IntakeSetRPM(intakeSubsystem, Constants.INTAKE_REVERSE_RPM)
+        );
+        primaryController.getLeftBumperButton().whenReleased(
+            new IntakeSetSpeed(intakeSubsystem, 0.0)
+        );
+        
         // Manual hood adjustment
 //        primaryController.getDPadButton(DPadButton.Direction.DOWN).whenPressed(
 //                () -> shooterSubsystem.setHoodTargetAngle(shooterSubsystem.getHoodTargetAngle().orElse(Constants.HOOD_MAX_ANGLE) + HOOD_MANUAL_ADJUST_INTERVAL)

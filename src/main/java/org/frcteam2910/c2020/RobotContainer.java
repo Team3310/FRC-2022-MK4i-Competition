@@ -6,6 +6,7 @@ import org.frcteam2910.c2020.commands.BasicDriveCommand;
 import org.frcteam2910.c2020.commands.DriveCommand;
 import org.frcteam2910.c2020.commands.IntakeSetRPM;
 import org.frcteam2910.c2020.commands.IntakeSetSpeed;
+import org.frcteam2910.c2020.commands.ResetOdometryHeading;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Intake;
 import org.frcteam2910.c2020.util.AutonomousChooser;
@@ -53,9 +54,11 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        primaryController.getBackButton().whenPressed(
-                () -> drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO)
+		primaryController.getBackButton().whenPressed(
+            () -> drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO)
         );
+		// ResetOdometryHeading sometimes gets the robot stuck (won't respond to drive commands)
+        //primaryController.getBackButton().whenPressed(new ResetOdometryHeading(drivetrainSubsystem));
 
         primaryController.getRightBumperButton().whenPressed(
             new IntakeSetRPM(intakeSubsystem, Constants.INTAKE_COLLECT_RPM)

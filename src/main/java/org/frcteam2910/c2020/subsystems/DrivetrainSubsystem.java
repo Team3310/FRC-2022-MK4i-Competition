@@ -36,11 +36,12 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 
 public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
-    public static final double TRACKWIDTH = 0.34;
+    public static final double TRACKWIDTH = 0.495;
     public static final double WHEELBASE = 0.34;
     public static final double WHEEL_DIAMETER_INCHES = 3.64;  // Actual is 3.89"
 
@@ -116,8 +117,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         SwerveModule frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withPosition(2, 0)
-                        .withSize(2, 4),
+                        .withPosition(0, 0)
+                        .withSize(1, 3),
                 Mk4SwerveModuleHelper.GearRatio.L2i,
                 Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR,
@@ -126,8 +127,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         );
         SwerveModule frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withPosition(4, 0)
-                        .withSize(2, 4),
+                        .withPosition(1, 0)
+                        .withSize(1, 3),
                 Mk4SwerveModuleHelper.GearRatio.L2i,
                 Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR,
@@ -136,8 +137,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         );
         SwerveModule backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                        .withPosition(6, 0)
-                        .withSize(2, 4),
+                        .withPosition(2, 0)
+                        .withSize(1, 3),
                 Mk4SwerveModuleHelper.GearRatio.L2i,
                 Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
@@ -146,8 +147,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         );
         SwerveModule backRightModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                        .withPosition(8, 0)
-                        .withSize(2, 4),
+                        .withPosition(3, 0)
+                        .withSize(1, 3),
                 Mk4SwerveModuleHelper.GearRatio.L2i,
                 Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR,
@@ -162,11 +163,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 .withSize(1, 1)
                 .getEntry();
         odometryYEntry = tab.add("Y", 0.0)
-                .withPosition(0, 1)
+                .withPosition(1, 0)
                 .withSize(1, 1)
                 .getEntry();
         odometryAngleEntry = tab.add("Angle", 0.0)
-                .withPosition(0, 2)
+                .withPosition(0, 1)
                 .withSize(1, 1)
                 .getEntry();
         tab.addNumber("Trajectory X", () -> {
@@ -262,8 +263,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         synchronized (sensorLock) {
             angle = gyroscope.getAngle();
             angularVelocity = gyroscope.getRate();
+            SmartDashboard.putNumber("Gyro Angle Rate", gyroscope.getRate());
         }
 
+        SmartDashboard.putNumber("Angle Gyro", angle.toDegrees());
+        SmartDashboard.putNumber("Angle Pose", getPose().rotation.toDegrees());
         ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
 
         synchronized (kinematicsLock) {
@@ -278,16 +282,19 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    /** Updates ChassisVelocity and calculates SwerveModule velocity outputs. */
     private void updateModules(HolonomicDriveSignal driveSignal, double dt) {
         ChassisVelocity chassisVelocity;
         if (driveSignal == null) {
             chassisVelocity = new ChassisVelocity(Vector2.ZERO, 0.0);
         } else if (driveSignal.isFieldOriented()) {
+            SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
             chassisVelocity = new ChassisVelocity(
                     driveSignal.getTranslation().rotateBy(getPose().rotation.inverse()),
                     driveSignal.getRotation()
             );
         } else {
+            SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
             chassisVelocity = new ChassisVelocity(
                     driveSignal.getTranslation(),
                     driveSignal.getRotation()
@@ -298,6 +305,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
         for (int i = 0; i < moduleOutputs.length; i++) {
             var module = modules[i];
+            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Drive Voltage", moduleOutputs[i].length * 12.0);
+            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Curr Angle", Math.toDegrees(module.getSteerAngle()));
+            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Output Angle", moduleOutputs[i].getAngle().toDegrees());
             module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
         }
     }
@@ -311,6 +321,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    /**
+     * Must be implemented for <code>UpdateManager</code> (Updatable interface method)
+     * @param time - Time in seconds from Timer.getFPGATimeStamp() (robot runtime timer).
+     * @param dt - Time since update was last called
+     */
     @Override
     public void update(double time, double dt) {
         updateOdometry(time, dt);
@@ -333,6 +348,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         } else {
             synchronized (stateLock) {
                 driveSignal = this.driveSignal;
+                //SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
             }
         }
 

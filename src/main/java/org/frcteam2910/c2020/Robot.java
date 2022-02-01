@@ -130,7 +130,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        updateManager.startLoop(5.0e-3);
+        updateManager.startLoop(2.0e-2);
     }
 
     @Override
@@ -197,5 +197,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        //TODO Remove once competition bot is built (since zeroing will be done in Autonomous)
+        robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
+        robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
     }
 }

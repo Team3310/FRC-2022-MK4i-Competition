@@ -43,11 +43,13 @@ public class AutonomousTrajectories {
     private Trajectory circuitTenBallAutoPartTwo;
     private Trajectory simplesquare;
     private Trajectory square;
+    private Trajectory twoHundredInches;
 
     private final Trajectory eightBallCompatiblePartOne;
     private final Trajectory eightBallCompatiblePartTwo;
     private final Trajectory eightBallCompatiblePartThree;
     private final Trajectory eightBallCompatiblePartFour;
+    private final Trajectory sCurve;
 
     private final Trajectory simpleShootThree;
 
@@ -74,6 +76,16 @@ public class AutonomousTrajectories {
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
+
+        sCurve = new Trajectory(
+                new SimplePathBuilder(new Vector2(0, 0), Rotation2.ZERO)
+                        .lineTo(new Vector2(200, 0), Rotation2.fromDegrees(90.0))
+                        .arcTo(new Vector2(250, 50), new Vector2(200, 50))
+                        .arcTo(new Vector2(300, 100), new Vector2(300, 50), Rotation2.fromDegrees(0.0))
+                        .lineTo(new Vector2(500, 100))
+                        .build(),
+                trajectoryConstraints, SAMPLE_DISTANCE);
+
         square = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.fromDegrees(90))
                         .lineTo(new Vector2(50,0), Rotation2.fromDegrees(45))
@@ -104,6 +116,14 @@ public class AutonomousTrajectories {
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
+
+        twoHundredInches = new Trajectory(
+                new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
+                        .lineTo(new Vector2(50, 0))
+                        .build(),
+                trajectoryConstraints, SAMPLE_DISTANCE
+        );
+
         tenBallAutoPartOne = new Trajectory(getPath(TEN_BALL_AUTO_PART_ONE_NAME), trajectoryConstraints, SAMPLE_DISTANCE);
         tenBallAutoPartTwo = new Trajectory(getPath(TEN_BALL_AUTO_PART_TWO_NAME), trajectoryConstraints, SAMPLE_DISTANCE);
 
@@ -160,6 +180,10 @@ public class AutonomousTrajectories {
         return square;
     }
 
+    public Trajectory getTwoHundredInches(){
+        return twoHundredInches;
+    }
+
     public Trajectory getEightBallAutoPartTwo() {
         return eightBallAutoPartTwo;
     }
@@ -178,6 +202,10 @@ public class AutonomousTrajectories {
 
     public Trajectory getTenBallAutoPartTwo() {
         return tenBallAutoPartTwo;
+    }
+
+    public Trajectory get_sCurve(){
+            return sCurve;
     }
 
     public Trajectory getCircuitTenBallAutoPartOne() {

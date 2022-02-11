@@ -36,4 +36,31 @@ public class Constants {
     public static final double INTAKE_RETRACT_RPM = 1000;
     public static final double INTAKE_COLLECT_AUTO_RPM = 1200; // 1500
     public static final double INTAKE_REVERSE_RPM = -2000; // -1500
+
+    public static final int SHOOTER_MASTER_CAN_ID = 0;
+    public static final int SHOOTER_SLAVE_CAN_ID = 0;
+    public static final int SHOOTER_FEEDER_MOTOR_CAN_ID = 0;
+
+    public static final int HOOD_MOTOR_CAN_ID = 0;
+    public static final double HOOD_MIN_ANGLE_DEGREES = 0;
+    public static final double HOOD_MAX_ANGLE_DEGREES = 0;
+    public static final double HOOD_COMPETITION_HOME_POSITION_DEGREES = 0;
+
+    public static final int ELEVATOR_MOTOR_ID = 0;
+    public static final double ELEVATOR_MAX_INCHES = 0;
+    public static final double ELEVATOR_MIN_INCHES = 0;
+
+    public static final int BALANCE_ELEVATOR_ID = 0;
+    public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
+    public static final double BALANCE_ELEVATOR_MAX_INCHES = 0;
+
+    public static final int INDEX_MOTOR_ID = 0;
+
+    public static final int SECONDARY_CONTROLLER_PORT = 1;
+
+    public static final int BALANCE_ELEVATOR_MM_PORT = 0;
+    public static final int CLIMB_ELEVATOR_MM_PORT = 1;
+    public static final int INDEXER_MM_PORT = 2;
+    public static final int HOOD_MM_PORT = 3;
+
 }

@@ -2,7 +2,6 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
-import org.frcteam2910.c2020.commands.BasicDriveCommand;
 import org.frcteam2910.c2020.commands.DriveCommand;
 import org.frcteam2910.c2020.commands.IntakeSetRPM;
 import org.frcteam2910.c2020.commands.IntakeSetSpeed;
@@ -13,7 +12,6 @@ import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
 import org.frcteam2910.common.math.Rotation2;
-import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.input.Axis;
 import org.frcteam2910.common.robot.input.XboxController;
 
@@ -22,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class RobotContainer {
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
+    private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
     private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private final Intake intakeSubsystem = Intake.getInstance();
@@ -48,7 +47,6 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(drivetrainSubsystem, new DriveCommand(drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
 
         driverReadout = new DriverReadout(this);
-        driverReadout.getSelectedLoadingBay();
 
         configureButtonBindings();
     }

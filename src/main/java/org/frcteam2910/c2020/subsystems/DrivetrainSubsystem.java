@@ -41,11 +41,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 
 public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
-    public static final double TRACKWIDTH = 0.495;
-    public static final double WHEELBASE = 0.34;
+    public static final double TRACKWIDTH = 0.502;
+    public static final double WHEELBASE = 0.502;
     public static final double WHEEL_DIAMETER_INCHES = 3.64;  // Actual is 3.89"
 
-    public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
+       public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
             0.042746,
             0.0032181,
             0.30764
@@ -337,19 +337,18 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 getAngularVelocity(),
                 time,
                 dt
-        );
-        if (trajectorySignal.isPresent()) {
-            driveSignal = trajectorySignal.get();
-            driveSignal = new HolonomicDriveSignal(
-                    driveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
-                    driveSignal.getRotation() / RobotController.getBatteryVoltage(),
-                    driveSignal.isFieldOriented()
             );
-        } else {
-            synchronized (stateLock) {
-                driveSignal = this.driveSignal;
-                //SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
-            }
+                if (trajectorySignal.isPresent()) {
+                    driveSignal = trajectorySignal.get();
+                    driveSignal = new HolonomicDriveSignal(
+                            driveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
+                            driveSignal.getRotation() / RobotController.getBatteryVoltage(),
+                            driveSignal.isFieldOriented()
+                    );
+                } else {
+                    synchronized (stateLock) {
+                        driveSignal = this.driveSignal;
+                    }
         }
 
         updateModules(driveSignal, dt);

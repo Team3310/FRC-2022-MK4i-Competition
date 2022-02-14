@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import org.frcteam2910.c2020.Constants;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -20,7 +21,6 @@ public class BalanceElevator extends SubsystemBase {
     }
 
     // Motor Controllers
-    private TalonFX elevatorMotor;
     private TalonFX balanceElevatorMotor;
 
     // Misc
@@ -39,7 +39,7 @@ public class BalanceElevator extends SubsystemBase {
 
     private BalanceElevator() {
 
-        balanceElevatorMotor = new TalonFX(Constants.BALANCE_ELEVATOR_ID);
+        balanceElevatorMotor = new TalonFX(Constants.BALANCE_ELEVATOR_ID, "Drivetrain");
 
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -89,9 +89,13 @@ public class BalanceElevator extends SubsystemBase {
         return (int) (inches * BALANCE_ELEVATORS_INCHES_TO_ENCODER_TICKS);
     }
 
+    public void setElevatorZero(){
+        balanceElevatorMotor.setSelectedSensorPosition(0);
+    }
+
     public synchronized void setBalanceElevatorMotionMagicPositionAbsolute(double inches) {
         controlMode = ClimbControlMode.MOTION_MAGIC;
-        elevatorMotor.selectProfileSlot(2, 0);
+        balanceElevatorMotor.selectProfileSlot(2, 0);
         targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
         balanceElevatorMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
@@ -114,6 +118,7 @@ public class BalanceElevator extends SubsystemBase {
         setBalanceElevatorMotionMagicPositionAbsolute(getBalanceElevatorInches());
     }
 
+    @Override
     public void periodic() {
         if (controlMode == ClimbControlMode.MANUAL) {
             if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
@@ -122,6 +127,8 @@ public class BalanceElevator extends SubsystemBase {
                 setHoldBalanceElevator();
             }
         }
+        
+        SmartDashboard.putNumber("Elevator Climb position", getBalanceElevatorInches());
     }
 }
 

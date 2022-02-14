@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import org.frcteam2910.c2020.Constants;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -28,7 +29,7 @@ public class ClimbElevator extends SubsystemBase {
     private double manualElevatorSpeed = 0;
 
     //Conversions
-    private static final double PULLEY_DIAMETER_INCHES = 2;
+    private static final double PULLEY_DIAMETER_INCHES = 1.923;
     private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (54 / 18) * (54 / 12);
     private static final double ELEVATOR_ROTATIONS_TO_INCHES = Math.PI * PULLEY_DIAMETER_INCHES;
     private static final double ELEVATOR_INCHES_TO_ENCODER_TICKS = ELEVATOR_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_ROTATIONS_TO_INCHES;
@@ -36,7 +37,7 @@ public class ClimbElevator extends SubsystemBase {
     private final static ClimbElevator INSTANCE = new ClimbElevator();
 
     private ClimbElevator() {
-        elevatorMotor = new TalonFX(Constants.ELEVATOR_MOTOR_ID);
+        elevatorMotor = new TalonFX(Constants.ELEVATOR_MOTOR_ID, "Drivetrain");
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
@@ -53,7 +54,7 @@ public class ClimbElevator extends SubsystemBase {
         elevatorMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
         elevatorMotor.config_kF(Constants.CLIMB_ELEVATOR_MM_PORT, 0.055);
-        elevatorMotor.config_kP(Constants.CLIMB_ELEVATOR_MM_PORT, 0.10);
+        elevatorMotor.config_kP(Constants.CLIMB_ELEVATOR_MM_PORT, 0.20); //0.1
         elevatorMotor.config_kI(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0001);
         elevatorMotor.config_kD(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0);
     }
@@ -85,6 +86,10 @@ public class ClimbElevator extends SubsystemBase {
         return (int) (inches * ELEVATOR_INCHES_TO_ENCODER_TICKS);
     }
 
+    public void setElevatorZero(){
+        elevatorMotor.setSelectedSensorPosition(0);
+    }
+
     public synchronized void setElevatorMotionMagicPositionAbsolute(double inches) {
         controlMode = ClimbControlMode.MOTION_MAGIC;
         elevatorMotor.selectProfileSlot(1, 0);
@@ -101,7 +106,7 @@ public class ClimbElevator extends SubsystemBase {
         } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && speed > 0.0) {
             curSpeed = 0;
         }
-
+        
         elevatorMotor.set(ControlMode.PercentOutput, curSpeed);
 
     }
@@ -110,6 +115,7 @@ public class ClimbElevator extends SubsystemBase {
         setElevatorMotionMagicPositionAbsolute(getElevatorInches());
     }
 
+    @Override
     public void periodic() {
         if (controlMode == ClimbControlMode.MANUAL) {
 
@@ -119,6 +125,8 @@ public class ClimbElevator extends SubsystemBase {
                 setHoldElevator();
             }
         }
+
+        SmartDashboard.putNumber("Elevator Climb position", getElevatorInches());
     }
 }
 

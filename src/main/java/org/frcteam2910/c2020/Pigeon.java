@@ -1,14 +1,14 @@
 package org.frcteam2910.c2020;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2;
 import org.frcteam2910.common.drivers.Gyroscope;
 import org.frcteam2910.common.math.Rotation2;
 
 public class Pigeon extends Gyroscope {
-    private final PigeonIMU handle;
+    private final Pigeon2 handle;
 
     public Pigeon(int id) {
-        this.handle = new PigeonIMU(id);
+        this.handle = new Pigeon2(id, "Drivetrain");
     }
 
     @Override
@@ -17,7 +17,7 @@ public class Pigeon extends Gyroscope {
 
     @Override
     public Rotation2 getUnadjustedAngle() {
-        return Rotation2.fromDegrees(handle.getFusedHeading());
+        return Rotation2.fromDegrees(handle.getYaw());
     }
 
     @Override

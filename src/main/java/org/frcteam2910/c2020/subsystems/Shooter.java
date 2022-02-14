@@ -5,12 +5,14 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -28,6 +30,7 @@ public class Shooter extends SubsystemBase {
     //Conversions
     private static final double SHOOTER_OUTPUT_TO_ENCODER_RATIO = 1.0;
     public static final double SHOOTER_REVOLUTIONS_TO_ENCODER_TICKS = SHOOTER_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
+
     private final double HOOD_OUTPUT_TO_ENCODER_RATIO = 4.0 * 322.0 / 20.0;
     private final double HOOD_REVOLUTIONS_TO_ENCODER_TICKS = HOOD_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
     private final double HOOD_DEGREES_TO_ENCODER_TICKS = HOOD_REVOLUTIONS_TO_ENCODER_TICKS / 360.0;
@@ -52,11 +55,14 @@ public class Shooter extends SubsystemBase {
         shooterMotorSlave.configAllSettings(configs);
         hoodMotor.configAllSettings(configs);
 
+        shooterMotorMaster.setInverted(TalonFXInvertType.CounterClockwise);
         shooterMotorMaster.setNeutralMode(NeutralMode.Coast);
 
+        shooterMotorSlave.setInverted(TalonFXInvertType.Clockwise);
         shooterMotorSlave.setNeutralMode(NeutralMode.Coast);
         shooterMotorSlave.follow(shooterMotorMaster);
 
+        hoodMotor.setInverted(TalonFXInvertType.CounterClockwise);
         hoodMotor.setNeutralMode(NeutralMode.Brake);
 
     
@@ -75,8 +81,8 @@ public class Shooter extends SubsystemBase {
         statorCurrentHoodConfigs.triggerThresholdTime = 0.5;
         hoodMotor.configStatorCurrentLimit(statorCurrentHoodConfigs);
 
-        shooterMotorMaster.config_kF(0, 0);
-        shooterMotorMaster.config_kP(0, 0);
+        shooterMotorMaster.config_kF(0, 0.05);
+        shooterMotorMaster.config_kP(0, 0.5);
         shooterMotorMaster.config_kI(0, 0);
         shooterMotorMaster.config_kD(0, 0); 
 
@@ -172,5 +178,9 @@ public class Shooter extends SubsystemBase {
         return isReady;
     }
 
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
+    }
 }
 

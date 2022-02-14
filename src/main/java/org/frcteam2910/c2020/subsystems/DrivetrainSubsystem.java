@@ -3,7 +3,6 @@ package org.frcteam2910.c2020.subsystems;
 import java.util.Optional;
 
 import com.google.errorprone.annotations.concurrent.GuardedBy;
-import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -13,7 +12,6 @@ import org.frcteam2910.common.control.CentripetalAccelerationConstraint;
 import org.frcteam2910.common.control.FeedforwardConstraint;
 import org.frcteam2910.common.control.HolonomicMotionProfiledTrajectoryFollower;
 import org.frcteam2910.common.control.MaxAccelerationConstraint;
-import org.frcteam2910.common.control.MotionProfileFollower;
 import org.frcteam2910.common.control.PidConstants;
 import org.frcteam2910.common.control.TrajectoryConstraint;
 import org.frcteam2910.common.drivers.Gyroscope;
@@ -23,7 +21,6 @@ import org.frcteam2910.common.kinematics.SwerveOdometry;
 import org.frcteam2910.common.math.RigidTransform2;
 import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.math.Vector2;
-import org.frcteam2910.common.motion.MotionProfile;
 import org.frcteam2910.common.robot.UpdateManager;
 import org.frcteam2910.common.util.DrivetrainFeedforwardConstants;
 import org.frcteam2910.common.util.HolonomicDriveSignal;
@@ -44,6 +41,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public static final double TRACKWIDTH = 0.502;
     public static final double WHEELBASE = 0.502;
     public static final double WHEEL_DIAMETER_INCHES = 3.64;  // Actual is 3.89"
+
+
+    //CANivore string key is "Drivetrain" which can be located in the ctre Falcon 500 factories
 
        public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
             0.042746,
@@ -102,6 +102,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final Object stateLock = new Object();
     @GuardedBy("stateLock")
     private HolonomicDriveSignal driveSignal = null;
+
+    private boolean isFieldOriented = true;
 
     // Logging
     private final NetworkTableEntry odometryXEntry;
@@ -203,6 +205,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
     }
 
+    public void isDriveOrientation(boolean isFieldOriented){
+        this.isFieldOriented = isFieldOriented;
+    }
+
     public RigidTransform2 getPose() {
         synchronized (kinematicsLock) {
             return pose;
@@ -288,13 +294,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         if (driveSignal == null) {
             chassisVelocity = new ChassisVelocity(Vector2.ZERO, 0.0);
         } else if (driveSignal.isFieldOriented()) {
-            SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
             chassisVelocity = new ChassisVelocity(
                     driveSignal.getTranslation().rotateBy(getPose().rotation.inverse()),
                     driveSignal.getRotation()
             );
         } else {
-            SmartDashboard.putNumber("DriveSignal rotation", driveSignal.getRotation());
             chassisVelocity = new ChassisVelocity(
                     driveSignal.getTranslation(),
                     driveSignal.getRotation()
@@ -303,6 +307,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
         SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
+        SmartDashboard.putNumber("DriveInput", moduleOutputs[0].length);
         for (int i = 0; i < moduleOutputs.length; i++) {
             var module = modules[i];
             SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Drive Voltage", moduleOutputs[i].length * 12.0);

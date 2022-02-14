@@ -30,7 +30,9 @@ public class Intake extends SubsystemBase {
     private final static Intake INSTANCE = new Intake();
 
     private Intake() {
-        intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_CAN_ID);
+        intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_CAN_ID, "Drivetrain");
+
+        intakeMotor.configFactoryDefault();
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
@@ -60,7 +62,7 @@ public class Intake extends SubsystemBase {
 
     public void setRollerSpeed(double speed) {
         this.intakeMotor.set(ControlMode.PercentOutput, speed);
-        System.out.println("Set Intake Speed");
+        //System.out.println("Set Intake Speed = " + speed);
     }
 
     // Motion Magic
@@ -82,6 +84,8 @@ public class Intake extends SubsystemBase {
 
     public void setRollerRPM(double rpm) {
         this.intakeMotor.set(ControlMode.Velocity, this.RollerRPMToNativeUnits(rpm));
+        //System.out.println("Set Intake RPM = " + rpm);
+
     }
 
     public double RollerRPMToNativeUnits(double rpm) {

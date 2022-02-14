@@ -76,11 +76,11 @@ public final class Rotation2 implements Interpolable<Rotation2>, Serializable {
     /**
      * Create a new rotation from an angle in degrees.
      *
-     * @param angle The angle the rotation should be in degrees.
+     * @param d The angle the rotation should be in degrees.
      * @return The rotation.
      */
-    public static Rotation2 fromDegrees(double angle) {
-        return fromRadians(Math.toRadians(angle));
+    public static Rotation2 fromDegrees(double d) {
+        return fromRadians(Math.toRadians(d));
     }
 
     /**

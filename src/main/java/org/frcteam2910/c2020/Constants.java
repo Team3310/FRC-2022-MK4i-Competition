@@ -43,7 +43,7 @@ public class Constants {
 
     public static final int HOOD_MOTOR_CAN_ID = 10;
     public static final double HOOD_MIN_ANGLE_DEGREES = 0;
-    public static final double HOOD_MAX_ANGLE_DEGREES = 67;
+    public static final double HOOD_MAX_ANGLE_DEGREES = 50;
     public static final double HOOD_COMPETITION_HOME_POSITION_DEGREES = 0;
 
     public static final int ELEVATOR_MOTOR_ID = 3;

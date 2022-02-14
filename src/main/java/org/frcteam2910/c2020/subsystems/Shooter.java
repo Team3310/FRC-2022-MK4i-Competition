@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
     private static final double SHOOTER_OUTPUT_TO_ENCODER_RATIO = 1.0;
     public static final double SHOOTER_REVOLUTIONS_TO_ENCODER_TICKS = SHOOTER_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
 
-    private final double HOOD_OUTPUT_TO_ENCODER_RATIO = 4.0 * 322.0 / 20.0;
+    private final double HOOD_OUTPUT_TO_ENCODER_RATIO = 4.0 * 392.0 / 18.0;
     private final double HOOD_REVOLUTIONS_TO_ENCODER_TICKS = HOOD_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
     private final double HOOD_DEGREES_TO_ENCODER_TICKS = HOOD_REVOLUTIONS_TO_ENCODER_TICKS / 360.0;
     private double homePositionAngleDegrees = Constants.HOOD_COMPETITION_HOME_POSITION_DEGREES;

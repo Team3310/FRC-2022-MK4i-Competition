@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
@@ -16,15 +17,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BalanceElevator extends SubsystemBase {
 
-    public enum ClimbControlMode{
-        MANUAL, MOTION_MAGIC
+    public enum BalanceControlMode{
+        MANUAL, MOTION_MAGIC, PID, ZERO
     }
 
     // Motor Controllers
     private TalonFX balanceElevatorMotor;
 
     // Misc
-    private ClimbControlMode controlMode = ClimbControlMode.MANUAL;
+    private BalanceControlMode controlMode = BalanceControlMode.MANUAL;
     private double targetPositionTicks = 0;
     private double manualBalanceElevatorSpeed = 0;
 
@@ -47,23 +48,38 @@ public class BalanceElevator extends SubsystemBase {
         balanceElevatorMotor.configAllSettings(configs);
 
         balanceElevatorMotor.setNeutralMode(NeutralMode.Brake);
-        balanceElevatorMotor.configMotionCruiseVelocity(6000);
-        balanceElevatorMotor.configMotionAcceleration(14000);
+        balanceElevatorMotor.configMotionCruiseVelocity(10000);
+        balanceElevatorMotor.configMotionAcceleration(28000);
         balanceElevatorMotor.configMotionSCurveStrength(4);
+
+        balanceElevatorMotor.setInverted(TalonFXInvertType.Clockwise);
 
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
         statorCurrentConfigs.currentLimit = 120;
         statorCurrentConfigs.enable = false;
         balanceElevatorMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
-        balanceElevatorMotor.config_kF(Constants.BALANCE_ELEVATOR_MM_PORT, 0.055);
-        balanceElevatorMotor.config_kP(Constants.BALANCE_ELEVATOR_MM_PORT, 0.10);
+        balanceElevatorMotor.config_kF(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0); //.055
+        balanceElevatorMotor.config_kP(Constants.BALANCE_ELEVATOR_MM_PORT, 0.40);
         balanceElevatorMotor.config_kI(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0001);
         balanceElevatorMotor.config_kD(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0);
+
+        balanceElevatorMotor.config_kF(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0); //.055
+        balanceElevatorMotor.config_kP(Constants.BALANCE_ELEVATOR_PID_PORT, 0.40);
+        balanceElevatorMotor.config_kI(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0001);
+        balanceElevatorMotor.config_kD(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0);
     }
 
     public static BalanceElevator getInstance() {
         return INSTANCE;
+    }
+
+    public BalanceControlMode getControlMode(){
+        return controlMode;
+    }
+
+    public void setControlMode(BalanceControlMode controlMode){
+        this.controlMode = controlMode;
     }
 
     private double limitBalanceElevator(double targetInches) {
@@ -94,41 +110,56 @@ public class BalanceElevator extends SubsystemBase {
     }
 
     public synchronized void setBalanceElevatorMotionMagicPositionAbsolute(double inches) {
-        controlMode = ClimbControlMode.MOTION_MAGIC;
-        balanceElevatorMotor.selectProfileSlot(2, 0);
+        controlMode = BalanceControlMode.MOTION_MAGIC;
+        balanceElevatorMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_MM_PORT, 0);
         targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
         balanceElevatorMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
 
+    public synchronized void setBalanceElevatorHoldPID(double inches){
+        controlMode = BalanceControlMode.PID;
+        balanceElevatorMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_PID_PORT, 0);
+        targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
+        balanceElevatorMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+    }
+
     public synchronized void setBalanceElevatorSpeed(double speed) {
-        controlMode = ClimbControlMode.MANUAL;
-        manualBalanceElevatorSpeed = speed;
-        double curSpeed = speed;
-        if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && speed < 0.0) {
-            curSpeed = 0;
-        } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && speed > 0.0) {
-            curSpeed = 0;
+        if(controlMode != BalanceControlMode.ZERO){
+            controlMode = BalanceControlMode.MANUAL;
         }
 
-        balanceElevatorMotor.set(ControlMode.PercentOutput, curSpeed);
+        manualBalanceElevatorSpeed = speed;
+        //double curSpeed = speed;
+        // if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && speed < 0.0) {
+        //     curSpeed = 0;
+        // } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && speed > 0.0) {
+        //     curSpeed = 0;
+        // }
+
+        // balanceElevatorMotor.set(ControlMode.PercentOutput, curSpeed);
 
     }
 
     public synchronized void setHoldBalanceElevator(){
-        setBalanceElevatorMotionMagicPositionAbsolute(getBalanceElevatorInches());
+        setBalanceElevatorHoldPID(getBalanceElevatorInches());
     }
 
     @Override
     public void periodic() {
-        if (controlMode == ClimbControlMode.MANUAL) {
+        if (controlMode == BalanceControlMode.MANUAL) {
             if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
-                setHoldBalanceElevator();
+      //          setHoldBalanceElevator();
             } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && manualBalanceElevatorSpeed > 0.0) {
-                setHoldBalanceElevator();
+      //          setHoldBalanceElevator();
+            }
+            else{
+                balanceElevatorMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
+                //System.out.println("Balance elevator speed = " + manualBalanceElevatorSpeed);
             }
         }
-        
-        SmartDashboard.putNumber("Elevator Climb position", getBalanceElevatorInches());
+        //System.out.println("Balance control mode = " + controlMode);
+
+        SmartDashboard.putNumber("Elevator Balance position", getBalanceElevatorInches());
     }
 }
 

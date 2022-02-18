@@ -25,6 +25,12 @@ public final class Limelight {
     private final NetworkTableEntry stream;
     private final NetworkTableEntry snapshot;
 
+    private final static Limelight INSTANCE = new Limelight();
+
+    public static Limelight getInstance(){
+        return INSTANCE;
+    }
+
     /**
      * Creates an instance of the Limelight, assuming the name is "limelight".
      */
@@ -65,6 +71,7 @@ public final class Limelight {
         snapshot = table.getEntry("snapshot");
     }
 
+
     /**
      * Checks if the method has a target.
      * @returns Whether the Limelight has a target.
@@ -79,6 +86,15 @@ public final class Limelight {
      */
     public double getTargetArea() {
         return ta.getDouble(0);
+    }
+
+
+    /**
+     * Gets the x distance from the center cursor to the target in degrees
+     * @returns A value from 0 to 27 for degrees away from the target
+     */
+    public double getTargetHorizOffset(){
+        return tx.getDouble(0);
     }
 
     /**

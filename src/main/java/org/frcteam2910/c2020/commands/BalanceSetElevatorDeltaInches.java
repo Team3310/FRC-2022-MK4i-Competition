@@ -22,7 +22,6 @@ public class BalanceSetElevatorDeltaInches extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        elevator.setHoldBalanceElevator();
         return true;
     }
 }

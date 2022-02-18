@@ -20,7 +20,7 @@ public class ClimbSetElevatorInches extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        elevator.setHoldElevator();
+        //elevator.setHoldElevator();
         return true;
     }
 }

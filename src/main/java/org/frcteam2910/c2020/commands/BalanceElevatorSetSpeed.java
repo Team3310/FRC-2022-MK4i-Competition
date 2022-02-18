@@ -20,7 +20,7 @@ public class BalanceElevatorSetSpeed extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        elevator.setHoldBalanceElevator();
+   //     elevator.setHoldBalanceElevator();
         return true;
     }
 }

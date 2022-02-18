@@ -37,7 +37,6 @@ public class Shooter extends SubsystemBase {
     private double homePositionAngleDegrees = Constants.HOOD_COMPETITION_HOME_POSITION_DEGREES;
 
     // Misc
-    private static final int kHoodMotionMagicSlot = 0;
     private double targetPositionTicks = 0.0;
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
@@ -64,6 +63,8 @@ public class Shooter extends SubsystemBase {
 
         hoodMotor.setInverted(TalonFXInvertType.CounterClockwise);
         hoodMotor.setNeutralMode(NeutralMode.Brake);
+        hoodMotor.configMotionCruiseVelocity(6000);
+        hoodMotor.configMotionAcceleration(12000);
 
     
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
@@ -159,10 +160,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public synchronized void setHoodMotionMagicPositionAbsoluteInternal(double angle) {
-        hoodMotor.selectProfileSlot(kHoodMotionMagicSlot, 0);
+        hoodMotor.selectProfileSlot(Constants.HOOD_MM_PORT, 0);
         double limitedAngle = limitHoodAngle(angle);
         targetPositionTicks = getHoodEncoderTicksAbsolute(limitedAngle);
         hoodMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.07);
+    }
+
+    public synchronized void setHoodPIDPositionAbsoluteInternal(double angle) {
+        hoodMotor.selectProfileSlot(Constants.HOOD_MM_PORT, 0);
+        double limitedAngle = limitHoodAngle(angle);
+        targetPositionTicks = getHoodEncoderTicksAbsolute(limitedAngle);
+        hoodMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.07);
     }
 
     public synchronized boolean hasFinishedHoodTrajectory() {

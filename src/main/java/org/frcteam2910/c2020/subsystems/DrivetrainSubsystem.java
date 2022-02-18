@@ -22,12 +22,19 @@ import org.frcteam2910.common.math.RigidTransform2;
 import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.UpdateManager;
+import org.frcteam2910.common.robot.drivers.Limelight;
+import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.XboxController;
 import org.frcteam2910.common.util.DrivetrainFeedforwardConstants;
 import org.frcteam2910.common.util.HolonomicDriveSignal;
 import org.frcteam2910.common.util.HolonomicFeedforward;
 import org.frcteam2910.common.util.InterpolatingDouble;
 import org.frcteam2910.common.util.InterpolatingTreeMap;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -42,7 +49,17 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public static final double WHEELBASE = 0.502;
     public static final double WHEEL_DIAMETER_INCHES = 3.64;  // Actual is 3.89"
 
+    public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
+    private enum DriveControlMode{
+        JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY
+    }
+
+    public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
+    public PIDController limelightController = new PIDController(1.7, 0.03, 0.02, 0.02);
+    
+
+    DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
     //CANivore string key is "Drivetrain" which can be located in the ctre Falcon 500 factories
 
        public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
@@ -102,6 +119,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final Object stateLock = new Object();
     @GuardedBy("stateLock")
     private HolonomicDriveSignal driveSignal = null;
+
+    private XboxController primaryController;
 
     private boolean isFieldOriented = true;
 
@@ -205,6 +224,30 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
     }
 
+    public void setController(XboxController controller){
+        primaryController = controller;
+    }
+
+    public void setDriveControlMode(DriveControlMode mode){
+        driveControlMode = mode;
+    }
+
+    public DriveControlMode getDriveControlMode(){
+        return driveControlMode;
+    }
+
+    private Axis getDriveForwardAxis() {
+        return primaryController.getLeftYAxis();
+    }
+
+    private Axis getDriveStrafeAxis() {
+        return primaryController.getLeftXAxis();
+    }
+
+    private Axis getDriveRotationAxis() {
+        return primaryController.getRightXAxis();
+    }
+
     public void isDriveOrientation(boolean isFieldOriented){
         this.isFieldOriented = isFieldOriented;
     }
@@ -246,6 +289,66 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                     gyroscope.getUnadjustedAngle().rotateBy(angle.inverse())
             );
         }
+    }
+
+    public void joystickDrive(){
+        //System.out.println("JOYSTICKS");
+    
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true), true);
+    }
+
+    public void setRotationTarget(double goal){
+        rotationController.enableContinuousInput(0.0, Math.PI*2);
+        rotationController.reset(getPose().rotation.toRadians());
+        rotationController.setGoal(goal + getPose().rotation.toRadians());
+        rotationController.setTolerance(0.087);
+        setDriveControlMode(DriveControlMode.ROTATION);
+    }
+
+    public boolean atRotationTarget(){
+        
+        if(rotationController.atGoal()){
+            System.out.println("Reached target");
+        }
+        return rotationController.atGoal();
+    }
+
+    public void rotationDrive(){
+        //Limelight limelight = Limelight.getInstance();
+        
+
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        double rotationOutput = rotationController.calculate(getPose().rotation.toRadians());
+
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
+        System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
+    }
+
+    public void setLimelightTarget(){
+        limelightController.enableContinuousInput(0.0, Math.PI*2);
+        //limelightController.setSetpoint(goal + getPose().rotation.toRadians());
+        //limelightController.setTolerance(0.087);
+        setDriveControlMode(DriveControlMode.LIMELIGHT);
+    }
+
+    public void limelightDrive(){
+        Limelight limelight = Limelight.getInstance();
+        limelightController.setSetpoint(Math.toRadians(-limelight.getTargetHorizOffset()) + getPose().rotation.toRadians());
+
+        System.out.println(limelight.getTargetHorizOffset());
+
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        double rotationOutput = limelightController.calculate(getPose().rotation.toRadians());
+
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
+        System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
     }
 
     public double getAverageAbsoluteValueVelocity() {
@@ -335,28 +438,49 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public void update(double time, double dt) {
         updateOdometry(time, dt);
 
-        HolonomicDriveSignal driveSignal;
-        Optional<HolonomicDriveSignal> trajectorySignal = follower.update(
-                getPose(),
-                getVelocity(),
-                getAngularVelocity(),
-                time,
-                dt
-            );
+        DriveControlMode i_controlMode = getDriveControlMode();
+
+        HolonomicDriveSignal currentDriveSignal = null;
+
+        switch(i_controlMode){
+            case JOYSTICKS:
+                joystickDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case ROTATION:
+                rotationDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case LIMELIGHT:
+                limelightDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case TRAJECTORY:
+                Optional<HolonomicDriveSignal> trajectorySignal = follower.update(
+                        getPose(),
+                        getVelocity(),
+                        getAngularVelocity(),
+                        time,
+                        dt
+                );
                 if (trajectorySignal.isPresent()) {
-                    driveSignal = trajectorySignal.get();
-                    driveSignal = new HolonomicDriveSignal(
-                            driveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
-                            driveSignal.getRotation() / RobotController.getBatteryVoltage(),
-                            driveSignal.isFieldOriented()
+                    currentDriveSignal = trajectorySignal.get();
+                    currentDriveSignal = new HolonomicDriveSignal(
+                        currentDriveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
+                        currentDriveSignal.getRotation() / RobotController.getBatteryVoltage(),
+                        currentDriveSignal.isFieldOriented()
                     );
-                } else {
-                    synchronized (stateLock) {
-                        driveSignal = this.driveSignal;
-                    }
+                }
+                break; 
         }
 
-        updateModules(driveSignal, dt);
+        updateModules(currentDriveSignal, dt);
     }
 
     @Override

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ClimbElevator extends SubsystemBase {
 
     public enum ClimbControlMode{
-        MANUAL, MOTION_MAGIC
+        MANUAL, MOTION_MAGIC, ZERO
     }
 
     // Motor Controllers
@@ -29,8 +29,8 @@ public class ClimbElevator extends SubsystemBase {
     private double manualElevatorSpeed = 0;
 
     //Conversions
-    private static final double PULLEY_DIAMETER_INCHES = 1.923;
-    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (54 / 18) * (54 / 12);
+    private static final double PULLEY_DIAMETER_INCHES = 1.163;
+    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (58 / 14) * (54 / 12);
     private static final double ELEVATOR_ROTATIONS_TO_INCHES = Math.PI * PULLEY_DIAMETER_INCHES;
     private static final double ELEVATOR_INCHES_TO_ENCODER_TICKS = ELEVATOR_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_ROTATIONS_TO_INCHES;
 
@@ -74,6 +74,10 @@ public class ClimbElevator extends SubsystemBase {
         return targetInches;
     }
 
+    public void setControlMode(ClimbControlMode controlMode){
+        this.controlMode = controlMode;
+    }
+
     public double getElevatorRotations(){
         return elevatorMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
     }
@@ -98,15 +102,16 @@ public class ClimbElevator extends SubsystemBase {
     }
 
     public synchronized void setElevatorSpeed(double speed) {
-        controlMode = ClimbControlMode.MANUAL;
         manualElevatorSpeed = speed;
         double curSpeed = speed;
-        if (getElevatorInches() < Constants.ELEVATOR_MIN_INCHES && speed < 0.0) {
-            curSpeed = 0;
-        } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && speed > 0.0) {
-            curSpeed = 0;
+        if(controlMode != ClimbControlMode.ZERO){
+            controlMode = ClimbControlMode.MANUAL;
+            if (getElevatorInches() < Constants.ELEVATOR_MIN_INCHES && speed < 0.0) {
+                curSpeed = 0;
+            } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && speed > 0.0) {
+                curSpeed = 0;
+            }
         }
-        
         elevatorMotor.set(ControlMode.PercentOutput, curSpeed);
 
     }
@@ -125,7 +130,7 @@ public class ClimbElevator extends SubsystemBase {
                 setHoldElevator();
             }
         }
-
+        //System.out.println(controlMode);
         SmartDashboard.putNumber("Elevator Climb position", getElevatorInches());
     }
 }

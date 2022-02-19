@@ -40,6 +40,7 @@ public class Shooter extends SubsystemBase {
     private double targetPositionTicks = 0.0;
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
+    private boolean hoodReset = false;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -88,7 +89,7 @@ public class Shooter extends SubsystemBase {
         shooterMotorMaster.config_kD(0, 0); 
 
         hoodMotor.config_kF(Constants.HOOD_MM_PORT, 0.045);
-        hoodMotor.config_kP(Constants.HOOD_MM_PORT, 1.0);//.9
+        hoodMotor.config_kP(Constants.HOOD_MM_PORT, 0.5);//.9
         hoodMotor.config_kI(Constants.HOOD_MM_PORT, 0.008);//.008
         hoodMotor.config_kD(Constants.HOOD_MM_PORT, 0.0);
     }
@@ -102,7 +103,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getShooterRPM() {
-        return shooterMotorMaster.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / SHOOTER_OUTPUT_TO_ENCODER_RATIO;
+        return shooterMotorMaster.getSelectedSensorVelocity() / SHOOTER_REVOLUTIONS_TO_ENCODER_TICKS * 10.0 * 60.0;
     }
 
     public void setShooterRPM(double rpm) {
@@ -142,6 +143,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void resetHoodHomePosition() {
+        System.out.println("Zero Hood");
+        hoodReset = true;
         hoodMotor.setSelectedSensorPosition(0);
     }
 
@@ -189,6 +192,8 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
+        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
+        SmartDashboard.putBoolean("Hood Reset", hoodReset);
     }
 }
 

@@ -94,11 +94,11 @@ public class RobotContainer {
         );
 
         //Shooter
-        secondaryController.getBButton().whenPressed(
-                new ShooterShootWithHood(shooter, 2750, 24) //RT Wall
-        );
-        secondaryController.getXButton().whenPressed(
+        secondaryController.getAButton().whenPressed(
                 new ShooterShootWithHood(shooter, 2500, 3) //Fender
+        );
+        secondaryController.getBButton().whenPressed(
+                new ShooterShootWithHood(shooter, 2300, 29) //RT Wall 24
         );
         secondaryController.getYButton().whenPressed(
                 new ShooterShootWithHood(shooter, 3250, 38) //Terminal

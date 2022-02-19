@@ -61,10 +61,9 @@ public class Constants {
     public static final int SECONDARY_CONTROLLER_PORT = 1;
 
     public static final int BALANCE_ELEVATOR_MM_PORT = 0;
-    public static final int BALANCE_ELEVATOR_PID_PORT = 4;
-    public static final int CLIMB_ELEVATOR_MM_PORT = 1;
-    public static final int INDEXER_MM_PORT = 2;
-    public static final int HOOD_MM_PORT = 3;
+    public static final int BALANCE_ELEVATOR_PID_PORT = 1;
+    public static final int CLIMB_ELEVATOR_MM_PORT = 0;
+    public static final int HOOD_MM_PORT = 0;
 
     public static final double MIN_CLIMB_ELEVATOR_PERCENT_BUS = 0.1;
     public static final double MIN_BALANCE_ELEVATOR_PERCENT_BUS = 0.06;

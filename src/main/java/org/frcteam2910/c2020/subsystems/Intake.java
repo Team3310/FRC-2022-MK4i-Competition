@@ -40,9 +40,6 @@ public class Intake extends SubsystemBase {
 
         intakeMotor.setInverted(TalonFXInvertType.CounterClockwise);
         intakeMotor.setNeutralMode(NeutralMode.Brake);
-        intakeMotor.configMotionCruiseVelocity(6000);
-        intakeMotor.configMotionAcceleration(14000);
-        intakeMotor.configMotionSCurveStrength(4);
 
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
         statorCurrentConfigs.currentLimit = 120;
@@ -63,11 +60,6 @@ public class Intake extends SubsystemBase {
     public void setRollerSpeed(double speed) {
         this.intakeMotor.set(ControlMode.PercentOutput, speed);
         //System.out.println("Set Intake Speed = " + speed);
-    }
-
-    // Motion Magic
-    public synchronized boolean hasFinishedTrajectory() {
-        return Util.epsilonEquals(intakeMotor.getActiveTrajectoryPosition(), targetPositionTicks, 100);
     }
 
     public void resetIntakeEncoder() {

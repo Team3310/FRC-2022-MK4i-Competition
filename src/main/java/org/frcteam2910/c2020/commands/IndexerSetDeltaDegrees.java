@@ -17,7 +17,7 @@ public class IndexerSetDeltaDegrees extends CommandBase {
     @Override
     public void initialize() {
         deg = indexer.getIndexerDegrees() + deltaDeg;
-        indexer.setIndexerMotionMagicPositionAbsolute(deg);
+        indexer.setIndexerPositionAbsolute(deg);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class IndexerSetDegrees extends CommandBase {
 
     @Override
     public void initialize() {
-        indexer.setIndexerMotionMagicPositionAbsolute(poseDeg);
+        indexer.setIndexerPositionAbsolute(poseDeg);
     }
 
     @Override

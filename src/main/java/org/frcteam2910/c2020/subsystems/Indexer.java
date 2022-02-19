@@ -1,13 +1,10 @@
 package org.frcteam2910.c2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.frcteam2910.c2020.Constants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -43,6 +40,8 @@ public class Indexer extends SubsystemBase {
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
         indexMotor.configAllSettings(configs);
 
+        indexMotor.setInverted(TalonFXInvertType.Clockwise);
+
         indexMotor.setNeutralMode(NeutralMode.Brake);
         indexMotor.configMotionCruiseVelocity(6000);
         indexMotor.configMotionAcceleration(14000);
@@ -54,7 +53,7 @@ public class Indexer extends SubsystemBase {
         indexMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
         indexMotor.config_kF(Constants.INDEXER_MM_PORT, 0.0);
-        indexMotor.config_kP(Constants.INDEXER_MM_PORT, 0.0);
+        indexMotor.config_kP(Constants.INDEXER_MM_PORT, 0.2);
         indexMotor.config_kI(Constants.INDEXER_MM_PORT, 0.0);
         indexMotor.config_kD(Constants.INDEXER_MM_PORT, 0.0);
     }
@@ -97,6 +96,11 @@ public class Indexer extends SubsystemBase {
 
     public synchronized void setHoldIndexer(){
         setIndexerMotionMagicPositionAbsolute(getIndexerDegrees());
+    }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putBoolean("Index sensor", getIndexerSensor());
     }
 }
 

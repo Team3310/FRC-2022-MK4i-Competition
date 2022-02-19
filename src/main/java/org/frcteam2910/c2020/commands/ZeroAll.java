@@ -24,7 +24,7 @@ public class ZeroAll extends CommandBase {
     @Override
     public void initialize() {
         balanceElevator.setElevatorZero();
-        climbElevator.setElevatorZero();
+        climbElevator.setElevatorZero(0);
         drivetrain.resetGyroAngle(Rotation2.ZERO);
     }
 

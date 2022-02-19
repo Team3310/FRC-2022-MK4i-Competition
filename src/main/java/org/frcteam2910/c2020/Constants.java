@@ -47,10 +47,10 @@ public class Constants {
     public static final double HOOD_COMPETITION_HOME_POSITION_DEGREES = 0;
 
     public static final int ELEVATOR_MOTOR_ID = 3;
-    public static final double ELEVATOR_MAX_INCHES = 54.2;
+    public static final double ELEVATOR_MAX_INCHES = 54.8;
     public static final double ELEVATOR_STAGE_ONE_INCHES = 35;
     public static final double ELEVATOR_STAGE_TWO_INCHES = 5;
-    public static final double ELEVATOR_MIN_INCHES = 0;
+    public static final double ELEVATOR_MIN_INCHES = -2.0;
 
     public static final int BALANCE_ELEVATOR_ID = 4;
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
@@ -69,4 +69,7 @@ public class Constants {
     public static final double MIN_CLIMB_ELEVATOR_PERCENT_BUS = 0.1;
     public static final double MIN_BALANCE_ELEVATOR_PERCENT_BUS = 0.06;
 
+    public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
+
+    public static final int INDEXER_DIO_PORT = 0;
 }

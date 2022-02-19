@@ -16,9 +16,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimbElevator extends SubsystemBase {
 
+    public static final double AUTO_ZERO_MOTOR_CURRENT = 1.0;
+
     public enum ClimbControlMode{
-        MANUAL, MOTION_MAGIC, ZERO
+        MANUAL, MOTION_MAGIC
     }
+
+    private boolean isZeroing = false;
 
     // Motor Controllers
     private TalonFX elevatorMotor;
@@ -27,6 +31,7 @@ public class ClimbElevator extends SubsystemBase {
     private ClimbControlMode controlMode = ClimbControlMode.MANUAL;
     private double targetPositionTicks = 0;
     private double manualElevatorSpeed = 0;
+    private double positionOffset = 0;
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 1.163;
@@ -49,8 +54,8 @@ public class ClimbElevator extends SubsystemBase {
         elevatorMotor.configMotionSCurveStrength(4);
 
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
-        statorCurrentConfigs.currentLimit = 120;
-        statorCurrentConfigs.enable = false;
+        statorCurrentConfigs.currentLimit = 60;
+        statorCurrentConfigs.enable = true;
         elevatorMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
         elevatorMotor.config_kF(Constants.CLIMB_ELEVATOR_MM_PORT, 0.055);
@@ -74,6 +79,10 @@ public class ClimbElevator extends SubsystemBase {
         return targetInches;
     }
 
+    public void setZeroing(boolean zeroing) {
+        isZeroing = zeroing;
+    }
+
     public void setControlMode(ClimbControlMode controlMode){
         this.controlMode = controlMode;
     }
@@ -83,51 +92,65 @@ public class ClimbElevator extends SubsystemBase {
     }
 
     public double getElevatorInches(){
-        return getElevatorRotations() * ELEVATOR_ROTATIONS_TO_INCHES;
+        return (getElevatorRotations() * ELEVATOR_ROTATIONS_TO_INCHES) + positionOffset;
     }
 
     public double getElevatorEncoderTicksAbsolute(double inches){
         return (int) (inches * ELEVATOR_INCHES_TO_ENCODER_TICKS);
     }
 
-    public void setElevatorZero(){
+    public void setElevatorZero(double offset){
+        positionOffset = offset;
         elevatorMotor.setSelectedSensorPosition(0);
     }
 
     public synchronized void setElevatorMotionMagicPositionAbsolute(double inches) {
         controlMode = ClimbControlMode.MOTION_MAGIC;
         elevatorMotor.selectProfileSlot(1, 0);
-        targetPositionTicks = getElevatorEncoderTicksAbsolute(limitElevatorInches(inches));
+        targetPositionTicks = getElevatorEncoderTicksAbsolute(limitElevatorInches(inches - positionOffset));
         elevatorMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
 
     public synchronized void setElevatorSpeed(double speed) {
-        manualElevatorSpeed = speed;
-        double curSpeed = speed;
-        if(controlMode != ClimbControlMode.ZERO){
+        if(!isZeroing) {
+            manualElevatorSpeed = speed;
+            double curSpeed = speed;
+
             controlMode = ClimbControlMode.MANUAL;
             if (getElevatorInches() < Constants.ELEVATOR_MIN_INCHES && speed < 0.0) {
                 curSpeed = 0;
             } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && speed > 0.0) {
                 curSpeed = 0;
             }
-        }
-        elevatorMotor.set(ControlMode.PercentOutput, curSpeed);
 
+            elevatorMotor.set(ControlMode.PercentOutput, curSpeed);
+        }
+    }
+
+    public synchronized void setElevatorSpeedZeroing(double speed) {
+        elevatorMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public double getElevatorMotorCurrent(){
+        return elevatorMotor.getStatorCurrent();
     }
 
     public synchronized void setHoldElevator(){
-        setElevatorMotionMagicPositionAbsolute(getElevatorInches());
+        if(!isZeroing) {
+            setElevatorMotionMagicPositionAbsolute(getElevatorInches());
+        }
     }
 
     @Override
     public void periodic() {
-        if (controlMode == ClimbControlMode.MANUAL) {
+        if(!isZeroing) {
+            if (controlMode == ClimbControlMode.MANUAL) {
 
-            if (getElevatorInches() < Constants.ELEVATOR_MIN_INCHES && manualElevatorSpeed < 0.0) {
-                setHoldElevator();
-            } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && manualElevatorSpeed > 0.0) {
-                setHoldElevator();
+                if (getElevatorInches() < Constants.ELEVATOR_MIN_INCHES && manualElevatorSpeed < 0.0) {
+                    setHoldElevator();
+                } else if (getElevatorInches() > Constants.ELEVATOR_MAX_INCHES && manualElevatorSpeed > 0.0) {
+                    setHoldElevator();
+                }
             }
         }
         //System.out.println(controlMode);

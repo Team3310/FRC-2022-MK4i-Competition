@@ -1,4 +1,6 @@
 package org.frcteam2910.c2020.commands;
+import org.frcteam2910.c2020.Constants;
+import org.frcteam2910.c2020.Robot;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -16,20 +18,21 @@ public class ClimbElevatorAutoZero extends CommandBase {
 
     @Override
     public void initialize() {
-		lastElevatorPosition = Constants.MAX_POSITION_INCHES;
-		elevator.setSpeed(Constants.AUTO_ZERO_SPEED);
+		elevator.setZeroing(true);
+		lastElevatorPosition = Constants.ELEVATOR_MAX_INCHES;
+		elevator.setElevatorSpeed(Constants.ELEVATOR_AUTO_ZERO_SPEED);
 		encoderCount = 0;
 //		System.out.println("Auto zero initialize");
     }
 
     @Override
     public boolean isFinished() {
-		elevator.setSpeed(Constants.AUTO_ZERO_SPEED);
-		double currentElevatorPosition = elevator.getPositionInches();
+		elevator.setElevatorSpeedZeroing(Constants.ELEVATOR_AUTO_ZERO_SPEED);
+		double currentElevatorPosition = elevator.getElevatorInches();
 		double elevatorPositionChange = lastElevatorPosition - currentElevatorPosition;
 		lastElevatorPosition = currentElevatorPosition;
-		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && Robot.elevator.getAverageMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
-		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + Robot.elevator.getAverageMotorCurrent());
+		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && elevator.getElevatorMotorCurrent() > elevator.AUTO_ZERO_MOTOR_CURRENT;
+		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + elevator.getElevatorMotorCurrent());
 		
 		if (Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE) {
 			encoderCount++;
@@ -40,4 +43,12 @@ public class ClimbElevatorAutoZero extends CommandBase {
 		
 		return test;
     }
+
+	@Override
+	public void end(boolean interrupted){
+		elevator.setElevatorSpeedZeroing(0);
+		elevator.setElevatorZero(-2.0);
+		elevator.setZeroing(false);
+		elevator.setHoldElevator();
+	}
 }

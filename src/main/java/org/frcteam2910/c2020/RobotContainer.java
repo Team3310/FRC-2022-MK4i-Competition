@@ -2,23 +2,8 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
-import org.frcteam2910.c2020.commands.ActivateZeroMode;
-import org.frcteam2910.c2020.commands.BalanceControlJoysticks;
-import org.frcteam2910.c2020.commands.ClimbControlJoysticks;
-import org.frcteam2910.c2020.commands.ClimbElevatorSetSpeed;
-import org.frcteam2910.c2020.commands.ClimbSetElevatorInches;
-import org.frcteam2910.c2020.commands.ClimbStageOne;
-import org.frcteam2910.c2020.commands.DriveCommand;
-import org.frcteam2910.c2020.commands.HoodSetAngle;
-import org.frcteam2910.c2020.commands.IntakeSetRPM;
-import org.frcteam2910.c2020.commands.IntakeSetSpeed;
-import org.frcteam2910.c2020.commands.ShooterSetRPM;
-import org.frcteam2910.c2020.commands.ZeroAll;
-import org.frcteam2910.c2020.subsystems.BalanceElevator;
-import org.frcteam2910.c2020.subsystems.ClimbElevator;
-import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
-import org.frcteam2910.c2020.subsystems.Intake;
-import org.frcteam2910.c2020.subsystems.Shooter;
+import org.frcteam2910.c2020.commands.*;
+import org.frcteam2910.c2020.subsystems.*;
 import org.frcteam2910.c2020.subsystems.BalanceElevator.BalanceControlMode;
 import org.frcteam2910.c2020.subsystems.ClimbElevator.ClimbControlMode;
 import org.frcteam2910.c2020.util.AutonomousChooser;
@@ -45,6 +30,7 @@ public class RobotContainer {
     private final ClimbElevator climbElevator = ClimbElevator.getInstance();
     private final Shooter shooter = Shooter.getInstance();
     private final BalanceElevator balanceElevator = BalanceElevator.getInstance();
+    private final Indexer indexer = Indexer.getInstance();
 
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
@@ -78,47 +64,68 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-		primaryController.getBackButton().whenPressed(
+
+        primaryController.getBackButton().whenPressed(
             new ZeroAll(balanceElevator, climbElevator, drivetrain)
         );
 
-		// ResetOdometryHeading sometimes gets the robot stuck (won't respond to drive commands)
-        //primaryController.getBackButton().whenPressed(new ResetOdometryHeading(drivetrainSubsystem));
+        //Intake
+        secondaryController.getLeftBumperButton().whenPressed(
+                new IntakeIndexerStop(intake, indexer)
+        );
+        secondaryController.getLeftBumperButton().whenReleased(
+                new IntakeSetSpeed(intake, 0.0)
+        );
 
-        primaryController.getRightBumperButton().whenPressed(
-            new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM)
-            //new IntakeSetSpeed(intakeSubsystem, 0.5)
+        //Climb
+        secondaryController.getBackButton().whenPressed(
+                new ClimbElevatorAutoZero(climbElevator)
         );
-        primaryController.getRightBumperButton().whenReleased(
-            new IntakeSetSpeed(intake, 0.0)
+
+
+        //Indexer
+        secondaryController.getRightBumperButton().whenPressed(
+                new IndexerSetSpeed(indexer, 0.7)
         );
-        primaryController.getLeftBumperButton().whenPressed(
-            new IntakeSetRPM(intake, Constants.INTAKE_REVERSE_RPM)
+        secondaryController.getRightBumperButton().whenReleased(
+                new IndexerSetSpeed(indexer, 0.0)
         );
-        primaryController.getLeftBumperButton().whenReleased(
-            new IntakeSetSpeed(intake, 0.0)
-        ); 
-        secondaryController.getDPadButton(Direction.DOWN).whenPressed(
-            new ClimbStageOne(shooter, balanceElevator, climbElevator)
-        ); 
-        secondaryController.getDPadButton(Direction.UP).whenPressed(
-            new ClimbSetElevatorInches(climbElevator, Constants.ELEVATOR_MAX_INCHES)
+        
+
+        //Shooter
+        secondaryController.getBButton().whenPressed(
+                new ShooterShootWithHood(shooter, 2750, 24) //RT Wall
         );
-        secondaryController.getDPadButton(Direction.RIGHT).whenPressed(
-            () -> climbElevator.setControlMode(ClimbControlMode.ZERO)
+        secondaryController.getXButton().whenPressed(
+                new ShooterShootWithHood(shooter, 2500, 3) //Fender
         );
-        secondaryController.getDPadButton(Direction.LEFT).whenPressed(
-            () -> climbElevator.setControlMode(ClimbControlMode.MANUAL)
+        secondaryController.getYButton().whenPressed(
+                new ShooterShootWithHood(shooter, 3250, 38) //Terminal
         );
+
+
+
     
-        SmartDashboard.putData("Zero Climb Elevator", new InstantCommand(() ->climbElevator.setElevatorZero()));
+        SmartDashboard.putData("Zero Climb Elevator", new InstantCommand(() ->climbElevator.setElevatorZero(0)));
         SmartDashboard.putData("Set Climb Elevator 20 inches", new InstantCommand(() ->climbElevator.setElevatorMotionMagicPositionAbsolute(20.0)));
 
         SmartDashboard.putData("Set Shooter 1500 RPM", new ShooterSetRPM(shooter, 1500));
 
+        SmartDashboard.putData("RT Wall Shooter", new ShooterSetRPM(shooter, 2750));
+        SmartDashboard.putData("RT Wall Hood", new HoodSetAngle(shooter, 24));
+
+        SmartDashboard.putData("Fender Hood", new HoodSetAngle(shooter, 3));
+        SmartDashboard.putData("Fender Shooter", new ShooterSetRPM(shooter, 2500));
+
+        SmartDashboard.putData("Terminal Shooter", new ShooterSetRPM(shooter, 3250));
+        SmartDashboard.putData("Terminal Hood", new HoodSetAngle(shooter, 38));
+
+        SmartDashboard.putData("Set Indexer 0.7 speed", new IndexerSetSpeed(indexer, 0.7));
+
         SmartDashboard.putData("Zero Hood", new InstantCommand(() -> shooter.resetHoodHomePosition()));
         SmartDashboard.putData("Set Hood 10 deg", new HoodSetAngle(shooter, 10));
-        
+
+        SmartDashboard.putData("Indexer Stop", new IndexerBallStop(indexer));
         
         SmartDashboard.putData("Zero Balance Elevator", new InstantCommand(() ->balanceElevator.setElevatorZero()));
         SmartDashboard.putData("Set Balance Elevator 10 inches", new InstantCommand(() ->balanceElevator.setBalanceElevatorMotionMagicPositionAbsolute(10.0)));

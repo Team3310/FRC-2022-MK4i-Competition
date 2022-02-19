@@ -10,16 +10,10 @@ import org.frcteam2910.c2020.subsystems.Indexer;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
-/** An example command that uses an example subsystem. */
 public class IndexerBallStop extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   
   private Indexer indexer;
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
+
   public IndexerBallStop(Indexer indexer) {
     this.indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,7 +24,7 @@ public class IndexerBallStop extends CommandBase {
   @Override
   public void initialize() {
     if(!indexer.getIndexerSensor())
-      indexer.setIndexerRPM(50);
+      indexer.setIndexerSpeed(0.2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

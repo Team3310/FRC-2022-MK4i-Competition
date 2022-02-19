@@ -20,7 +20,6 @@ public class IndexerSetSpeed extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        indexer.setHoldIndexer();
         return true;
     }
 }

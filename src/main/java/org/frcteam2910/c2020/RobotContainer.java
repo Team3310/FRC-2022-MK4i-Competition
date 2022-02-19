@@ -35,8 +35,6 @@ public class RobotContainer {
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
 
-    private final DriverReadout driverReadout;
-
     public RobotContainer() {
         try {
             autonomousTrajectories = new AutonomousTrajectories(DrivetrainSubsystem.TRAJECTORY_CONSTRAINTS);
@@ -58,7 +56,6 @@ public class RobotContainer {
         //CommandScheduler.getInstance().setDefaultCommand(drivetrain, new DriveCommand(drivetrain, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
         CommandScheduler.getInstance().setDefaultCommand(climbElevator, new ClimbControlJoysticks(climbElevator, getClimbElevatorAxis()));
         CommandScheduler.getInstance().setDefaultCommand(balanceElevator, new BalanceControlJoysticks(balanceElevator, getBalanceElevatorAxis()));
-        driverReadout = new DriverReadout(this);
 
         configureButtonBindings();
     }
@@ -70,11 +67,17 @@ public class RobotContainer {
         );
 
         //Intake
-        secondaryController.getLeftBumperButton().whenPressed(
+        secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
                 new IntakeIndexerStop(intake, indexer)
         );
-        secondaryController.getLeftBumperButton().whenReleased(
-                new IntakeSetSpeed(intake, 0.0)
+        secondaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
+                new IntakeIndexerHalt(intake, indexer)
+        );
+        secondaryController.getLeftTriggerAxis().getButton(0.5).whenPressed(
+                new ReverseBalls(intake, indexer)
+        );
+        secondaryController.getLeftTriggerAxis().getButton(0.5).whenReleased(
+                new IntakeIndexerHalt(intake, indexer)
         );
 
         //Climb
@@ -82,15 +85,13 @@ public class RobotContainer {
                 new ClimbElevatorAutoZero(climbElevator)
         );
 
-
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
-                new IndexerSetSpeed(indexer, 0.7)
+                new FeedBalls(intake, indexer)
         );
         secondaryController.getRightBumperButton().whenReleased(
-                new IndexerSetSpeed(indexer, 0.0)
+                new IntakeIndexerHalt(intake, indexer)
         );
-        
 
         //Shooter
         secondaryController.getBButton().whenPressed(

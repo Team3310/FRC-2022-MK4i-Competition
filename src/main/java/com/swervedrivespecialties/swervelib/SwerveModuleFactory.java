@@ -1,6 +1,7 @@
 package com.swervedrivespecialties.swervelib;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import org.frcteam2910.c2020.Constants;
 
 public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
     private final ModuleConfiguration moduleConfiguration;
@@ -87,6 +88,7 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
             }
 
             driveController.setReferenceVoltage(driveVoltage);
+            driveController.setOpenLoopVoltageRamp(Constants.DRIVETRAIN_VOLTAGE_RAMP);
             steerController.setReferenceAngle(steerAngle);
         }
     }

@@ -12,6 +12,8 @@ import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.XboxController;
 
 
 public class Intake extends SubsystemBase {
@@ -26,6 +28,8 @@ public class Intake extends SubsystemBase {
     // Misc
     private static final int kIntakeVelocitySlot = 0;
     private double targetPositionTicks = 0;
+    private XboxController secondaryController;
+    private boolean hasSetIntakeZero = true;
 
     private final static Intake INSTANCE = new Intake();
 
@@ -57,6 +61,14 @@ public class Intake extends SubsystemBase {
         return INSTANCE;
     }
 
+    private Axis getRightTriggerAxis(){return secondaryController.getRightTriggerAxis();}
+
+    private Axis getLeftTriggerAxis(){return secondaryController.getLeftTriggerAxis();}
+
+    public void setController(XboxController xboxController){
+        secondaryController = xboxController;
+    }
+
     public void setRollerSpeed(double speed) {
         this.intakeMotor.set(ControlMode.PercentOutput, speed);
         //System.out.println("Set Intake Speed = " + speed);
@@ -80,8 +92,32 @@ public class Intake extends SubsystemBase {
 
     }
 
+    public void variableIntakeRPM(){
+
+
+        if(getRightTriggerAxis().getButton(0.1).get()){
+            setRollerRPM(getRightTriggerAxis().get(true) * Constants.INTAKE_COLLECT_RPM);
+            hasSetIntakeZero = false;
+        }
+        else if(getLeftTriggerAxis().getButton(0.1).get()){
+            setRollerRPM( -getLeftTriggerAxis().get(true) * Constants.INTAKE_COLLECT_RPM);
+            hasSetIntakeZero = false;
+        }
+        else{
+            if(!hasSetIntakeZero){
+                setRollerSpeed(0);
+                hasSetIntakeZero = true;
+            }
+        }
+    }
+
     public double RollerRPMToNativeUnits(double rpm) {
         return rpm * INTAKE_ROLLER_REVOLUTIONS_TO_ENCODER_TICKS / 10.0D / 60.0D;
+    }
+
+    @Override
+    public void periodic(){
+        variableIntakeRPM();
     }
 
 //        SmartDashboard.putNumber("Intake Roller Rotations", this.getRollerRotations());

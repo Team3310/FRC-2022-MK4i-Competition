@@ -1,6 +1,8 @@
 package org.frcteam2910.c2020;
 
 public class Constants {
+    public static final double DRIVETRAIN_VOLTAGE_RAMP = 0.0;
+
     public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 8;
     public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 9;
     public static final int DRIVETRAIN_FRONT_LEFT_ENCODER_PORT = 0;
@@ -71,4 +73,5 @@ public class Constants {
     public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
 
     public static final int INDEXER_DIO_PORT = 0;
+
 }

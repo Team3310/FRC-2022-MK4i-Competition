@@ -45,6 +45,7 @@ public class RobotContainer {
         autonomousChooser = new AutonomousChooser(autonomousTrajectories);
 
         drivetrain.setController(primaryController);
+        intake.setController(secondaryController);
 
         // primaryController.getLeftXAxis().setInverted(true);
         // primaryController.getRightXAxis().setInverted(true);
@@ -68,16 +69,16 @@ public class RobotContainer {
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
-                new IntakeIndexerStop(intake, indexer)
+                new IndexerBallStop(indexer)
         );
         secondaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
-                new IntakeIndexerHalt(intake, indexer)
+                new IndexerSetSpeed(indexer, 0)
         );
         secondaryController.getLeftTriggerAxis().getButton(0.5).whenPressed(
-                new ReverseBalls(intake, indexer)
+                new IndexerSetRPM(indexer, -3500)
         );
         secondaryController.getLeftTriggerAxis().getButton(0.5).whenReleased(
-                new IntakeIndexerHalt(intake, indexer)
+                new IndexerSetSpeed(indexer, 0)
         );
 
         //Climb

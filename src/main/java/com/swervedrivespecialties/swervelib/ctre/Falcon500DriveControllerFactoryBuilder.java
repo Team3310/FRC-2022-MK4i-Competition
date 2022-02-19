@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.swervedrivespecialties.swervelib.DriveController;
 import com.swervedrivespecialties.swervelib.DriveControllerFactory;
 import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+import org.frcteam2910.c2020.Constants;
 
 public final class Falcon500DriveControllerFactoryBuilder {
     private static final double TICKS_PER_ROTATION = 2048.0;
@@ -93,6 +94,11 @@ public final class Falcon500DriveControllerFactoryBuilder {
         private ControllerImplementation(TalonFX motor, double sensorVelocityCoefficient) {
             this.motor = motor;
             this.sensorVelocityCoefficient = sensorVelocityCoefficient;
+        }
+
+        @Override
+        public void setOpenLoopVoltageRamp(double timeTo12VSec) {
+            motor.configOpenloopRamp(timeTo12VSec);
         }
 
         @Override

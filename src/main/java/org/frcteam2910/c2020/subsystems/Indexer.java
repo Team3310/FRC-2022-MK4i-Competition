@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import org.frcteam2910.c2020.Constants;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -24,6 +25,7 @@ public class Indexer extends SubsystemBase {
 
     // Misc
     private IndexMode controlMode = IndexMode.MANUAL;
+    private final DigitalInput sensor;
   
 
     //Conversions 
@@ -35,6 +37,7 @@ public class Indexer extends SubsystemBase {
 
     private Indexer() {
         indexMotor = new TalonFX(Constants.INDEX_MOTOR_ID);
+        sensor = new DigitalInput(Constants.INDEXER_DIO_PORT);
         
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
@@ -66,6 +69,10 @@ public class Indexer extends SubsystemBase {
 
     public double getIndexerDegrees(){
         return getIndexerRotations() * 360;
+    }
+
+    public boolean getIndexerSensor(){
+        return sensor.get();
     }
 
     public double getElevatorEncoderTicksAbsolute(double degrees){

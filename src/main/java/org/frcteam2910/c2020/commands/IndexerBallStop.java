@@ -1,30 +1,51 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package org.frcteam2910.c2020.commands;
-import org.frcteam2910.c2020.subsystems.BalanceElevator;
-import org.frcteam2910.c2020.subsystems.ClimbElevator;
-import org.frcteam2910.c2020.subsystems.BalanceElevator.BalanceControlMode;
-import org.frcteam2910.c2020.subsystems.ClimbElevator.ClimbControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class ActivateZeroMode extends CommandBase {
-    private final ClimbElevator cElevator;
-    private final BalanceElevator bElevator;
+import org.frcteam2910.c2020.subsystems.Indexer;
 
-    public ActivateZeroMode(ClimbElevator cElevator, BalanceElevator bElevator) {
-        this.cElevator = cElevator;
-        this.bElevator = bElevator;
-        addRequirements(this.cElevator);
-        addRequirements(this.bElevator);
-    }
+import edu.wpi.first.wpilibj.DigitalInput;
 
-    @Override
-    public void initialize() {
-        cElevator.setControlMode(ClimbControlMode.ZERO);
-        bElevator.setControlMode(BalanceControlMode.ZERO);
-    }
+/** An example command that uses an example subsystem. */
+public class IndexerBallStop extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  
+  private Indexer indexer;
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public IndexerBallStop(Indexer indexer) {
+    this.indexer = indexer;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(indexer);
+  }
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    if(!indexer.getIndexerSensor())
+      indexer.setIndexerRPM(50);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    indexer.setIndexerRPM(0);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return indexer.getIndexerSensor();
+  }
 }

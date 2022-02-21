@@ -43,7 +43,7 @@ public class AutonomousTrajectories {
     private Trajectory circuitTenBallAutoPartTwo;
     private Trajectory simplesquare;
     private Trajectory square;
-    private Trajectory twoHundredInches;
+    private Trajectory sevenFeet;
 
     private final Trajectory eightBallCompatiblePartOne;
     private final Trajectory eightBallCompatiblePartTwo;
@@ -79,10 +79,11 @@ public class AutonomousTrajectories {
 
         sCurve = new Trajectory(
                 new SimplePathBuilder(new Vector2(0, 0), Rotation2.ZERO)
-                        .lineTo(new Vector2(200, 0), Rotation2.fromDegrees(90.0))
-                        .arcTo(new Vector2(250, 50), new Vector2(200, 50))
-                        .arcTo(new Vector2(300, 100), new Vector2(300, 50), Rotation2.fromDegrees(0.0))
-                        .lineTo(new Vector2(500, 100))
+                        .lineTo(new Vector2(60, 0), Rotation2.ZERO)
+                        .arcTo(new Vector2(100, 40), new Vector2(60, 40))
+                        .lineTo(new Vector2(100, 60), Rotation2.ZERO)
+                        .arcTo(new Vector2(140, 100), new Vector2(140, 60), Rotation2.ZERO)
+                        .lineTo(new Vector2(200, 100))
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE);
 
@@ -117,9 +118,9 @@ public class AutonomousTrajectories {
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
 
-        twoHundredInches = new Trajectory(
+        sevenFeet = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
-                        .lineTo(new Vector2(50, 0))
+                        .lineTo(new Vector2(84, 0))
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
@@ -180,8 +181,8 @@ public class AutonomousTrajectories {
         return square;
     }
 
-    public Trajectory getTwoHundredInches(){
-        return twoHundredInches;
+    public Trajectory getSevenFeet(){
+        return sevenFeet;
     }
 
     public Trajectory getEightBallAutoPartTwo() {

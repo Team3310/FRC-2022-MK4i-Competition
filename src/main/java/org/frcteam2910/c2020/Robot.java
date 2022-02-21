@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.common.Logger;
 import org.frcteam2910.common.math.RigidTransform2;
 import org.frcteam2910.common.math.Rotation2;
@@ -132,8 +133,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         updateManager.startLoop(2.0e-2);
-
-        
     }
 
     @Override
@@ -145,6 +144,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
         robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
         robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
 
@@ -174,6 +174,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
         //TODO Remove once competition bot is built (since zeroing will be done in Autonomous)
         robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
         robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);

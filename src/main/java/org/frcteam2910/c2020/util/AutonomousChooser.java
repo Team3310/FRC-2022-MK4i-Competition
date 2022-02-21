@@ -23,7 +23,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("6 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
         autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
         autonomousModeChooser.addOption("Simple Square", AutonomousMode.SIMPLE_SQUARE);
-        autonomousModeChooser.addOption("200 inches", AutonomousMode.TWO_HUNDRED_INCHES);
+        autonomousModeChooser.addOption("7 Feet", AutonomousMode.SEVEN_FEET);
         autonomousModeChooser.addOption("sCurve", AutonomousMode.S_CURVE);
     }
 
@@ -56,12 +56,12 @@ public class AutonomousChooser {
         return command;
     }
 
-    private Command getTwoHundredInches(RobotContainer container) {
+    private Command getSevenFeet(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-        resetRobotPose(command, container, trajectories.getTwoHundredInches());
+        resetRobotPose(command, container, trajectories.getSevenFeet());
 
-        follow(command, container, trajectories.getTwoHundredInches());
+        follow(command, container, trajectories.getSevenFeet());
 
         return command;
     }
@@ -151,13 +151,14 @@ public class AutonomousChooser {
                 return getSimpleShootThreeAutoCommand(container);
             case SIMPLE_SQUARE:
                 return getSimpleSquareCommand(container);
-            case TWO_HUNDRED_INCHES:
-                return getTwoHundredInches(container);
+            case SEVEN_FEET:
+                return getSevenFeet(container);
             case S_CURVE:
                 return get_sCurve(container);
+            default:
+                return getSevenFeet(container);
         }
-
-        return get10BallAutoCommand(container);
+        //return get10BallAutoCommand(container);
     }
 
     private void follow(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
@@ -177,6 +178,6 @@ public class AutonomousChooser {
         TEN_BALL_CIRCUIT,
         SIMPLE_SHOOT_THREE,
         SIMPLE_SQUARE, 
-        TWO_HUNDRED_INCHES, S_CURVE,
+        SEVEN_FEET, S_CURVE,
     }
 }

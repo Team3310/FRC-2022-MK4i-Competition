@@ -35,6 +35,8 @@ public class RobotContainer {
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
 
+    private final DriverReadout driverReadout;
+
     public RobotContainer() {
         try {
             autonomousTrajectories = new AutonomousTrajectories(DrivetrainSubsystem.TRAJECTORY_CONSTRAINTS);
@@ -50,7 +52,7 @@ public class RobotContainer {
         // primaryController.getLeftXAxis().setInverted(true);
         // primaryController.getRightXAxis().setInverted(true);
 
-        
+        driverReadout = new DriverReadout(this);
 
         CommandScheduler.getInstance().registerSubsystem(drivetrain);
 

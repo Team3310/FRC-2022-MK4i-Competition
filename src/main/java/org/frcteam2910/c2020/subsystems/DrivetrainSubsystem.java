@@ -47,7 +47,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public static final double TRACKWIDTH = 0.502;
     public static final double WHEELBASE = 0.502;
-    public static final double WHEEL_DIAMETER_INCHES = 3.64;  // Actual is 3.89"
+    public static final double WHEEL_DIAMETER_INCHES = 4.00;  // Actual is 3.89"
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 

@@ -81,9 +81,6 @@ public final class NeoDriveControllerFactoryBuilder {
         }
 
         @Override
-        public void setOpenLoopVoltageRamp(double timeTo12VSec){};
-
-        @Override
         public double getStateVelocity() {
             return encoder.getVelocity();
         }

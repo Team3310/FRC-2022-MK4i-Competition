@@ -51,7 +51,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
-    private enum DriveControlMode{
+    public enum DriveControlMode{
         JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY
     }
 

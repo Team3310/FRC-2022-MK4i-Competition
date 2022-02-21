@@ -66,6 +66,12 @@ public class RobotContainer {
         primaryController.getBackButton().whenPressed(
             new ZeroAll(balanceElevator, climbElevator, drivetrain)
         );
+        primaryController.getRightBumperButton().whenPressed(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
+        );
+        primaryController.getLeftBumperButton().whenPressed(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
@@ -74,12 +80,7 @@ public class RobotContainer {
         secondaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
                 new IndexerSetSpeed(indexer, 0)
         );
-        secondaryController.getLeftTriggerAxis().getButton(0.5).whenPressed(
-                new IndexerSetRPM(indexer, -3500)
-        );
-        secondaryController.getLeftTriggerAxis().getButton(0.5).whenReleased(
-                new IndexerSetSpeed(indexer, 0)
-        );
+
 
         //Climb
         secondaryController.getBackButton().whenPressed(
@@ -93,6 +94,12 @@ public class RobotContainer {
         secondaryController.getRightBumperButton().whenReleased(
                 new IntakeIndexerHalt(intake, indexer)
         );
+        secondaryController.getLeftBumperButton().whenPressed(
+                new EjectBalls(intake, indexer, shooter)
+        );
+        secondaryController.getLeftBumperButton().whenReleased(
+                new IntakeIndexerHalt(intake, indexer)
+        );
 
         //Shooter
         secondaryController.getAButton().whenPressed(
@@ -103,6 +110,11 @@ public class RobotContainer {
         );
         secondaryController.getYButton().whenPressed(
                 new ShooterShootWithHood(shooter, 3250, 38) //Terminal
+        );
+
+        //Misc
+        secondaryController.getLeftJoystickButton().whenPressed(
+                new ExperimentalEjectBalls(intake, indexer)
         );
 
 

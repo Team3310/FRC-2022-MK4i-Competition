@@ -88,7 +88,6 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
             }
 
             driveController.setReferenceVoltage(driveVoltage);
-            driveController.setOpenLoopVoltageRamp(Constants.DRIVETRAIN_VOLTAGE_RAMP);
             steerController.setReferenceAngle(steerAngle);
         }
     }

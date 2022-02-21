@@ -5,5 +5,4 @@ public interface DriveController {
 
     double getStateVelocity();
 
-    void setOpenLoopVoltageRamp(double timeTo12VSec);
 }

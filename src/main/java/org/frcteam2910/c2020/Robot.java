@@ -23,10 +23,10 @@ public class Robot extends TimedRobot {
     private static final Logger LOGGER = new Logger(Robot.class);
 
     private static final byte[] COMPETITION_BOT_MAC_ADDRESS = new byte[]{
-            0x00, (byte) 0x80, 0x2f, 0x28, (byte) 0xc3, 0x33
+            0x00, (byte) 0x80, 0x2f, 0x33, (byte) 0xc4, 0x68
     };
     private static final byte[] PRACTICE_BOT_MAC_ADDRESS = new byte[]{
-            0x00, (byte) 0x80, 0x2f, 0x22, (byte) 0xd7, (byte) 0xba
+            0x00, (byte) 0x80, 0x2f, 0x33, (byte) 0xcf, (byte) 0x65
     };
 
     private static boolean competitionBot;

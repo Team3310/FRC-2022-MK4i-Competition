@@ -60,6 +60,8 @@ public final class Falcon500DriveControllerFactoryBuilder {
             }
 
             TalonFX motor = new TalonFX(driveConfiguration, "Drivetrain");
+            //otor.configOpenloopRamp(Constants.DRIVETRAIN_VOLTAGE_RAMP);
+
             CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
 
             if (hasVoltageCompensation()) {
@@ -94,11 +96,6 @@ public final class Falcon500DriveControllerFactoryBuilder {
         private ControllerImplementation(TalonFX motor, double sensorVelocityCoefficient) {
             this.motor = motor;
             this.sensorVelocityCoefficient = sensorVelocityCoefficient;
-        }
-
-        @Override
-        public void setOpenLoopVoltageRamp(double timeTo12VSec) {
-            motor.configOpenloopRamp(timeTo12VSec);
         }
 
         @Override

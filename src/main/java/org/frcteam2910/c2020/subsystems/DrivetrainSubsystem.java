@@ -420,6 +420,19 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    public void resetSteerAbsoluteAngle() {
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].resetAbsoluteSteerAngle();
+        }
+    }
+
+    // 500 iterations is the default, -1 turns off auto reset
+    public void setSteerEncoderAutoResetIterations(int iterations) {
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].setEncoderAutoResetIterations(iterations);
+        }
+    }
+
     public RigidTransform2 getPoseAtTime(double timestamp) {
         synchronized (kinematicsLock) {
             if (latencyCompensationMap.isEmpty()) {

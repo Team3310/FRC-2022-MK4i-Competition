@@ -137,9 +137,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-
-        
+        CommandScheduler.getInstance().run(); 
     }
 
     @Override
@@ -152,20 +150,13 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testInit() {
-        //new TestModeShooterCommand(robotContainer.getShooterSubsystem()).schedule();
-    }
-
-    @Override
-    public void testPeriodic() {
-        //robotContainer.getShooterSubsystem().disableHood();
+    public void teleopInit() {
+        robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
     }
 
     @Override
     public void disabledInit(){
-
     }
-
 
     @Override
     public void disabledPeriodic() {
@@ -173,10 +164,10 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopInit() {
-        robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
-        //TODO Remove once competition bot is built (since zeroing will be done in Autonomous)
-//        robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
- //       robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
+    public void testInit() {
+    }
+
+    @Override
+    public void testPeriodic() {
     }
 }

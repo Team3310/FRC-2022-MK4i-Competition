@@ -2,17 +2,31 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
-import org.frcteam2910.c2020.commands.*;
-import org.frcteam2910.c2020.subsystems.*;
-import org.frcteam2910.c2020.subsystems.BalanceElevator.BalanceControlMode;
-import org.frcteam2910.c2020.subsystems.ClimbElevator.ClimbControlMode;
+import org.frcteam2910.c2020.commands.BalanceControlJoysticks;
+import org.frcteam2910.c2020.commands.ChangeDriveMode;
+import org.frcteam2910.c2020.commands.ClimbControlJoysticks;
+import org.frcteam2910.c2020.commands.ClimbElevatorAutoZero;
+import org.frcteam2910.c2020.commands.EjectBalls;
+import org.frcteam2910.c2020.commands.ExperimentalEjectBalls;
+import org.frcteam2910.c2020.commands.FeedBalls;
+import org.frcteam2910.c2020.commands.HoodSetAngle;
+import org.frcteam2910.c2020.commands.IndexerBallStop;
+import org.frcteam2910.c2020.commands.IndexerSetSpeed;
+import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
+import org.frcteam2910.c2020.commands.ShooterSetRPM;
+import org.frcteam2910.c2020.commands.ShooterShootWithHood;
+import org.frcteam2910.c2020.commands.ZeroAll;
+import org.frcteam2910.c2020.subsystems.BalanceElevator;
+import org.frcteam2910.c2020.subsystems.ClimbElevator;
+import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
+import org.frcteam2910.c2020.subsystems.Indexer;
+import org.frcteam2910.c2020.subsystems.Intake;
+import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
-import org.frcteam2910.common.math.Rotation2;
 import org.frcteam2910.common.robot.input.Axis;
 import org.frcteam2910.common.robot.input.XboxController;
-import org.frcteam2910.common.robot.input.DPadButton.Direction;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,7 +80,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         primaryController.getBackButton().whenPressed(
-            new ZeroAll(balanceElevator, climbElevator, drivetrain)
+                new ZeroAll(balanceElevator, climbElevator, drivetrain)
+        );
+        primaryController.getStartButton().whenPressed(
+                new InstantCommand(()->drivetrain.resetSteerAbsoluteAngle())
         );
         primaryController.getRightBumperButton().whenPressed(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
@@ -82,7 +99,6 @@ public class RobotContainer {
         secondaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
                 new IndexerSetSpeed(indexer, 0)
         );
-
 
         //Climb
         secondaryController.getBackButton().whenPressed(
@@ -118,9 +134,6 @@ public class RobotContainer {
         secondaryController.getLeftJoystickButton().whenPressed(
                 new ExperimentalEjectBalls(intake, indexer)
         );
-
-
-
     
         SmartDashboard.putData("Zero Climb Elevator", new InstantCommand(() ->climbElevator.setElevatorZero(0)));
         SmartDashboard.putData("Set Climb Elevator 20 inches", new InstantCommand(() ->climbElevator.setElevatorMotionMagicPositionAbsolute(20.0)));
@@ -145,7 +158,6 @@ public class RobotContainer {
         
         SmartDashboard.putData("Zero Balance Elevator", new InstantCommand(() ->balanceElevator.setElevatorZero()));
         SmartDashboard.putData("Set Balance Elevator 10 inches", new InstantCommand(() ->balanceElevator.setBalanceElevatorMotionMagicPositionAbsolute(10.0)));
- 
     }
 
     public Command getAutonomousCommand() {

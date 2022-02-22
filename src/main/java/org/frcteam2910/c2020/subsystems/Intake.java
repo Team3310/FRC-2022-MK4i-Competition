@@ -13,6 +13,8 @@ import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.Controller;
+import org.frcteam2910.common.robot.input.PlaystationController;
 import org.frcteam2910.common.robot.input.XboxController;
 
 
@@ -28,7 +30,7 @@ public class Intake extends SubsystemBase {
     // Misc
     private static final int kIntakeVelocitySlot = 0;
     private double targetPositionTicks = 0;
-    private XboxController secondaryController;
+    private Controller secondaryController;
     private boolean hasSetIntakeZero = true;
 
     private final static Intake INSTANCE = new Intake();
@@ -67,6 +69,10 @@ public class Intake extends SubsystemBase {
 
     public void setController(XboxController xboxController){
         secondaryController = xboxController;
+    }
+
+    public void setController(PlaystationController playstationController){
+        secondaryController = playstationController;
     }
 
     public void setRollerSpeed(double speed) {

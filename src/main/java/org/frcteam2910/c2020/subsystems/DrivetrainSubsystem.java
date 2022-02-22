@@ -2,12 +2,14 @@ package org.frcteam2910.c2020.subsystems;
 
 import java.util.Optional;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.Pigeon;
+import org.frcteam2910.c2020.Robot;
 import org.frcteam2910.common.control.CentripetalAccelerationConstraint;
 import org.frcteam2910.common.control.FeedforwardConstraint;
 import org.frcteam2910.common.control.HolonomicMotionProfiledTrajectoryFollower;
@@ -24,6 +26,8 @@ import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.UpdateManager;
 import org.frcteam2910.common.robot.drivers.Limelight;
 import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.Controller;
+import org.frcteam2910.common.robot.input.PlaystationController;
 import org.frcteam2910.common.robot.input.XboxController;
 import org.frcteam2910.common.util.DrivetrainFeedforwardConstants;
 import org.frcteam2910.common.util.HolonomicDriveSignal;
@@ -48,6 +52,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public static final double TRACKWIDTH = 0.502;
     public static final double WHEELBASE = 0.502;
     public static final double WHEEL_DIAMETER_INCHES = 4.00;  // Actual is 3.89"
+
+    private double frontLeftOffset = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_COMP_OFFSET;
+    private double frontRightOffset = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_COMP_OFFSET;
+    private double backLeftOffset = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_COMP_OFFSET;
+    private double backRightOffset = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_COMP_OFFSET;
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
@@ -114,7 +123,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     @GuardedBy("stateLock")
     private HolonomicDriveSignal driveSignal = null;
 
-    private XboxController primaryController;
+    private Controller primaryController;
 
     private boolean isFieldOriented = true;
 
@@ -128,6 +137,13 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             gyroscope.setInverted(false);
         }
 
+        if(Robot.isPracticeBot()){
+            frontLeftOffset = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
+            frontRightOffset = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
+            backLeftOffset = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
+            backRightOffset = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+        }
+
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         SwerveModule frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -138,7 +154,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_PORT,
-                Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET
+                frontLeftOffset
         );
         SwerveModule frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
@@ -148,7 +164,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT,
-                Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET
+                frontRightOffset
         );
         SwerveModule backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList)
@@ -158,7 +174,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT,
-                Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET
+                backLeftOffset
         );
         SwerveModule backRightModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList)
@@ -168,7 +184,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT,
-                Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET
+                backRightOffset
         );
 
         modules = new SwerveModule[]{frontLeftModule, frontRightModule, backLeftModule, backRightModule};
@@ -219,6 +235,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void setController(XboxController controller){
+        primaryController = controller;
+    }
+    public void setController(PlaystationController controller){
         primaryController = controller;
     }
 

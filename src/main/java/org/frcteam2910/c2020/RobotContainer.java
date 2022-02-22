@@ -12,7 +12,9 @@ import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
+import org.frcteam2910.common.robot.controller.Playstation;
 import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.PlaystationController;
 import org.frcteam2910.common.robot.input.XboxController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +26,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class RobotContainer {
     
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
-    private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
+    //private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
+    private final PlaystationController secondaryController = new PlaystationController((Constants.SECONDARY_CONTROLLER_PORT));
 
     private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     private final Intake intake = Intake.getInstance();

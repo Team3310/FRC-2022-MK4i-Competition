@@ -14,12 +14,13 @@ import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.frcteam2910.common.robot.drivers.Limelight;
 
 
 public class Shooter extends SubsystemBase {
 
     public enum HoodControlMode {
-        MANUAL, MOTION_MAGIC
+        MANUAL, MOTION_MAGIC, LIMELIGHT
     };
 
     // Motor Controllers
@@ -38,9 +39,11 @@ public class Shooter extends SubsystemBase {
 
     // Misc
     private double targetPositionTicks = 0.0;
+    private double heightOfGoalFromLimelight;
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
     private boolean hoodReset = false;
+    Limelight limelight = Limelight.getInstance();
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -181,6 +184,16 @@ public class Shooter extends SubsystemBase {
                 && Util.epsilonEquals(hoodMotor.getActiveTrajectoryPosition(), targetPositionTicks, 100);
     }
 
+    public double getdistanceFromGoal(){
+        double distance;
+        double heightLimelight = 30.56 + (13.1 * Math.sin(Math.toRadians(5 + getHoodAngleAbsoluteDegrees())));
+        double heightOfGoal = 102.60;
+
+        distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getTargetVertOffset()));
+
+        return distance;
+    }
+
     public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
@@ -191,6 +204,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Distance form goal rim", getdistanceFromGoal());
+
         SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
         SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
         SmartDashboard.putBoolean("Hood Reset", hoodReset);

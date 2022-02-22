@@ -98,6 +98,12 @@ public final class Limelight {
     }
 
     /**
+     * Gets the y distance from the center cursor to the target in degrees
+     * @returns A value from 0 to 27 for degrees away from the target
+     */
+    public double getTargetVertOffset(){return ty.getDouble(0);}
+
+    /**
      * Gets the position of the target in radians within the image.
      * @returns The position of the target.
      */

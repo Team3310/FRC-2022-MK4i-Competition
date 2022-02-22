@@ -2,20 +2,7 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
-import org.frcteam2910.c2020.commands.BalanceControlJoysticks;
-import org.frcteam2910.c2020.commands.ChangeDriveMode;
-import org.frcteam2910.c2020.commands.ClimbControlJoysticks;
-import org.frcteam2910.c2020.commands.ClimbElevatorAutoZero;
-import org.frcteam2910.c2020.commands.EjectBalls;
-import org.frcteam2910.c2020.commands.ExperimentalEjectBalls;
-import org.frcteam2910.c2020.commands.FeedBalls;
-import org.frcteam2910.c2020.commands.HoodSetAngle;
-import org.frcteam2910.c2020.commands.IndexerBallStop;
-import org.frcteam2910.c2020.commands.IndexerSetSpeed;
-import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
-import org.frcteam2910.c2020.commands.ShooterSetRPM;
-import org.frcteam2910.c2020.commands.ShooterShootWithHood;
-import org.frcteam2910.c2020.commands.ZeroAll;
+import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.BalanceElevator;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
@@ -124,7 +111,7 @@ public class RobotContainer {
                 new ShooterShootWithHood(shooter, 2500, 3) //Fender
         );
         secondaryController.getBButton().whenPressed(
-                new ShooterShootWithHood(shooter, 2300, 29) //RT Wall 24
+                new ShooterShootWithHood(shooter, 2300, 32) //RT Wall 24
         );
         secondaryController.getYButton().whenPressed(
                 new ShooterShootWithHood(shooter, 3250, 38) //Terminal
@@ -138,7 +125,25 @@ public class RobotContainer {
         SmartDashboard.putData("Zero Climb Elevator", new InstantCommand(() ->climbElevator.setElevatorZero(0)));
         SmartDashboard.putData("Set Climb Elevator 20 inches", new InstantCommand(() ->climbElevator.setElevatorMotionMagicPositionAbsolute(20.0)));
 
+        SmartDashboard.putData("Set Shooter 750 RPM", new ShooterSetRPM(shooter, 750));
+        SmartDashboard.putData("Set Shooter 1000 RPM", new ShooterSetRPM(shooter, 1000));
+        SmartDashboard.putData("Set Shooter 1250 RPM", new ShooterSetRPM(shooter, 1250));
         SmartDashboard.putData("Set Shooter 1500 RPM", new ShooterSetRPM(shooter, 1500));
+        SmartDashboard.putData("Set Shooter 1750 RPM", new ShooterSetRPM(shooter, 1750));
+        SmartDashboard.putData("Set Shooter 2000 RPM", new ShooterSetRPM(shooter, 2000));
+        SmartDashboard.putData("Set Shooter 2250 RPM", new ShooterSetRPM(shooter, 2250));
+        SmartDashboard.putData("Set Shooter 2500 RPM", new ShooterSetRPM(shooter, 2500));
+        SmartDashboard.putData("Set Shooter 2750 RPM", new ShooterSetRPM(shooter, 2750));
+        SmartDashboard.putData("Set Shooter 3000 RPM", new ShooterSetRPM(shooter, 3000));
+        SmartDashboard.putData("Set Shooter 3250 RPM", new ShooterSetRPM(shooter, 3250));
+        SmartDashboard.putData("Set Shooter 3500 RPM", new ShooterSetRPM(shooter, 3500));
+
+
+        SmartDashboard.putData("Set Indexer 2750 RPM", new IndexerSetRPM(indexer, 1500));
+        SmartDashboard.putData("Set Indexer 3000 RPM", new IndexerSetRPM(indexer, 1750));
+        SmartDashboard.putData("Set Indexer 3250 RPM", new IndexerSetRPM(indexer, 2000));
+        SmartDashboard.putData("Set Indexer 3500 RPM", new IndexerSetRPM(indexer, 2250));
+
 
         SmartDashboard.putData("RT Wall Shooter", new ShooterSetRPM(shooter, 2750));
         SmartDashboard.putData("RT Wall Hood", new HoodSetAngle(shooter, 24));
@@ -152,7 +157,19 @@ public class RobotContainer {
         SmartDashboard.putData("Set Indexer 0.7 speed", new IndexerSetSpeed(indexer, 0.7));
 
         SmartDashboard.putData("Zero Hood", new InstantCommand(() -> shooter.resetHoodHomePosition()));
+        SmartDashboard.putData("Set Hood 0 deg", new HoodSetAngle(shooter, 0));
         SmartDashboard.putData("Set Hood 10 deg", new HoodSetAngle(shooter, 10));
+        SmartDashboard.putData("Set Hood 20 deg", new HoodSetAngle(shooter, 20));
+        SmartDashboard.putData("Set Hood 25 deg", new HoodSetAngle(shooter, 25));
+        SmartDashboard.putData("Set Hood 30 deg", new HoodSetAngle(shooter, 30));
+        SmartDashboard.putData("Set Hood 40 deg", new HoodSetAngle(shooter, 40));
+        SmartDashboard.putData("Set Hood 50 deg", new HoodSetAngle(shooter, 50));
+
+        SmartDashboard.putData("Set Shooter 0", new ShooterSetSpeed(shooter, 0));
+        SmartDashboard.putData("Intake in", new IntakeSetSpeed(intake, 0.5));
+        SmartDashboard.putData("Intake off", new IntakeSetSpeed(intake, 0.0));
+
+
 
         SmartDashboard.putData("Indexer Stop", new IndexerBallStop(indexer));
         

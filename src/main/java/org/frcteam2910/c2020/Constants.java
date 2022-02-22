@@ -60,6 +60,9 @@ public class Constants {
     public static final double INTAKE_COLLECT_AUTO_RPM = 1200; // 1500
     public static final double INTAKE_REVERSE_RPM = -1000; // -1500
 
+    // Indexer
+    public static final double INDEXER_RPM = 1550;
+
     public static final int SHOOTER_MASTER_CAN_ID = 13;
     public static final int SHOOTER_SLAVE_CAN_ID = 11;
     public static final int SHOOTER_FEEDER_MOTOR_CAN_ID = 0;
@@ -76,6 +79,7 @@ public class Constants {
     public static final double ELEVATOR_MIN_INCHES = -2.0;
 
     public static final int BALANCE_ELEVATOR_ID = 4;
+
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
     public static final double BALANCE_ELEVATOR_MAX_INCHES = 18.9;
 

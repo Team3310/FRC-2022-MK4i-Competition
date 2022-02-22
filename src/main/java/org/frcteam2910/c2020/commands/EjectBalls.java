@@ -11,8 +11,7 @@ public class EjectBalls extends SequentialCommandGroup {
     public EjectBalls(Intake intake, Indexer indexer, Shooter shooter) {
         addCommands(
                 new IntakeSetRPM(intake, Constants.INTAKE_REVERSE_RPM),
-                new IndexerSetSpeed(indexer, -0.7),
-                new ShooterSetSpeed(shooter, -0.5)
+                new IndexerSetRPM(indexer, -2000)
         );
     }
 }

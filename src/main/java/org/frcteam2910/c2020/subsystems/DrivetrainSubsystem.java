@@ -89,17 +89,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0)        //back right
     );
 
-    // private final SwerveDriveKinematics wpi_driveKinematics = new SwerveDriveKinematics(
-    //         new Translation2d(-TRACKWIDTH / 2.0, WHEELBASE / 2.0), //front left
-    //         new Translation2d(TRACKWIDTH / 2.0, WHEELBASE / 2.0), //front right
-    //         new Translation2d(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0), // back left
-    //         new Translation2d(TRACKWIDTH / 2.0, -WHEELBASE / 2.0) // back right
-    // );
-
-
     private final SwerveModule[] modules;
 
     private final Object sensorLock = new Object();
+    Limelight limelight = Limelight.getInstance();
+
     @GuardedBy("sensorLock")
     private final Gyroscope gyroscope = new Pigeon(Constants.PIGEON_PORT);
 
@@ -272,7 +266,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
-            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
+            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity/2, isFieldOriented);
         }
     }
 
@@ -337,7 +331,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void limelightDrive(){
-        Limelight limelight = Limelight.getInstance();
+
         limelightController.setSetpoint(Math.toRadians(-limelight.getTargetHorizOffset()) + getPose().rotation.toRadians());
 
         System.out.println(limelight.getTargetHorizOffset());

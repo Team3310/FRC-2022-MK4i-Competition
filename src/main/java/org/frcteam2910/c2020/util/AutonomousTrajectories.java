@@ -50,6 +50,7 @@ public class AutonomousTrajectories {
     private final Trajectory eightBallCompatiblePartThree;
     private final Trajectory eightBallCompatiblePartFour;
     private final Trajectory sCurve;
+    private final Trajectory tarmacPosition1ToBall2;
 
     private final Trajectory simpleShootThree;
 
@@ -96,7 +97,15 @@ public class AutonomousTrajectories {
                         .lineTo(new Vector2(0,0), Rotation2.fromDegrees(90))
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
+        );//207.8
+
+        tarmacPosition1ToBall2 = new Trajectory(
+                new SimplePathBuilder(new Vector2(257, -219), Rotation2.fromDegrees(207.8))
+                        .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8))
+                        .build(),
+                trajectoryConstraints, SAMPLE_DISTANCE
         );
+
         eightBallAutoPartTwo = new Trajectory(
                 new SimplePathBuilder(new Vector2(468.0, -67.34), Rotation2.ZERO)
                         .lineTo(new Vector2(459.23, -111.87))
@@ -208,6 +217,10 @@ public class AutonomousTrajectories {
     public Trajectory get_sCurve(){
             return sCurve;
     }
+
+    public Trajectory get_tarmacPosition1ToBall2(){
+        return tarmacPosition1ToBall2;
+}
 
     public Trajectory getCircuitTenBallAutoPartOne() {
         return circuitTenBallAutoPartOne;

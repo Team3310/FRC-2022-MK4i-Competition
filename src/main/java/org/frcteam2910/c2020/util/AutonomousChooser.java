@@ -2,6 +2,7 @@ package org.frcteam2910.c2020.util;
 
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
+import org.frcteam2910.c2020.commands.auton.FourBallTarmacPosition1Start;
 import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.RigidTransform2;
 import org.frcteam2910.common.math.Rotation2;
@@ -25,6 +26,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Simple Square", AutonomousMode.SIMPLE_SQUARE);
         autonomousModeChooser.addOption("7 Feet", AutonomousMode.SEVEN_FEET);
         autonomousModeChooser.addOption("sCurve", AutonomousMode.S_CURVE);
+        autonomousModeChooser.addOption("tarmacPosition1ToBall2", AutonomousMode.tarmacPosition1ToBall2);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -137,6 +139,16 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command get_tarmacPosition1ToBall2(RobotContainer container) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, container, trajectories.get_tarmacPosition1ToBall2());
+
+        follow(command, container, trajectories.get_tarmacPosition1ToBall2());
+
+        return command;
+    }
+
     public Command getCommand(RobotContainer container) {
         switch (autonomousModeChooser.getSelected()) {
             case EIGHT_BALL:
@@ -155,6 +167,8 @@ public class AutonomousChooser {
                 return getSevenFeet(container);
             case S_CURVE:
                 return get_sCurve(container);
+            case tarmacPosition1ToBall2:
+                return new FourBallTarmacPosition1Start(container, trajectories);    
             default:
                 return getSevenFeet(container);
         }
@@ -166,9 +180,9 @@ public class AutonomousChooser {
     }
 
     private void resetRobotPose(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
-        command.addCommands(new InstantCommand(() -> container.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO)));
+        command.addCommands(new InstantCommand(() -> container.getDrivetrainSubsystem().resetGyroAngle(trajectory.calculate(0.0).getPathState().getRotation())));
         command.addCommands(new InstantCommand(() -> container.getDrivetrainSubsystem().resetPose(
-                new RigidTransform2(trajectory.calculate(0.0).getPathState().getPosition(), Rotation2.ZERO))));
+                new RigidTransform2(trajectory.calculate(0.0).getPathState().getPosition(), trajectory.calculate(0.0).getPathState().getRotation()))));
     }
 
     private enum AutonomousMode {
@@ -178,6 +192,8 @@ public class AutonomousChooser {
         TEN_BALL_CIRCUIT,
         SIMPLE_SHOOT_THREE,
         SIMPLE_SQUARE, 
-        SEVEN_FEET, S_CURVE,
+        SEVEN_FEET, 
+        S_CURVE,
+        tarmacPosition1ToBall2,
     }
 }

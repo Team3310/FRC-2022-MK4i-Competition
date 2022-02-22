@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
         //TODO Remove once competition bot is built (since zeroing will be done in Autonomous)
-        robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
-        robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
+//        robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
+ //       robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
     }
 }

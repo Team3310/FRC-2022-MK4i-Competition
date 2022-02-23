@@ -195,6 +195,15 @@ public class RobotContainer {
     public DrivetrainSubsystem getDrivetrainSubsystem() {
         return drivetrain;
     }
+    public Intake getIntakeSubsystem() {
+        return intake;
+    }
+    public Shooter getShooter() {
+        return shooter;
+    }
+    public Indexer getIndexer() {
+        return indexer;
+    }
 
     public XboxController getPrimaryController() {
         return primaryController;

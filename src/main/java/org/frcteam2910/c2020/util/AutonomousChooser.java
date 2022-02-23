@@ -149,6 +149,16 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command get_tarmacPosition2ToBall3(RobotContainer container) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, container, trajectories.get_tarmacPosition2ToBall3());
+
+        follow(command, container, trajectories.get_tarmacPosition2ToBall3());
+
+        return command;
+    }
+
     public Command getCommand(RobotContainer container) {
         switch (autonomousModeChooser.getSelected()) {
             case EIGHT_BALL:

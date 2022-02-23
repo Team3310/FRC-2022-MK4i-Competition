@@ -27,7 +27,7 @@ public class FourBallTarmacPosition1Start extends AutonCommandBase {
         this.addCommands(
             new IntakeSetRPM(container.getIntakeSubsystem(), Constants.INTAKE_COLLECT_RPM),
             new WaitCommand(.5),
-            new ShooterShootWithHood(container.getShooter(), 2100, 32),
+            new ShooterShootWithHood(container.getShooter(), container.getDrivetrainSubsystem(), 2100, 32),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_tarmacPosition1ToBall2()),
             new ChangeDriveMode(container.getDrivetrainSubsystem(), DriveControlMode.LIMELIGHT),
             new WaitCommand(.5),
@@ -42,7 +42,7 @@ public class FourBallTarmacPosition1Start extends AutonCommandBase {
             new WaitCommand(.75),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_tarmacPosition4ToPosition3()),
             new WaitCommand(.75),
-            new ShooterShootWithHood(container.getShooter(), 2100, 32),
+            new ShooterShootWithHood(container.getShooter(), container.getDrivetrainSubsystem(), 2100, 32),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_tarmacPosition3ToPosition2()),
             new ChangeDriveMode(container.getDrivetrainSubsystem(), DriveControlMode.LIMELIGHT),
             new WaitCommand(.5),

@@ -106,9 +106,14 @@ public class Indexer extends SubsystemBase {
         return (int) (degrees * INDEXER_DEGREES_TO_ENCODER_TICKS);
     }
 
+    public double getIndexerRPM() {
+        return indexMotor.getSelectedSensorVelocity() / INDEXER_REVOLUTIONS_TO_ENCODER_TICKS * 10.0 * 60.0;
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Index sensor", getIndexerSensor());
+        SmartDashboard.putNumber("Index RPM", getIndexerRPM());
     }
 }
 

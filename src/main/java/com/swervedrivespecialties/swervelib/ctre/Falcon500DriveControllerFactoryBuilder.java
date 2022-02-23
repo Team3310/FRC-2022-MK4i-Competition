@@ -99,6 +99,11 @@ public final class Falcon500DriveControllerFactoryBuilder {
         }
 
         @Override
+        public void setMotorNeutralMode(NeutralMode neutralMode){
+            motor.setNeutralMode(neutralMode);
+        }
+
+        @Override
         public void setReferenceVoltage(double voltage) {
             motor.set(TalonFXControlMode.PercentOutput, voltage / nominalVoltage);
         }

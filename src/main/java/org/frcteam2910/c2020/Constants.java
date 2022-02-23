@@ -1,5 +1,8 @@
 package org.frcteam2910.c2020;
 
+import org.frcteam2910.common.util.InterpolatingDouble;
+import org.frcteam2910.common.util.InterpolatingTreeMap;
+
 public class Constants {
     /*
     Wheel gears to the left for offsets
@@ -98,5 +101,24 @@ public class Constants {
     public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
 
     public static final int INDEXER_DIO_PORT = 0;
+
+    public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobHoodMap = new InterpolatingTreeMap<>();
+    static {
+        kLobHoodMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(32.0));
+        kLobHoodMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobHoodMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobHoodMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobHoodMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobHoodMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+    }
+
+    public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobRPMMap = new InterpolatingTreeMap<>();
+    static {
+        kLobRPMMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(2150.0));
+        kLobRPMMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobRPMMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobRPMMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+        kLobRPMMap.put(new InterpolatingDouble(0.0), new InterpolatingDouble(0.0));
+    }
 
 }

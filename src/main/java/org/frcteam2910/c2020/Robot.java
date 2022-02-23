@@ -142,6 +142,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getDrivetrainSubsystem().setBrake();
+
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
         robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
         robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
@@ -151,11 +153,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        robotContainer.getDrivetrainSubsystem().setBrake();
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
     }
 
     @Override
     public void disabledInit(){
+        robotContainer.getDrivetrainSubsystem().alignWheels();
+        robotContainer.getDrivetrainSubsystem().setCoast();
     }
 
     @Override

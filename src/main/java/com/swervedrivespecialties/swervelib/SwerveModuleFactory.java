@@ -1,5 +1,6 @@
 package com.swervedrivespecialties.swervelib;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import org.frcteam2910.c2020.Constants;
 
@@ -46,6 +47,9 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
             this.driveController = driveController;
             this.steerController = steerController;
         }
+
+        @Override
+        public void setMotorNeutralMode(NeutralMode neutralMode){driveController.setMotorNeutralMode(neutralMode);}
 
         @Override
         public double getDriveVelocity() {

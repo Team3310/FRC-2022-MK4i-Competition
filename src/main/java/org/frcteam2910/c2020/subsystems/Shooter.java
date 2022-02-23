@@ -54,9 +54,13 @@ public class Shooter extends SubsystemBase {
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
+        configs.voltageCompSaturation = 12.0;
         shooterMotorMaster.configAllSettings(configs);
         shooterMotorSlave.configAllSettings(configs);
         hoodMotor.configAllSettings(configs);
+
+        shooterMotorMaster.enableVoltageCompensation(true);
+        shooterMotorSlave.enableVoltageCompensation(true);
 
         shooterMotorMaster.setInverted(TalonFXInvertType.CounterClockwise);
         shooterMotorMaster.setNeutralMode(NeutralMode.Coast);
@@ -86,8 +90,8 @@ public class Shooter extends SubsystemBase {
         statorCurrentHoodConfigs.triggerThresholdTime = 0.5;
         hoodMotor.configStatorCurrentLimit(statorCurrentHoodConfigs);
 
-        shooterMotorMaster.config_kF(0, 0.05);
-        shooterMotorMaster.config_kP(0, 0.5);
+        shooterMotorMaster.config_kF(0, 0.049);
+        shooterMotorMaster.config_kP(0, 0.01);
         shooterMotorMaster.config_kI(0, 0);
         shooterMotorMaster.config_kD(0, 0); 
 

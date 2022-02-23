@@ -3,6 +3,7 @@ package org.frcteam2910.c2020.subsystems;
 import java.util.Optional;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -61,7 +62,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
     public enum DriveControlMode{
-        JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY
+        JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY,
+         ROBOT_CENTRIC
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
@@ -234,6 +236,18 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
     }
 
+    public void setCoast(){
+        for(SwerveModule i : modules){
+            i.setMotorNeutralMode(NeutralMode.Coast);
+        }
+    }
+
+    public void setBrake(){
+        for(SwerveModule i : modules){
+            i.setMotorNeutralMode(NeutralMode.Brake);
+        }
+    }
+
     public void setController(XboxController controller){
         primaryController = controller;
     }
@@ -285,7 +299,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
-            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity/2, isFieldOriented);
+            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity*0.75, isFieldOriented);
         }
     }
 
@@ -311,6 +325,15 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         primaryController.getRightXAxis().setInverted(true);
 
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true), true);
+    }
+
+    public void robotCentricDrive(){
+        //System.out.println("JOYSTICKS");
+
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true), false);
     }
 
     public void setRotationTarget(double goal){
@@ -439,6 +462,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    public void alignWheels() {
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].set(0,0);
+        }
+    }
+
     // 500 iterations is the default, -1 turns off auto reset
     public void setSteerEncoderAutoResetIterations(int iterations) {
         for (int i = 0; i < modules.length; i++) {
@@ -477,6 +506,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break;
             case ROTATION:
                 rotationDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case ROBOT_CENTRIC:
+                robotCentricDrive();
                 synchronized (stateLock) {
                     currentDriveSignal = this.driveSignal;
                 }

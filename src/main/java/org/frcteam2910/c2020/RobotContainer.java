@@ -14,6 +14,7 @@ import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
 import org.frcteam2910.common.robot.controller.Playstation;
 import org.frcteam2910.common.robot.input.Axis;
+import org.frcteam2910.common.robot.input.DPadButton;
 import org.frcteam2910.common.robot.input.PlaystationController;
 import org.frcteam2910.common.robot.input.XboxController;
 
@@ -26,8 +27,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class RobotContainer {
     
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
-    //private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
-    private final PlaystationController secondaryController = new PlaystationController((Constants.SECONDARY_CONTROLLER_PORT));
+    private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
+    //private final PlaystationController secondaryController = new PlaystationController((Constants.SECONDARY_CONTROLLER_PORT));
 
     private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     private final Intake intake = Intake.getInstance();
@@ -95,6 +96,7 @@ public class RobotContainer {
                 new ClimbElevatorAutoZero(climbElevator)
         );
 
+
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
                 new FeedBalls(intake, indexer)
@@ -111,13 +113,13 @@ public class RobotContainer {
 
         //Shooter
         secondaryController.getAButton().whenPressed(
-                new ShooterShootWithHood(shooter, 2500, 3) //Fender
+                new ShooterShootWithHood(shooter, drivetrain, 1900, 12.0) //Fender
         );
         secondaryController.getBButton().whenPressed(
-                new ShooterShootWithHood(shooter, 2300, 32) //RT Wall 24
+                new ShooterShootWithHood(shooter, drivetrain, 2150, 32) //RT Wall 24
         );
         secondaryController.getYButton().whenPressed(
-                new ShooterShootWithHood(shooter, 3250, 38) //Terminal
+                new ShooterShootWithHood(shooter, drivetrain, 3250, 38) //Terminal
         );
 
         //Misc
@@ -141,11 +143,11 @@ public class RobotContainer {
         SmartDashboard.putData("Set Shooter 3250 RPM", new ShooterSetRPM(shooter, 3250));
         SmartDashboard.putData("Set Shooter 3500 RPM", new ShooterSetRPM(shooter, 3500));
 
-
-        SmartDashboard.putData("Set Indexer 2750 RPM", new IndexerSetRPM(indexer, 1500));
-        SmartDashboard.putData("Set Indexer 3000 RPM", new IndexerSetRPM(indexer, 1750));
-        SmartDashboard.putData("Set Indexer 3250 RPM", new IndexerSetRPM(indexer, 2000));
-        SmartDashboard.putData("Set Indexer 3500 RPM", new IndexerSetRPM(indexer, 2250));
+        SmartDashboard.putData("Set Indexer 0 RPM", new IndexerSetSpeed(indexer, 0.0));
+        SmartDashboard.putData("Set Indexer 1500 RPM", new IndexerSetRPM(indexer, 1500));
+        SmartDashboard.putData("Set Indexer 1750 RPM", new IndexerSetRPM(indexer, 1750));
+        SmartDashboard.putData("Set Indexer 2000 RPM", new IndexerSetRPM(indexer, 2000));
+        SmartDashboard.putData("Set Indexer 2250 RPM", new IndexerSetRPM(indexer, 2250));
 
 
         SmartDashboard.putData("RT Wall Shooter", new ShooterSetRPM(shooter, 2750));
@@ -195,6 +197,7 @@ public class RobotContainer {
     public DrivetrainSubsystem getDrivetrainSubsystem() {
         return drivetrain;
     }
+
     public Intake getIntakeSubsystem() {
         return intake;
     }

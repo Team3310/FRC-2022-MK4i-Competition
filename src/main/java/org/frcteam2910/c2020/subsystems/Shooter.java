@@ -15,6 +15,7 @@ import org.frcteam2910.c2020.util.Util;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.frcteam2910.common.robot.drivers.Limelight;
+import org.frcteam2910.common.util.InterpolatingDouble;
 
 
 public class Shooter extends SubsystemBase {
@@ -196,6 +197,22 @@ public class Shooter extends SubsystemBase {
         distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getTargetVertOffset()));
 
         return distance;
+    }
+
+    public boolean hasTarget(){
+        return limelight.hasTarget();
+    }
+
+    public void updateAllFieldShot(){
+        if(limelight.hasTarget()) {
+            double dist = getdistanceFromGoal();
+
+            InterpolatingDouble RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(dist));
+            InterpolatingDouble angle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(dist));
+
+            setShooterRPM(RPM.value);
+            setHoodMotionMagicPositionAbsolute(angle.value);
+        }
     }
 
     public void setReady(boolean isReady) {

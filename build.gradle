@@ -95,6 +95,7 @@ jar {
 
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
+wpi.jreArtifactLocation = "edu.wpi.first.jdk:roborio-2021:11.0.9u11-1"
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 

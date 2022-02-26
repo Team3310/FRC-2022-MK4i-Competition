@@ -102,13 +102,13 @@ public class RobotContainer {
                 new FeedBalls(intake, indexer)
         );
         secondaryController.getRightBumperButton().whenReleased(
-                new IntakeIndexerHalt(intake, indexer)
+                new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
         );
         secondaryController.getLeftBumperButton().whenPressed(
                 new EjectBalls(intake, indexer, shooter)
         );
         secondaryController.getLeftBumperButton().whenReleased(
-                new IntakeIndexerHalt(intake, indexer)
+                new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
         );
 
         //Shooter
@@ -119,7 +119,10 @@ public class RobotContainer {
                 new ShooterShootWithHood(shooter, drivetrain, 2150, 32) //RT Wall 24
         );
         secondaryController.getYButton().whenPressed(
-                new ShooterShootWithHood(shooter, drivetrain, 3250, 38) //Terminal
+                new ShooterShootWithHood(shooter, drivetrain, 2600, 42) //Terminal
+        );
+        secondaryController.getXButton().whenPressed(
+                new ShooterShootAllField(shooter, drivetrain)
         );
 
         //Misc

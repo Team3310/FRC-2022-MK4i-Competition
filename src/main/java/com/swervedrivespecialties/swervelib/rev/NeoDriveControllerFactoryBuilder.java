@@ -80,7 +80,13 @@ public final class NeoDriveControllerFactoryBuilder {
         @Override
         public void setMotorNeutralMode(NeutralMode neutralMode){
             System.out.println("Switch to falcons");
-        };
+        }
+
+        @Override
+        public void setVoltageRamp(double rampTime) {
+
+        }
+
 
         @Override
         public void setReferenceVoltage(double voltage) {

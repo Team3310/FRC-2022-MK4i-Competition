@@ -8,4 +8,6 @@ public interface DriveController {
     double getStateVelocity();
 
     void setMotorNeutralMode(NeutralMode neutralMode);
+
+    void setVoltageRamp(double rampTime);
 }

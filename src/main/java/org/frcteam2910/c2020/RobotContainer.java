@@ -77,7 +77,10 @@ public class RobotContainer {
                 new InstantCommand(()->drivetrain.resetSteerAbsoluteAngle())
         );
         primaryController.getRightBumperButton().whenPressed(
-                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.ROBOT_CENTRIC)
+        );
+        primaryController.getRightBumperButton().whenReleased(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
         primaryController.getLeftBumperButton().whenPressed(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)

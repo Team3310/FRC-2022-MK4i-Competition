@@ -104,6 +104,11 @@ public final class Falcon500DriveControllerFactoryBuilder {
         }
 
         @Override
+        public void setVoltageRamp(double rampTime) {
+            motor.configOpenloopRamp(rampTime);
+        }
+
+        @Override
         public void setReferenceVoltage(double voltage) {
             motor.set(TalonFXControlMode.PercentOutput, voltage / nominalVoltage);
         }

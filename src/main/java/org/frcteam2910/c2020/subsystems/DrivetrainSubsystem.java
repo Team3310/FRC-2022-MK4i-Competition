@@ -67,7 +67,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(1.7, 0.03, 0.02, 0.02);
+    public PIDController limelightController = new PIDController(3.0, 0.03, 0.02, 0.02);
     
 
     DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
@@ -233,6 +233,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             return signal.getRotation() * RobotController.getBatteryVoltage();
         });
 
+        for(SwerveModule i : modules){
+            i.setVoltageRamp(0.45);
+        }
+
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
     }
 
@@ -247,6 +251,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             i.setMotorNeutralMode(NeutralMode.Brake);
         }
     }
+
 
     public void setController(XboxController controller){
         primaryController = controller;
@@ -375,8 +380,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public void limelightDrive(){
 
         limelightController.setSetpoint(Math.toRadians(-limelight.getTargetHorizOffset()) + getPose().rotation.toRadians());
-
-        System.out.println(limelight.getTargetHorizOffset());
 
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);

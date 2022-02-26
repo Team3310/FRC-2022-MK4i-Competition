@@ -111,9 +111,9 @@ public class Constants {
         kLobHoodMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(22.0));
         kLobHoodMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(29.0));
         kLobHoodMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(32.0));
-        kLobHoodMap.put(new InterpolatingDouble(192.0), new InterpolatingDouble(39.0));
-        kLobHoodMap.put(new InterpolatingDouble(241.0), new InterpolatingDouble(42.0));
-        kLobHoodMap.put(new InterpolatingDouble(299.0), new InterpolatingDouble(45.0));
+        kLobHoodMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(39.0));
+        kLobHoodMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(42.0));
+        kLobHoodMap.put(new InterpolatingDouble(276.0), new InterpolatingDouble(45.0));
     }
 
     public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobRPMMap = new InterpolatingTreeMap<>();
@@ -122,9 +122,9 @@ public class Constants {
         kLobRPMMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(1900.0));
         kLobRPMMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(2100.0));
         kLobRPMMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(2150.0));
-        kLobRPMMap.put(new InterpolatingDouble(192.0), new InterpolatingDouble(2350.0));
-        kLobRPMMap.put(new InterpolatingDouble(241.0), new InterpolatingDouble(2600.0));
-        kLobRPMMap.put(new InterpolatingDouble(299.0), new InterpolatingDouble(2900.0));
+        kLobRPMMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(2350.0));
+        kLobRPMMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(2600.0));
+        kLobRPMMap.put(new InterpolatingDouble(276.0), new InterpolatingDouble(2900.0));
     }
 
 }

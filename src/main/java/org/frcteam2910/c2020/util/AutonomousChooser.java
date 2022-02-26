@@ -2,10 +2,12 @@ package org.frcteam2910.c2020.util;
 
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
-import org.frcteam2910.c2020.commands.auton.FourBallTarmacPosition1Start;
+import org.frcteam2910.c2020.commands.auton.FiveBall;
+import org.frcteam2910.c2020.commands.auton.FourBall;
+import org.frcteam2910.c2020.commands.auton.ThreeBall;
+import org.frcteam2910.c2020.commands.auton.TwoBall;
 import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.RigidTransform2;
-import org.frcteam2910.common.math.Rotation2;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +28,10 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Simple Square", AutonomousMode.SIMPLE_SQUARE);
         autonomousModeChooser.addOption("7 Feet", AutonomousMode.SEVEN_FEET);
         autonomousModeChooser.addOption("sCurve", AutonomousMode.S_CURVE);
-        autonomousModeChooser.addOption("tarmacPosition1ToBall2", AutonomousMode.tarmacPosition1ToBall2);
+        autonomousModeChooser.addOption("Four Ball", AutonomousMode.FourBall);
+        autonomousModeChooser.addOption("Three Ball", AutonomousMode.ThreeBall);
+        autonomousModeChooser.addOption("Two Ball", AutonomousMode.TwoBall);
+        autonomousModeChooser.addOption("Five Ball", AutonomousMode.FiveBall);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -142,9 +147,9 @@ public class AutonomousChooser {
     public Command get_tarmacPosition1ToBall2(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-        resetRobotPose(command, container, trajectories.get_tarmacPosition1ToBall2());
+        resetRobotPose(command, container, trajectories.get_StartPosition1ToBall1());
 
-        follow(command, container, trajectories.get_tarmacPosition1ToBall2());
+        follow(command, container, trajectories.get_StartPosition1ToBall1());
 
         return command;
     }
@@ -152,9 +157,9 @@ public class AutonomousChooser {
     public Command get_tarmacPosition2ToBall3(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-        resetRobotPose(command, container, trajectories.get_tarmacPosition2ToBall3());
+        resetRobotPose(command, container, trajectories.get_StartPosition1ToBall3());
 
-        follow(command, container, trajectories.get_tarmacPosition2ToBall3());
+        follow(command, container, trajectories.get_StartPosition1ToBall3());
 
         return command;
     }
@@ -177,8 +182,14 @@ public class AutonomousChooser {
                 return getSevenFeet(container);
             case S_CURVE:
                 return get_sCurve(container);
-            case tarmacPosition1ToBall2:
-                return new FourBallTarmacPosition1Start(container, trajectories);    
+            case FourBall:
+                return new FourBall(container, trajectories);
+            case ThreeBall:
+                return new ThreeBall(container, trajectories);
+            case TwoBall:
+                return new TwoBall(container, trajectories); 
+            case FiveBall:
+                return new FiveBall(container, trajectories);               
             default:
                 return getSevenFeet(container);
         }
@@ -204,6 +215,9 @@ public class AutonomousChooser {
         SIMPLE_SQUARE, 
         SEVEN_FEET, 
         S_CURVE,
-        tarmacPosition1ToBall2,
+        FourBall,
+        ThreeBall,
+        TwoBall,
+        FiveBall,
     }
 }

@@ -52,11 +52,15 @@ public class AutonomousTrajectories {
     private final Trajectory eightBallCompatiblePartThree;
     private final Trajectory eightBallCompatiblePartFour;
     private final Trajectory sCurve;
-    private final Trajectory tarmacPosition1ToBall2;
-    private final Trajectory tarmacPosition2ToBall3;
-    private final Trajectory tarmacPosition3ToBall2;
-    private final Trajectory tarmacPosition4ToPosition3;
-    private final Trajectory tarmacPosition3ToPosition2;
+    
+    private final Trajectory StartPosition1ToBall1;
+    private final Trajectory StartPosition1ToBall2;
+    private final Trajectory StartPosition1ToBall3;
+    private final Trajectory StartPosition1ToBall4;
+    private final Trajectory StartPosition1ToShoot;
+
+    private final Trajectory StartPosition0ToBall1;
+    private final Trajectory ThreeBallPartTwo;
 
     private final Trajectory simpleShootThree;
 
@@ -106,39 +110,54 @@ public class AutonomousTrajectories {
                 trajectoryConstraints, SAMPLE_DISTANCE
         );//207.8
 
-        tarmacPosition1ToBall2 = new Trajectory(
+        StartPosition1ToBall1 = new Trajectory(
                 new SimplePathBuilder(new Vector2(257, -219), Rotation2.fromDegrees(200.8))
                         .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8)) //-244
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );
 
-        tarmacPosition2ToBall3 = new Trajectory(
-                new SimplePathBuilder(new Vector2(209, -259), Rotation2.fromDegrees(200.8))
+        StartPosition1ToBall2 = new Trajectory(
+                new SimplePathBuilder(new Vector2(209, -244), Rotation2.fromDegrees(200.8))
                         .lineTo(new Vector2(60, -260), Rotation2.fromDegrees(223.8))
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
 
-        tarmacPosition3ToBall2 = new Trajectory(
+        StartPosition1ToBall3 = new Trajectory(
                 new SimplePathBuilder(new Vector2(60, -260), Rotation2.fromDegrees(223.8)) //51 -268
                         .lineTo(new Vector2(51, -268), Rotation2.fromDegrees(223.8)) //209 -259
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );
 
-        tarmacPosition4ToPosition3 = new Trajectory(
+        StartPosition1ToBall4 = new Trajectory(
                 new SimplePathBuilder(new Vector2(51, -268), Rotation2.fromDegrees(223.8)) //51 -268
                         .lineTo(new Vector2(60, -260), Rotation2.fromDegrees(223.8)) //209 -259
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );
 
-        tarmacPosition3ToPosition2 = new Trajectory(
-                new SimplePathBuilder(new Vector2(50, -260), Rotation2.fromDegrees(223.8)) //51 -268
+        StartPosition1ToShoot = new Trajectory(
+                new SimplePathBuilder(new Vector2(257, -219), Rotation2.fromDegrees(223.8)) //51 -268
                         .lineTo(new Vector2(209, -259), Rotation2.fromDegrees(223.8)) //209 -259
                         .build(),
                 trajectoryConstraints, SAMPLE_DISTANCE
+        );
+
+        StartPosition0ToBall1 = new Trajectory(
+                new SimplePathBuilder(new Vector2(300, -254), Rotation2.fromDegrees(270)) //51 -268
+                        .lineTo(new Vector2(297, -294), Rotation2.fromDegrees(270)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+
+        ThreeBallPartTwo = new Trajectory(
+                new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(270)) //51 -268
+                        .lineTo(new Vector2(221.4, -238.4), Rotation2.fromDegrees(207.8)) //209 -259
+                        .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
         );
 
         eightBallAutoPartTwo = new Trajectory(
@@ -253,23 +272,28 @@ public class AutonomousTrajectories {
             return sCurve;
     }
 
-    public Trajectory get_tarmacPosition1ToBall2(){
-        return tarmacPosition1ToBall2;
+    public Trajectory get_StartPosition1ToBall1(){
+        return StartPosition1ToBall1;
 }
 
-    public Trajectory get_tarmacPosition2ToBall3(){
-        return tarmacPosition2ToBall3;
+    public Trajectory get_StartPosition1ToBall2(){
+        return StartPosition1ToBall2;
 }
-public Trajectory get_tarmacPosition3ToBall2(){
-        return tarmacPosition3ToBall2;
+public Trajectory get_StartPosition1ToBall3(){
+        return StartPosition1ToBall3;
 }
-public Trajectory get_tarmacPosition4ToPosition3(){
-        return tarmacPosition4ToPosition3;
+public Trajectory get_StartPosition1ToBall4(){
+        return StartPosition1ToBall4;
 }
-public Trajectory get_tarmacPosition3ToPosition2(){
-        return tarmacPosition3ToPosition2;
+public Trajectory get_StartPosition1ToShoot(){
+        return StartPosition1ToShoot;
 }
-
+public Trajectory get_StartPosition0ToBall1(){
+        return StartPosition0ToBall1;
+}
+public Trajectory get_ThreeBallPartTwo(){
+        return ThreeBallPartTwo;
+}
     public Trajectory getCircuitTenBallAutoPartOne() {
         return circuitTenBallAutoPartOne;
     }

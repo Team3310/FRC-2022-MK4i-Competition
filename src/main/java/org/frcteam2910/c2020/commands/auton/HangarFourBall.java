@@ -3,6 +3,7 @@ package org.frcteam2910.c2020.commands.auton;
 
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.RobotContainer;
+import org.frcteam2910.c2020.commands.AllFieldAuton;
 import org.frcteam2910.c2020.commands.ChangeDriveMode;
 import org.frcteam2910.c2020.commands.FeedBalls;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
@@ -31,17 +32,16 @@ public class HangarFourBall extends AutonCommandBase {
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         addCommands(
             new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM),
-            new ShooterShootWithHood(shooter, drive, 2300, 32),
             new WaitCommand(.5),
             new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartOne()),
-            new ChangeDriveMode(drive, DriveControlMode.LIMELIGHT),
+            new AllFieldAuton(shooter, drive),
             new WaitCommand(0.5),
             new FeedBalls(intake, indexer),
             new WaitCommand(0.5),
             new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
             new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartTwo()),
             new FollowTrajectoryCommand(drive, trajectories.get_StartPosition1ToBall4()),
-            new ChangeDriveMode(drive, DriveControlMode.LIMELIGHT),
+            new AllFieldAuton(shooter, drive),
             new WaitCommand(0.5),
             new FeedBalls(intake, indexer),
             new WaitCommand(0.5),

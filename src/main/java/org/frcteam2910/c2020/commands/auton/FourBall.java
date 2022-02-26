@@ -39,7 +39,7 @@ public class FourBall extends AutonCommandBase {
             new WaitCommand(.3),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall3()),
             new WaitCommand(.25),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall4()),
+            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_TerminalToLoadPosition()),
             new WaitCommand(.25),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToShoot()),
             new AllFieldAuton(container.getShooter(), container.getDrivetrainSubsystem()),

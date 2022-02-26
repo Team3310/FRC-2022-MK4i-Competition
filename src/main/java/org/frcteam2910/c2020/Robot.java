@@ -142,6 +142,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.getDrivetrainSubsystem().alignWheels();
         robotContainer.getDrivetrainSubsystem().setBrake();
 
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);

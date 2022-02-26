@@ -1,14 +1,9 @@
 package org.frcteam2910.c2020.commands.auton;
 
 
-import org.frcteam2910.c2020.Constants;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import org.frcteam2910.c2020.RobotContainer;
-import org.frcteam2910.c2020.commands.AllFieldAuton;
-import org.frcteam2910.c2020.commands.ChangeDriveMode;
-import org.frcteam2910.c2020.commands.FeedBalls;
-import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
-import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
-import org.frcteam2910.c2020.commands.IntakeSetRPM;
+import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Indexer;
 import org.frcteam2910.c2020.subsystems.Intake;
@@ -26,24 +21,30 @@ public class HangarFourBall extends AutonCommandBase {
 
     public HangarFourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
 
-        resetRobotPose(container, trajectories.get_HangarFourBallPartOne());
-        //follow(container, trajectories.get_tarmacPosition1ToBall2());
         addCommands(
-            new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM),
-            new WaitCommand(.5),
-            new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartOne()),
-            new AllFieldAuton(shooter, drive),
-            new WaitCommand(0.5),
-            new FeedBalls(intake, indexer),
-            new WaitCommand(0.5),
-            new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
-            new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartTwo()),
-            new FollowTrajectoryCommand(drive, trajectories.get_StartPosition1ToBall4()),
-            new AllFieldAuton(shooter, drive),
-            new WaitCommand(1.0),
-            new FeedBalls(intake, indexer),
-            new WaitCommand(0.5),
-            new IntakeIndexerHalt(intake, indexer)
+                new HangarTwoBall(container, trajectories),
+                new WaitCommand(0.5),
+                new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
+                new ParallelDeadlineGroup(
+                        new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartTwo()),
+                        new IndexerBallStop(indexer)
+                ),
+                new ParallelDeadlineGroup(
+                        new WaitCommand(2.0),
+                        new FollowTrajectoryCommand(drive, trajectories.get_TerminalToLoadPosition()),
+                        new IndexerBallStop(indexer)
+                ),
+                new ParallelDeadlineGroup(
+                        new FollowTrajectoryCommand(drive, trajectories.get_LoadToShootPosition()),
+                        new ShooterShootAllFieldAuto(shooter)
+                ),
+                new ParallelDeadlineGroup(
+                        new WaitCommand(1.0),
+                        new AllFieldAuton(shooter, drive)
+                ),
+                new FeedBalls(intake, indexer),
+                new WaitCommand(0.5),
+                new IntakeIndexerHalt(intake, indexer)
         );
     }
 }

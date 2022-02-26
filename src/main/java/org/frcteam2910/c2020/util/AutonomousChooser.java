@@ -33,6 +33,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Two Ball", AutonomousMode.TwoBall);
         autonomousModeChooser.addOption("Five Ball", AutonomousMode.FiveBall);
         autonomousModeChooser.addOption("Hangar Four Ball", AutonomousMode.HangarFourBall);
+        autonomousModeChooser.addOption("Hangar Two Ball", AutonomousMode.HANGAR_TWO_BALL);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -192,7 +193,9 @@ public class AutonomousChooser {
             case FiveBall:
                 return new FiveBall(container, trajectories);   
             case HangarFourBall:
-                return new HangarFourBall(container, trajectories);                  
+                return new HangarFourBall(container, trajectories);
+            case HANGAR_TWO_BALL:
+                return new HangarTwoBall(container, trajectories);
             default:
                 return getSevenFeet(container);
         }
@@ -223,5 +226,6 @@ public class AutonomousChooser {
         TwoBall,
         FiveBall,
         HangarFourBall,
+        HANGAR_TWO_BALL
     }
 }

@@ -1,7 +1,5 @@
 package org.frcteam2910.c2020.util;
 
-import org.frcteam2910.c2020.Robot;
-import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.common.control.*;
 import org.frcteam2910.common.io.PathReader;
 import org.frcteam2910.common.math.Rotation2;
@@ -56,7 +54,8 @@ public class AutonomousTrajectories {
     private final Trajectory StartPosition1ToBall1;
     private final Trajectory StartPosition1ToBall2;
     private final Trajectory StartPosition1ToBall3;
-    private final Trajectory StartPosition1ToBall4;
+    private final Trajectory LoadToShootPosition;
+    private final Trajectory TerminalToLoadPosition;
     private final Trajectory StartPosition1ToShoot;
     private final Trajectory FiveBallEndToShoot;
 
@@ -136,11 +135,18 @@ public class AutonomousTrajectories {
                 slowConstraints, SAMPLE_DISTANCE
         );
 
-        StartPosition1ToBall4 = new Trajectory(
-                new SimplePathBuilder(new Vector2(51, -268), Rotation2.fromDegrees(223.8)) //51 -268
-                        .lineTo(new Vector2(60, -260), Rotation2.fromDegrees(223.8)) //209 -259
+        TerminalToLoadPosition = new Trajectory(
+                new SimplePathBuilder(new Vector2(54, -280), Rotation2.fromDegrees(225.0)) //51 -268
+                        .lineTo(new Vector2(60, -260), Rotation2.fromDegrees(225.0)) //209 -259
                         .build(),
-                slowConstraints, SAMPLE_DISTANCE
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+
+        LoadToShootPosition = new Trajectory(
+                new SimplePathBuilder(new Vector2(60, -260), Rotation2.fromDegrees(225.0)) //51 -268
+                        .lineTo(new Vector2(130, -200), Rotation2.fromDegrees(188.0)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
         );
 
         StartPosition1ToShoot = new Trajectory(
@@ -173,13 +179,13 @@ public class AutonomousTrajectories {
 
         HangarFourBallPartOne = new Trajectory(
                 new SimplePathBuilder(new Vector2(237, -120), Rotation2.fromDegrees(135)) //51 -268
-                        .lineTo(new Vector2(206, -89), Rotation2.fromDegrees(135)) //209 -259
+                        .lineTo(new Vector2(206, -89), Rotation2.fromDegrees(148)) //209 -259
                         .build(),
-                slowConstraints, SAMPLE_DISTANCE
+                mediumConstraints, SAMPLE_DISTANCE
         );
         HangarFourBallPartTwo = new Trajectory(
-                new SimplePathBuilder(new Vector2(206, -89), Rotation2.fromDegrees(135)) //51 -268
-                        .lineTo(new Vector2(54, -267), Rotation2.fromDegrees(207.8)) //209 -259
+                new SimplePathBuilder(new Vector2(206, -89), Rotation2.fromDegrees(147)) //51 -268
+                        .lineTo(new Vector2(54, -280), Rotation2.fromDegrees(225.0)) //209 -259
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
@@ -303,30 +309,43 @@ public class AutonomousTrajectories {
     public Trajectory get_StartPosition1ToBall2(){
         return StartPosition1ToBall2;
 }
-public Trajectory get_StartPosition1ToBall3(){
-        return StartPosition1ToBall3;
-}
-public Trajectory get_StartPosition1ToBall4(){
-        return StartPosition1ToBall4;
-}
-public Trajectory get_StartPosition1ToShoot(){
-        return StartPosition1ToShoot;
-}
-public Trajectory get_StartPosition0ToBall1(){
-        return StartPosition0ToBall1;
-}
-public Trajectory get_ThreeBallPartTwo(){
-        return ThreeBallPartTwo;
-}
-public Trajectory get_HangarFourBallPartOne(){
-        return HangarFourBallPartOne;
-}
-public Trajectory get_HangarFourBallPartTwo(){
-        return HangarFourBallPartTwo;
-}
-public Trajectory get_FiveBallEndToShoot(){
-        return FiveBallEndToShoot;
-}
+
+    public Trajectory get_StartPosition1ToBall3(){
+            return StartPosition1ToBall3;
+    }
+
+    public Trajectory get_TerminalToLoadPosition(){
+            return TerminalToLoadPosition;
+    }
+
+    public Trajectory get_LoadToShootPosition(){
+        return LoadToShootPosition;
+    }
+
+    public Trajectory get_StartPosition1ToShoot(){
+            return StartPosition1ToShoot;
+    }
+
+    public Trajectory get_StartPosition0ToBall1(){
+            return StartPosition0ToBall1;
+    }
+
+    public Trajectory get_ThreeBallPartTwo(){
+            return ThreeBallPartTwo;
+    }
+
+    public Trajectory get_HangarFourBallPartOne(){
+            return HangarFourBallPartOne;
+    }
+
+    public Trajectory get_HangarFourBallPartTwo(){
+            return HangarFourBallPartTwo;
+    }
+
+    public Trajectory get_FiveBallEndToShoot(){
+            return FiveBallEndToShoot;
+    }
+
     public Trajectory getCircuitTenBallAutoPartOne() {
         return circuitTenBallAutoPartOne;
     }

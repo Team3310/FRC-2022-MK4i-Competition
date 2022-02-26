@@ -4,15 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Shooter;
-import org.frcteam2910.common.util.InterpolatingDouble;
 
-public class AllFieldAuton extends CommandBase {
+public class ShooterShootAllFieldAuto extends CommandBase {
     private final Shooter shooter;
-    private final DrivetrainSubsystem drive;
 
-    public AllFieldAuton(Shooter shooter, DrivetrainSubsystem drive) {
+    public ShooterShootAllFieldAuto(Shooter shooter) {
         this.shooter = shooter;
-        this.drive = drive;
     }
 
     @Override
@@ -20,7 +17,6 @@ public class AllFieldAuton extends CommandBase {
         if(!shooter.hasTarget()){
             shooter.setHoodMotionMagicPositionAbsolute(30);
         }
-        drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
     }
 
     @Override
@@ -32,10 +28,4 @@ public class AllFieldAuton extends CommandBase {
     public boolean isFinished() {
         return false;
     }
-
-//    @Override
-//    public void end(boolean interrupted){
-//        shooter.setShooterRPM(Constants.IDLE_SHOOTER_RPM);
-//        shooter.setHoodMotionMagicPositionAbsolute(Constants.IDLE_HOOD_ANGLE);
-//    }
 }

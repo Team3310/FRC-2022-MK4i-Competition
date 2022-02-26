@@ -61,7 +61,8 @@ public class AutonomousTrajectories {
 
     private final Trajectory StartPosition0ToBall1;
     private final Trajectory ThreeBallPartTwo;
-
+    private final Trajectory HangarFourBallPartOne;
+    private final Trajectory HangarFourBallPartTwo;
     private final Trajectory simpleShootThree;
 
     public AutonomousTrajectories(TrajectoryConstraint[] trajectoryConstraints) throws IOException {
@@ -156,6 +157,19 @@ public class AutonomousTrajectories {
                 new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(270)) //51 -268
                         .lineTo(new Vector2(221.4, -238.4), Rotation2.fromDegrees(207.8)) //209 -259
                         .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+
+        HangarFourBallPartOne = new Trajectory(
+                new SimplePathBuilder(new Vector2(237, -120), Rotation2.fromDegrees(135)) //51 -268
+                        .lineTo(new Vector2(206, -89), Rotation2.fromDegrees(135)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+        HangarFourBallPartTwo = new Trajectory(
+                new SimplePathBuilder(new Vector2(206, -89), Rotation2.fromDegrees(135)) //51 -268
+                        .lineTo(new Vector2(54, -267), Rotation2.fromDegrees(207.8)) //209 -259
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );
@@ -293,6 +307,12 @@ public Trajectory get_StartPosition0ToBall1(){
 }
 public Trajectory get_ThreeBallPartTwo(){
         return ThreeBallPartTwo;
+}
+public Trajectory get_HangarFourBallPartOne(){
+        return HangarFourBallPartOne;
+}
+public Trajectory get_HangarFourBallPartTwo(){
+        return HangarFourBallPartTwo;
 }
     public Trajectory getCircuitTenBallAutoPartOne() {
         return circuitTenBallAutoPartOne;

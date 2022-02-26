@@ -5,7 +5,7 @@ import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
 import org.frcteam2910.c2020.commands.auton.FiveBall;
 import org.frcteam2910.c2020.commands.auton.FourBall;
 import org.frcteam2910.c2020.commands.auton.ThreeBall;
-import org.frcteam2910.c2020.commands.auton.TwoBall;
+import org.frcteam2910.c2020.commands.auton.*;
 import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.RigidTransform2;
 
@@ -32,6 +32,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Three Ball", AutonomousMode.ThreeBall);
         autonomousModeChooser.addOption("Two Ball", AutonomousMode.TwoBall);
         autonomousModeChooser.addOption("Five Ball", AutonomousMode.FiveBall);
+        autonomousModeChooser.addOption("Hangar Four Ball", AutonomousMode.HangarFourBall);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -189,7 +190,9 @@ public class AutonomousChooser {
             case TwoBall:
                 return new TwoBall(container, trajectories); 
             case FiveBall:
-                return new FiveBall(container, trajectories);               
+                return new FiveBall(container, trajectories);   
+            case HangarFourBall:
+                return new HangarFourBall(container, trajectories);                  
             default:
                 return getSevenFeet(container);
         }
@@ -219,5 +222,6 @@ public class AutonomousChooser {
         ThreeBall,
         TwoBall,
         FiveBall,
+        HangarFourBall,
     }
 }

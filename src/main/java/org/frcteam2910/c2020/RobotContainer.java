@@ -201,6 +201,10 @@ public class RobotContainer {
         return drivetrain;
     }
 
+    public ClimbElevator getClimbElevator() {
+        return climbElevator;
+    }
+
     public Intake getIntakeSubsystem() {
         return intake;
     }

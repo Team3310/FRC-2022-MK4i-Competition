@@ -11,11 +11,17 @@ import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
 import org.frcteam2910.c2020.commands.IntakeSetRPM;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem.DriveControlMode;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
+import org.frcteam2910.c2020.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class FourBall extends AutonCommandBase {
-    public FourBall(RobotContainer container, AutonomousTrajectories trajectories) {
+
+    public FourBall(RobotContainer container, AutonomousTrajectories trajectories){
+        this(container, trajectories, container.getShooter(), container.getIndexer(), container.getIntakeSubsystem(), container.getDrivetrainSubsystem());
+    }
+
+    public FourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
         resetRobotPose(container, trajectories.get_StartPosition1ToBall2());
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         this.addCommands(

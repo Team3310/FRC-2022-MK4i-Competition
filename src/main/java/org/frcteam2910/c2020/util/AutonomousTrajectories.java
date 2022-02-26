@@ -58,6 +58,7 @@ public class AutonomousTrajectories {
     private final Trajectory StartPosition1ToBall3;
     private final Trajectory StartPosition1ToBall4;
     private final Trajectory StartPosition1ToShoot;
+    private final Trajectory FiveBallEndToShoot;
 
     private final Trajectory StartPosition0ToBall1;
     private final Trajectory ThreeBallPartTwo;
@@ -69,7 +70,10 @@ public class AutonomousTrajectories {
         TrajectoryConstraint[] slowConstraints = Arrays.copyOf(trajectoryConstraints, trajectoryConstraints.length + 1);
         slowConstraints[slowConstraints.length - 1] = new MaxVelocityConstraint(6.0 * 12.0);
         slowConstraints[slowConstraints.length - 2] = new MaxAccelerationConstraint(4.0 * 12.0);
-
+        
+        TrajectoryConstraint[] mediumConstraints = Arrays.copyOf(trajectoryConstraints, trajectoryConstraints.length + 1);
+        mediumConstraints[mediumConstraints.length - 1] = new MaxVelocityConstraint(9.0 * 12.0);
+        mediumConstraints[mediumConstraints.length - 2] = new MaxAccelerationConstraint(8.0 * 12.0);
 
         eightBallAutoPartOne = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
@@ -146,6 +150,13 @@ public class AutonomousTrajectories {
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
 
+        FiveBallEndToShoot = new Trajectory(
+                new SimplePathBuilder(new Vector2(257, -219), Rotation2.fromDegrees(223.8)) //51 -268
+                        .lineTo(new Vector2(126, -241), Rotation2.fromDegrees(223.8)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+
         StartPosition0ToBall1 = new Trajectory(
                 new SimplePathBuilder(new Vector2(300, -254), Rotation2.fromDegrees(270)) //51 -268
                         .lineTo(new Vector2(297, -294), Rotation2.fromDegrees(270)) //209 -259
@@ -155,10 +166,9 @@ public class AutonomousTrajectories {
 
         ThreeBallPartTwo = new Trajectory(
                 new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(270)) //51 -268
-                        .lineTo(new Vector2(221.4, -238.4), Rotation2.fromDegrees(207.8)) //209 -259
-                        .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8)) //209 -259
+                        .lineTo(new Vector2(257, -219), Rotation2.fromDegrees(207.8)) //209 -259
                         .build(),
-                slowConstraints, SAMPLE_DISTANCE
+                trajectoryConstraints, SAMPLE_DISTANCE
         );
 
         HangarFourBallPartOne = new Trajectory(
@@ -171,7 +181,7 @@ public class AutonomousTrajectories {
                 new SimplePathBuilder(new Vector2(206, -89), Rotation2.fromDegrees(135)) //51 -268
                         .lineTo(new Vector2(54, -267), Rotation2.fromDegrees(207.8)) //209 -259
                         .build(),
-                slowConstraints, SAMPLE_DISTANCE
+                mediumConstraints, SAMPLE_DISTANCE
         );
 
         eightBallAutoPartTwo = new Trajectory(
@@ -313,6 +323,9 @@ public Trajectory get_HangarFourBallPartOne(){
 }
 public Trajectory get_HangarFourBallPartTwo(){
         return HangarFourBallPartTwo;
+}
+public Trajectory get_FiveBallEndToShoot(){
+        return FiveBallEndToShoot;
 }
     public Trajectory getCircuitTenBallAutoPartOne() {
         return circuitTenBallAutoPartOne;

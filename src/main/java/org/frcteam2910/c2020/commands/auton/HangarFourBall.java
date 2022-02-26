@@ -9,8 +9,6 @@ import org.frcteam2910.c2020.commands.FeedBalls;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
 import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
 import org.frcteam2910.c2020.commands.IntakeSetRPM;
-import org.frcteam2910.c2020.commands.ShooterShootAllField;
-import org.frcteam2910.c2020.commands.ShooterShootWithHood;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Indexer;
 import org.frcteam2910.c2020.subsystems.Intake;
@@ -42,7 +40,7 @@ public class HangarFourBall extends AutonCommandBase {
             new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartTwo()),
             new FollowTrajectoryCommand(drive, trajectories.get_StartPosition1ToBall4()),
             new AllFieldAuton(shooter, drive),
-            new WaitCommand(0.5),
+            new WaitCommand(1.0),
             new FeedBalls(intake, indexer),
             new WaitCommand(0.5),
             new IntakeIndexerHalt(intake, indexer)

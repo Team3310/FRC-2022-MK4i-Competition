@@ -15,14 +15,14 @@ import org.frcteam2910.c2020.subsystems.*;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class FourBall extends AutonCommandBase {
+public class MidPositionFourBall extends AutonCommandBase {
 
-    public FourBall(RobotContainer container, AutonomousTrajectories trajectories){
+    public MidPositionFourBall(RobotContainer container, AutonomousTrajectories trajectories){
         this(container, trajectories, container.getShooter(), container.getIndexer(), container.getIntakeSubsystem(), container.getDrivetrainSubsystem());
     }
 
-    public FourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
-        resetRobotPose(container, trajectories.get_StartPosition1ToBall2());
+    public MidPositionFourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
+        resetRobotPose(container, trajectories.get_TerminalFiveBallPart2());
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         this.addCommands(
             new IntakeSetRPM(container.getIntakeSubsystem(), Constants.INTAKE_COLLECT_RPM),
@@ -35,7 +35,7 @@ public class FourBall extends AutonCommandBase {
             new ChangeDriveMode(container.getDrivetrainSubsystem(), DriveControlMode.TRAJECTORY),
             new IntakeIndexerHalt(container.getIntakeSubsystem(), container.getIndexer()),
             new IntakeSetRPM(container.getIntakeSubsystem(), Constants.INTAKE_COLLECT_RPM),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall2()),
+            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_TerminalFiveBallPart2()),
             new WaitCommand(.3),
             new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall3()),
             new WaitCommand(.25),

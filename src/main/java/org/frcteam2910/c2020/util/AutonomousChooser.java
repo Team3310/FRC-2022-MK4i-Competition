@@ -2,9 +2,9 @@ package org.frcteam2910.c2020.util;
 
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
-import org.frcteam2910.c2020.commands.auton.FiveBall;
-import org.frcteam2910.c2020.commands.auton.FourBall;
-import org.frcteam2910.c2020.commands.auton.ThreeBall;
+import org.frcteam2910.c2020.commands.auton.TerminalFiveBall;
+import org.frcteam2910.c2020.commands.auton.MidPositionFourBall;
+import org.frcteam2910.c2020.commands.auton.TerminalThreeBall;
 import org.frcteam2910.c2020.commands.auton.*;
 import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.RigidTransform2;
@@ -22,16 +22,12 @@ public class AutonomousChooser {
     public AutonomousChooser(AutonomousTrajectories trajectories) {
         this.trajectories = trajectories;
 
-        autonomousModeChooser.setDefaultOption("6 Ball Auto", AutonomousMode.EIGHT_BALL);
-        autonomousModeChooser.addOption("6 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
-        autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
-        autonomousModeChooser.addOption("Simple Square", AutonomousMode.SIMPLE_SQUARE);
+        autonomousModeChooser.setDefaultOption("Terminal Five Ball", AutonomousMode.TerminalFiveBall);
         autonomousModeChooser.addOption("7 Feet", AutonomousMode.SEVEN_FEET);
         autonomousModeChooser.addOption("sCurve", AutonomousMode.S_CURVE);
-        autonomousModeChooser.addOption("Four Ball", AutonomousMode.FourBall);
-        autonomousModeChooser.addOption("Three Ball", AutonomousMode.ThreeBall);
-        autonomousModeChooser.addOption("Two Ball", AutonomousMode.TwoBall);
-        autonomousModeChooser.addOption("Five Ball", AutonomousMode.FiveBall);
+        autonomousModeChooser.addOption("Mid Position Four Ball", AutonomousMode.MidPositionFourBall);
+        autonomousModeChooser.addOption("Terminal Three Ball", AutonomousMode.TerminalThreeBall);
+        autonomousModeChooser.addOption("Terminal Two Ball", AutonomousMode.TerminalTwoBall);
         autonomousModeChooser.addOption("Hangar Four Ball", AutonomousMode.HangarFourBall);
         autonomousModeChooser.addOption("Hangar Two Ball", AutonomousMode.HANGAR_TWO_BALL);
     }
@@ -184,14 +180,14 @@ public class AutonomousChooser {
                 return getSevenFeet(container);
             case S_CURVE:
                 return get_sCurve(container);
-            case FourBall:
-                return new FourBall(container, trajectories);
-            case ThreeBall:
-                return new ThreeBall(container, trajectories);
-            case TwoBall:
-                return new TwoBall(container, trajectories); 
-            case FiveBall:
-                return new FiveBall(container, trajectories);   
+            case MidPositionFourBall:
+                return new MidPositionFourBall(container, trajectories);
+            case TerminalThreeBall:
+                return new TerminalThreeBall(container, trajectories);
+            case TerminalTwoBall:
+                return new TerminalTwoBall(container, trajectories); 
+            case TerminalFiveBall:
+                return new TerminalFiveBall(container, trajectories);   
             case HangarFourBall:
                 return new HangarFourBall(container, trajectories);
             case HANGAR_TWO_BALL:
@@ -221,10 +217,10 @@ public class AutonomousChooser {
         SIMPLE_SQUARE, 
         SEVEN_FEET, 
         S_CURVE,
-        FourBall,
-        ThreeBall,
-        TwoBall,
-        FiveBall,
+        MidPositionFourBall,
+        TerminalThreeBall,
+        TerminalTwoBall,
+        TerminalFiveBall,
         HangarFourBall,
         HANGAR_TWO_BALL
     }

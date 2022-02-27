@@ -387,7 +387,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         double rotationOutput = limelightController.calculate(getPose().rotation.toRadians());
 
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
-        System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
+ //       System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
     }
 
     public double getAverageAbsoluteValueVelocity() {

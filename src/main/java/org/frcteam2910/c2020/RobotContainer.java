@@ -54,14 +54,10 @@ public class RobotContainer {
         drivetrain.setController(primaryController);
         intake.setController(secondaryController);
 
-        // primaryController.getLeftXAxis().setInverted(true);
-        // primaryController.getRightXAxis().setInverted(true);
-
         driverReadout = new DriverReadout(this);
 
         CommandScheduler.getInstance().registerSubsystem(drivetrain);
 
-        //CommandScheduler.getInstance().setDefaultCommand(drivetrain, new DriveCommand(drivetrain, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
         CommandScheduler.getInstance().setDefaultCommand(climbElevator, new ClimbControlJoysticks(climbElevator, getClimbElevatorAxis()));
         CommandScheduler.getInstance().setDefaultCommand(balanceElevator, new BalanceControlJoysticks(balanceElevator, getBalanceElevatorAxis()));
 

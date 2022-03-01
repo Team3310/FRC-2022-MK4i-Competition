@@ -85,7 +85,7 @@ public class Constants {
     public static final double ELEVATOR_STAGE_TWO_INCHES = 5;
     public static final double ELEVATOR_MIN_INCHES = -2.0;
     public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
-    public static final double ELEVATOR_HOME_POSITION = -2.0;
+    public static final double ELEVATOR_HOME_POSITION = -4.0;
 
 
     //Balance Elevator

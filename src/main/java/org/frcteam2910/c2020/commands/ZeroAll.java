@@ -1,10 +1,12 @@
 package org.frcteam2910.c2020.commands;
+import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.subsystems.BalanceElevator;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.common.math.Rotation2;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
 
 public class ZeroAll extends CommandBase {
     private final BalanceElevator balanceElevator;
@@ -24,7 +26,7 @@ public class ZeroAll extends CommandBase {
     @Override
     public void initialize() {
         balanceElevator.setElevatorZero();
-        climbElevator.setElevatorZero(0);
+        climbElevator.setElevatorZero(Constants.ELEVATOR_HOME_POSITION);
         drivetrain.resetGyroAngle(Rotation2.ZERO);
     }
 

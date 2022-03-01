@@ -129,15 +129,6 @@ public class BalanceElevator extends SubsystemBase {
         }
 
         manualBalanceElevatorSpeed = speed;
-        //double curSpeed = speed;
-        // if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && speed < 0.0) {
-        //     curSpeed = 0;
-        // } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && speed > 0.0) {
-        //     curSpeed = 0;
-        // }
-
-        // balanceElevatorMotor.set(ControlMode.PercentOutput, curSpeed);
-
     }
 
     public synchronized void setHoldBalanceElevator(){
@@ -148,18 +139,12 @@ public class BalanceElevator extends SubsystemBase {
     public void periodic() {
         if (controlMode == BalanceControlMode.MANUAL) {
             if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
-      //          setHoldBalanceElevator();
             } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && manualBalanceElevatorSpeed > 0.0) {
-      //          setHoldBalanceElevator();
             }
             else{
                 balanceElevatorMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
-                //System.out.println("Balance elevator speed = " + manualBalanceElevatorSpeed);
             }
         }
-        //System.out.println("Balance control mode = " + controlMode);
-
-        SmartDashboard.putNumber("Elevator Balance position", getBalanceElevatorInches());
     }
 }
 

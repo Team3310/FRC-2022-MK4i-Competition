@@ -47,8 +47,6 @@ public class Constants {
     public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_COMP_OFFSET = -Math.toRadians(33.48); //213.48 Comp settings
     /********************************************************************************************************************/
 
-    public static final int INTAKE_MOTOR_CAN_ID = 2;
-
     public static final double ENCODER_TICKS_PER_MOTOR_REVOLUTION = 2048.0;
 
     public static final int PRIMARY_CONTROLLER_PORT = 0;
@@ -57,48 +55,53 @@ public class Constants {
 
     
     // Intake
-    public static final double INTAKE_COLLECT_RPM = 1550; // 1500
+    public static final double INTAKE_COLLECT_RPM = 1500; // 1500
     public static final double INTAKE_SLOW_RPM = 500;
     public static final double INTAKE_RETRACT_RPM = 1000;
     public static final double INTAKE_COLLECT_AUTO_RPM = 1200; // 1500
     public static final double INTAKE_REVERSE_RPM = -1000; // -1500
+    public static final int INTAKE_MOTOR_CAN_ID = 2;
 
     // Indexer
     public static final double INDEXER_RPM = 1550;
+    public static final int INDEX_MOTOR_ID = 12;
 
+    //Shooter
     public static final int SHOOTER_MASTER_CAN_ID = 13;
     public static final int SHOOTER_SLAVE_CAN_ID = 11;
     public static final int SHOOTER_FEEDER_MOTOR_CAN_ID = 0;
 
+    //Hood
     public static final int HOOD_MOTOR_CAN_ID = 10;
     public static final double HOOD_MIN_ANGLE_DEGREES = 0;
     public static final double HOOD_MAX_ANGLE_DEGREES = 50;
-    public static final double HOOD_COMPETITION_HOME_POSITION_DEGREES = 0;
+    public static final double HOOD_COMPETITION_HOME_POSITION_DEGREES = 50;
+    public static final double HOOD_ZERO_SPEED = 0.1;
 
+    //Climb Elevator
     public static final int ELEVATOR_MOTOR_ID = 3;
     public static final double ELEVATOR_MAX_INCHES = 54.8;
     public static final double ELEVATOR_STAGE_ONE_INCHES = 35;
     public static final double ELEVATOR_STAGE_TWO_INCHES = 5;
     public static final double ELEVATOR_MIN_INCHES = -2.0;
+    public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
+    public static final double ELEVATOR_HOME_POSITION = -2.0;
 
+
+    //Balance Elevator
     public static final int BALANCE_ELEVATOR_ID = 4;
-
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
     public static final double BALANCE_ELEVATOR_MAX_INCHES = 18.9;
-
-    public static final int INDEX_MOTOR_ID = 12;
+    public static final int BALANCE_ELEVATOR_MM_PORT = 0;
+    public static final int BALANCE_ELEVATOR_PID_PORT = 1;
 
     public static final int SECONDARY_CONTROLLER_PORT = 1;
 
-    public static final int BALANCE_ELEVATOR_MM_PORT = 0;
-    public static final int BALANCE_ELEVATOR_PID_PORT = 1;
     public static final int CLIMB_ELEVATOR_MM_PORT = 0;
     public static final int HOOD_MM_PORT = 0;
 
     public static final double MIN_CLIMB_ELEVATOR_PERCENT_BUS = 0.1;
     public static final double MIN_BALANCE_ELEVATOR_PERCENT_BUS = 0.06;
-
-    public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
 
     public static final int INDEXER_DIO_PORT = 0;
 

@@ -142,12 +142,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        robotContainer.getDrivetrainSubsystem().alignWheels();
+        robotContainer.getShooter().resetHoodHomePosition();
+        robotContainer.getClimbElevator().setElevatorZero(Constants.ELEVATOR_HOME_POSITION);
         robotContainer.getDrivetrainSubsystem().setBrake();
 
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
-        robotContainer.getDrivetrainSubsystem().resetPose(RigidTransform2.ZERO);
-        robotContainer.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO);
 
         robotContainer.getAutonomousCommand().schedule();
     }

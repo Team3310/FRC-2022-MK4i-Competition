@@ -20,6 +20,8 @@ import org.frcteam2910.common.util.InterpolatingDouble;
 
 public class Shooter extends SubsystemBase {
 
+    public static final double AUTO_ZERO_MOTOR_CURRENT = 1.0;
+
     public enum HoodControlMode {
         MANUAL, MOTION_MAGIC, LIMELIGHT
     };
@@ -44,6 +46,7 @@ public class Shooter extends SubsystemBase {
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
     private boolean hoodReset = false;
+    private double distanceOffset = 0;
     Limelight limelight = Limelight.getInstance();
 
     private final static Shooter INSTANCE = new Shooter();
@@ -118,6 +121,10 @@ public class Shooter extends SubsystemBase {
         this.shooterMotorMaster.set(ControlMode.Velocity, this.shooterRPMToNativeUnits(rpm));
     }
 
+    public void setShooterDistanceOffset(double offset){
+        this.distanceOffset = offset;
+    }
+
     public double shooterRPMToNativeUnits(double rpm) {
         return rpm * SHOOTER_REVOLUTIONS_TO_ENCODER_TICKS / 10.0D / 60.0D;
     }
@@ -136,6 +143,10 @@ public class Shooter extends SubsystemBase {
         return targetAngle;
     }
 
+    public void setHoodSpeed(double speed){
+        hoodMotor.set(ControlMode.PercentOutput, speed);
+    }
+
     private double getHoodEncoderTicksAbsolute(double angle) {
         double positionDegrees = angle - homePositionAngleDegrees;
         return (int) (positionDegrees * HOOD_DEGREES_TO_ENCODER_TICKS);
@@ -151,14 +162,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public void resetHoodHomePosition() {
-        System.out.println("Zero Hood");
         hoodReset = true;
         hoodMotor.setSelectedSensorPosition(0);
     }
 
-
     public double getHoodAngleAbsoluteDegrees() {
         return (double)hoodMotor.getSelectedSensorPosition() / HOOD_DEGREES_TO_ENCODER_TICKS + homePositionAngleDegrees;
+    }
+
+    public double getHoodCurrent(){
+        return hoodMotor.getStatorCurrent();
     }
 
 
@@ -196,7 +209,7 @@ public class Shooter extends SubsystemBase {
 
         distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getTargetVertOffset()));
 
-        return distance;
+        return distance + distanceOffset;
     }
 
     public boolean hasTarget(){
@@ -226,7 +239,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Distance form goal rim", getdistanceFromGoal());
-
         SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
         SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
         SmartDashboard.putBoolean("Hood Reset", hoodReset);

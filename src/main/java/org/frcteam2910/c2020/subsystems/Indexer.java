@@ -113,7 +113,6 @@ public class Indexer extends SubsystemBase {
     @Override
     public void periodic(){
         SmartDashboard.putBoolean("Index sensor", getIndexerSensor());
-        SmartDashboard.putNumber("Index RPM", getIndexerRPM());
     }
 }
 

@@ -2,7 +2,6 @@ package org.frcteam2910.c2020.subsystems;
 
 import java.util.Optional;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
@@ -126,8 +125,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private HolonomicDriveSignal driveSignal = null;
 
     private Controller primaryController;
-
-    private boolean isFieldOriented = true;
 
     // Logging
     private final NetworkTableEntry odometryXEntry;
@@ -280,10 +277,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         return primaryController.getRightXAxis();
     }
 
-    public void isDriveOrientation(boolean isFieldOriented){
-        this.isFieldOriented = isFieldOriented;
-    }
-
     public RigidTransform2 getPose() {
         synchronized (kinematicsLock) {
             return pose;
@@ -324,8 +317,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void joystickDrive(){
-        //System.out.println("JOYSTICKS");
-    
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
 
@@ -333,8 +324,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void robotCentricDrive(){
-        //System.out.println("JOYSTICKS");
-
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
 
@@ -358,22 +347,16 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public void rotationDrive(){
-        //Limelight limelight = Limelight.getInstance();
-        
-
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
 
         double rotationOutput = rotationController.calculate(getPose().rotation.toRadians());
 
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
-        //System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
     }
 
     public void setLimelightTarget(){
         limelightController.enableContinuousInput(0.0, Math.PI*2);
-        //limelightController.setSetpoint(goal + getPose().rotation.toRadians());
-        //limelightController.setTolerance(0.087);
         setDriveControlMode(DriveControlMode.LIMELIGHT);
     }
 
@@ -387,7 +370,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         double rotationOutput = limelightController.calculate(getPose().rotation.toRadians());
 
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
- //       System.out.println("output = " + rotationOutput + ", current = " + getPose().rotation.toRadians());
     }
 
     public double getAverageAbsoluteValueVelocity() {
@@ -411,11 +393,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         synchronized (sensorLock) {
             angle = gyroscope.getAngle();
             angularVelocity = gyroscope.getRate();
-            SmartDashboard.putNumber("Gyro Angle Rate", gyroscope.getRate());
         }
 
-        SmartDashboard.putNumber("Angle Gyro", angle.toDegrees());
-        SmartDashboard.putNumber("Angle Pose", getPose().rotation.toDegrees());
+        SmartDashboard.putNumber("Current Gyro Angle", angle.toDegrees());
         ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
 
         synchronized (kinematicsLock) {
@@ -431,7 +411,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     /** Updates ChassisVelocity and calculates SwerveModule velocity outputs. */
-    private void updateModules(HolonomicDriveSignal driveSignal, double dt) {
+    private void updateModules(HolonomicDriveSignal driveSignal) {
         ChassisVelocity chassisVelocity;
         if (driveSignal == null) {
             chassisVelocity = new ChassisVelocity(Vector2.ZERO, 0.0);
@@ -449,12 +429,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
         SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
-        SmartDashboard.putNumber("DriveInput", moduleOutputs[0].length);
         for (int i = 0; i < moduleOutputs.length; i++) {
             var module = modules[i];
-            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Drive Voltage", moduleOutputs[i].length * 12.0);
-            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Curr Angle", Math.toDegrees(module.getSteerAngle()));
-            SmartDashboard.putNumber("Steer Angle Deg module #" + i + " Output Angle", moduleOutputs[i].getAngle().toDegrees());
             module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
         }
     }
@@ -544,7 +520,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break; 
         }
 
-        updateModules(currentDriveSignal, dt);
+        updateModules(currentDriveSignal);
     }
 
     @Override

@@ -108,7 +108,7 @@ public class AutonomousTrajectories {
                 new SimplePathBuilder(new Vector2(300, -254), Rotation2.fromDegrees(270)) //51 -268
                         .lineTo(new Vector2(297, -294), Rotation2.fromDegrees(260)) //209 -259
                         .build(),
-                slowConstraints, SAMPLE_DISTANCE
+                mediumConstraints, SAMPLE_DISTANCE
         );
 
         ThreeBallPartTwo = new Trajectory(

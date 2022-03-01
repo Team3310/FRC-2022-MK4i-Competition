@@ -28,7 +28,6 @@ public class RobotContainer {
     
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
     private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
-    //private final PlaystationController secondaryController = new PlaystationController((Constants.SECONDARY_CONTROLLER_PORT));
 
     private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
     private final Intake intake = Intake.getInstance();
@@ -40,6 +39,7 @@ public class RobotContainer {
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
 
+    @SuppressWarnings("unused")
     private final DriverReadout driverReadout;
 
     public RobotContainer() {
@@ -100,6 +100,7 @@ public class RobotContainer {
         );
 
 
+
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
                 new FeedBalls(intake, indexer)
@@ -129,63 +130,21 @@ public class RobotContainer {
         );
 
         //Misc
-        secondaryController.getLeftJoystickButton().whenPressed(
-                new ExperimentalEjectBalls(intake, indexer)
-        );
-    
-        SmartDashboard.putData("Zero Climb Elevator", new InstantCommand(() ->climbElevator.setElevatorZero(0)));
-        SmartDashboard.putData("Set Climb Elevator 20 inches", new InstantCommand(() ->climbElevator.setElevatorMotionMagicPositionAbsolute(20.0)));
 
-        SmartDashboard.putData("Set Shooter 750 RPM", new ShooterSetRPM(shooter, 750));
-        SmartDashboard.putData("Set Shooter 1000 RPM", new ShooterSetRPM(shooter, 1000));
-        SmartDashboard.putData("Set Shooter 1250 RPM", new ShooterSetRPM(shooter, 1250));
-        SmartDashboard.putData("Set Shooter 1500 RPM", new ShooterSetRPM(shooter, 1500));
-        SmartDashboard.putData("Set Shooter 1750 RPM", new ShooterSetRPM(shooter, 1750));
-        SmartDashboard.putData("Set Shooter 2000 RPM", new ShooterSetRPM(shooter, 2000));
-        SmartDashboard.putData("Set Shooter 2250 RPM", new ShooterSetRPM(shooter, 2250));
-        SmartDashboard.putData("Set Shooter 2500 RPM", new ShooterSetRPM(shooter, 2500));
-        SmartDashboard.putData("Set Shooter 2750 RPM", new ShooterSetRPM(shooter, 2750));
-        SmartDashboard.putData("Set Shooter 3000 RPM", new ShooterSetRPM(shooter, 3000));
-        SmartDashboard.putData("Set Shooter 3250 RPM", new ShooterSetRPM(shooter, 3250));
-        SmartDashboard.putData("Set Shooter 3500 RPM", new ShooterSetRPM(shooter, 3500));
+        SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
+        SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
+        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));
+        SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0));
+        SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0));
+        SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
 
-        SmartDashboard.putData("Set Indexer 0 RPM", new IndexerSetSpeed(indexer, 0.0));
-        SmartDashboard.putData("Set Indexer 1500 RPM", new IndexerSetRPM(indexer, 1500));
-        SmartDashboard.putData("Set Indexer 1750 RPM", new IndexerSetRPM(indexer, 1750));
-        SmartDashboard.putData("Set Indexer 2000 RPM", new IndexerSetRPM(indexer, 2000));
-        SmartDashboard.putData("Set Indexer 2250 RPM", new IndexerSetRPM(indexer, 2250));
+        SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
+        SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));
+        SmartDashboard.putData("Distance offset +0", new InstantCommand(()-> shooter.setShooterDistanceOffset(0)));
+        SmartDashboard.putData("Distance offset +10", new InstantCommand(()-> shooter.setShooterDistanceOffset(10)));
+        SmartDashboard.putData("Distance offset +20", new InstantCommand(()-> shooter.setShooterDistanceOffset(20)));
 
 
-        SmartDashboard.putData("RT Wall Shooter", new ShooterSetRPM(shooter, 2750));
-        SmartDashboard.putData("RT Wall Hood", new HoodSetAngle(shooter, 24));
-
-        SmartDashboard.putData("Fender Hood", new HoodSetAngle(shooter, 3));
-        SmartDashboard.putData("Fender Shooter", new ShooterSetRPM(shooter, 2500));
-
-        SmartDashboard.putData("Terminal Shooter", new ShooterSetRPM(shooter, 3250));
-        SmartDashboard.putData("Terminal Hood", new HoodSetAngle(shooter, 38));
-
-        SmartDashboard.putData("Set Indexer 0.7 speed", new IndexerSetSpeed(indexer, 0.7));
-
-        SmartDashboard.putData("Zero Hood", new InstantCommand(() -> shooter.resetHoodHomePosition()));
-        SmartDashboard.putData("Set Hood 0 deg", new HoodSetAngle(shooter, 0));
-        SmartDashboard.putData("Set Hood 10 deg", new HoodSetAngle(shooter, 10));
-        SmartDashboard.putData("Set Hood 20 deg", new HoodSetAngle(shooter, 20));
-        SmartDashboard.putData("Set Hood 25 deg", new HoodSetAngle(shooter, 25));
-        SmartDashboard.putData("Set Hood 30 deg", new HoodSetAngle(shooter, 30));
-        SmartDashboard.putData("Set Hood 40 deg", new HoodSetAngle(shooter, 40));
-        SmartDashboard.putData("Set Hood 50 deg", new HoodSetAngle(shooter, 50));
-
-        SmartDashboard.putData("Set Shooter 0", new ShooterSetSpeed(shooter, 0));
-        SmartDashboard.putData("Intake in", new IntakeSetSpeed(intake, 0.5));
-        SmartDashboard.putData("Intake off", new IntakeSetSpeed(intake, 0.0));
-
-
-
-        SmartDashboard.putData("Indexer Stop", new IndexerBallStop(indexer));
-        
-        SmartDashboard.putData("Zero Balance Elevator", new InstantCommand(() ->balanceElevator.setElevatorZero()));
-        SmartDashboard.putData("Set Balance Elevator 10 inches", new InstantCommand(() ->balanceElevator.setBalanceElevatorMotionMagicPositionAbsolute(10.0)));
     }
 
     public Command getAutonomousCommand() {

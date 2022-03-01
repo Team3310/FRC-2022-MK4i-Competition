@@ -153,8 +153,6 @@ public class ClimbElevator extends SubsystemBase {
                 }
             }
         }
-        //System.out.println(controlMode);
-        SmartDashboard.putNumber("Elevator Climb position", getElevatorInches());
     }
 }
 

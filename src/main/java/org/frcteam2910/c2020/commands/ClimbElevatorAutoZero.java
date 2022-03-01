@@ -47,7 +47,7 @@ public class ClimbElevatorAutoZero extends CommandBase {
 	@Override
 	public void end(boolean interrupted){
 		elevator.setElevatorSpeedZeroing(0);
-		elevator.setElevatorZero(-2.0);
+		elevator.setElevatorZero(Constants.ELEVATOR_HOME_POSITION);
 		elevator.setZeroing(false);
 		elevator.setHoldElevator();
 	}

@@ -8,8 +8,6 @@ import org.frcteam2910.c2020.commands.ChangeDriveMode;
 import org.frcteam2910.c2020.commands.FeedBalls;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
 import org.frcteam2910.c2020.commands.IndexerBallStop;
-import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
-import org.frcteam2910.c2020.commands.IntakeSetRPM;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem.DriveControlMode;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.subsystems.*;

@@ -4,13 +4,10 @@ package org.frcteam2910.c2020.commands.auton;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.AllFieldAuton;
-import org.frcteam2910.c2020.commands.ChangeDriveMode;
 import org.frcteam2910.c2020.commands.FeedBalls;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
-import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
 import org.frcteam2910.c2020.commands.IntakeSetRPM;
 import org.frcteam2910.c2020.commands.ShooterShootAllFieldAuto;
-import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem.DriveControlMode;
 import org.frcteam2910.c2020.subsystems.*;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 

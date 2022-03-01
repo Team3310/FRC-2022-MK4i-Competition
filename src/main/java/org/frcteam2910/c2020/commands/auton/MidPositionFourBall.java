@@ -7,12 +7,14 @@ import org.frcteam2910.c2020.commands.AllFieldAuton;
 import org.frcteam2910.c2020.commands.ChangeDriveMode;
 import org.frcteam2910.c2020.commands.FeedBalls;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
+import org.frcteam2910.c2020.commands.IndexerBallStop;
 import org.frcteam2910.c2020.commands.IntakeIndexerHalt;
-import org.frcteam2910.c2020.commands.IntakeSetRPM;
+import org.frcteam2910.c2020.commands.ShooterShootAllFieldAuto;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem.DriveControlMode;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.subsystems.*;
 
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class MidPositionFourBall extends AutonCommandBase {
@@ -25,28 +27,29 @@ public class MidPositionFourBall extends AutonCommandBase {
         resetRobotPose(container, trajectories.get_TerminalFiveBallPart2());
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         this.addCommands(
-            new IntakeSetRPM(container.getIntakeSubsystem(), Constants.INTAKE_COLLECT_RPM),
-            new WaitCommand(.5),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall1()),
-            new AllFieldAuton(container.getShooter(), container.getDrivetrainSubsystem()), 
-            new WaitCommand(.5),
-            new FeedBalls(container.getIntakeSubsystem(), container.getIndexer()),
-            new WaitCommand(.5),
-            new ChangeDriveMode(container.getDrivetrainSubsystem(), DriveControlMode.TRAJECTORY),
-            new IntakeIndexerHalt(container.getIntakeSubsystem(), container.getIndexer()),
-            new IntakeSetRPM(container.getIntakeSubsystem(), Constants.INTAKE_COLLECT_RPM),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_TerminalFiveBallPart2()),
-            new WaitCommand(.3),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToBall3()),
-            new WaitCommand(.25),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_TerminalToLoadPosition()),
-            new WaitCommand(.25),
-            new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectories.get_StartPosition1ToShoot()),
-            new AllFieldAuton(container.getShooter(), container.getDrivetrainSubsystem()),
-            new WaitCommand(.5),
-            new FeedBalls(container.getIntakeSubsystem(), container.getIndexer()),
-            new WaitCommand(.5),
-            new IntakeIndexerHalt(container.getIntakeSubsystem(), container.getIndexer())
+                new MidPositionTwoBall(container, trajectories),
+                new WaitCommand(0.5),
+                new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
+                new ParallelDeadlineGroup(
+                        new FollowTrajectoryCommand(drive, trajectories.get_TerminalFiveBallPart2()),
+                        new IndexerBallStop(indexer)
+                ),
+                new ParallelDeadlineGroup(
+                        new WaitCommand(2.0),
+                        new FollowTrajectoryCommand(drive, trajectories.get_TerminalToLoadPosition()),
+                        new IndexerBallStop(indexer)
+                ),
+                new ParallelDeadlineGroup(
+                        new FollowTrajectoryCommand(drive, trajectories.get_LoadToShootPosition()),
+                        new ShooterShootAllFieldAuto(shooter)
+                ),
+                new ParallelDeadlineGroup(
+                        new WaitCommand(1.0),
+                        new AllFieldAuton(shooter, drive)
+                ),
+                new FeedBalls(intake, indexer),
+                new WaitCommand(0.5),
+                new IntakeIndexerHalt(intake, indexer)
         );
     }
 }

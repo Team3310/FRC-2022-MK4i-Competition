@@ -24,8 +24,6 @@ public class MidPositionFourBall extends AutonCommandBase {
     }
 
     public MidPositionFourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
-        resetRobotPose(container, trajectories.get_TerminalFiveBallPart2());
-        //follow(container, trajectories.get_tarmacPosition1ToBall2());
         this.addCommands(
                 new MidPositionTwoBall(container, trajectories),
                 new WaitCommand(0.5),

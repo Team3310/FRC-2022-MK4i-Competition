@@ -21,7 +21,7 @@ public class MidPositionTwoBall extends AutonCommandBase {
 
     public MidPositionTwoBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
 
-        resetRobotPose(container, trajectories.get_HangarFourBallPartOne());
+        resetRobotPose(container, trajectories.get_StartPosition1ToBall1());
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         addCommands(
                 new ParallelDeadlineGroup(

@@ -83,15 +83,15 @@ public class Constants {
     public static final double ELEVATOR_MAX_INCHES = 54.8;
     public static final double ELEVATOR_STAGE_ONE_INCHES = 35;
     public static final double ELEVATOR_STAGE_TWO_INCHES = 5;
-    public static final double ELEVATOR_MIN_INCHES = -2.0;
+    public static final double ELEVATOR_MIN_INCHES = -12.0;
     public static final double ELEVATOR_AUTO_ZERO_SPEED = -0.3;
-    public static final double ELEVATOR_HOME_POSITION = -4.0;
+    public static final double ELEVATOR_HOME_POSITION = 0.0;
 
 
     //Balance Elevator
     public static final int BALANCE_ELEVATOR_ID = 4;
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
-    public static final double BALANCE_ELEVATOR_MAX_INCHES = 18.9;
+    public static final double BALANCE_ELEVATOR_MAX_INCHES = 20.9; //18.9;
     public static final int BALANCE_ELEVATOR_MM_PORT = 0;
     public static final int BALANCE_ELEVATOR_PID_PORT = 1;
 

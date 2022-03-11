@@ -17,10 +17,13 @@ public class Indexer extends SubsystemBase {
         MANUAL, POSITION, VELOCITY
     }
 
+    public boolean sysStatus = false;
+
     // Motor Controllers
     private TalonFX indexMotor;
 
     // Misc
+    @SuppressWarnings("unused")
     private IndexerMode controlMode = IndexerMode.MANUAL;
     private final DigitalInput sensor;
   
@@ -67,6 +70,14 @@ public class Indexer extends SubsystemBase {
 
     public boolean getIndexerSensor(){
         return sensor.get();
+    }
+
+    public boolean getSystemStatus(){
+        return sysStatus;
+    }
+
+    public void setSystemStatus(boolean status){
+        sysStatus = status;
     }
 
     public void setIndexerSpeed(double speed) {

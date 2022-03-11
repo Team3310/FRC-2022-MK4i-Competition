@@ -94,8 +94,9 @@ public class RobotContainer {
         secondaryController.getBackButton().whenPressed(
                 new ClimbElevatorAutoZero(climbElevator)
         );
-
-
+        secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
+                new ClimbSetElevatorInches(climbElevator, 10)
+        );
 
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
@@ -110,6 +111,8 @@ public class RobotContainer {
         secondaryController.getLeftBumperButton().whenReleased(
                 new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
         );
+
+
 
         //Shooter
         secondaryController.getAButton().whenPressed(
@@ -126,6 +129,13 @@ public class RobotContainer {
         );
 
         //Misc
+        secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
+                new ExperimentalEjectBalls(intake, indexer)
+        );
+        secondaryController.getDPadButton(DPadButton.Direction.UP).whenReleased(
+                new IntakeIndexerHalt(intake, indexer)
+        );
+
 
         SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
         SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
@@ -136,7 +146,9 @@ public class RobotContainer {
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));
-        SmartDashboard.putData("Distance offset +0", new InstantCommand(()-> shooter.setShooterDistanceOffset(0)));
+        SmartDashboard.putData("Distance offset -5", new InstantCommand(()-> shooter.setShooterDistanceOffset(-5)));
+        SmartDashboard.putData("Distance offset 0", new InstantCommand(()-> shooter.setShooterDistanceOffset(0)));
+        SmartDashboard.putData("Distance offset +5", new InstantCommand(()-> shooter.setShooterDistanceOffset(5)));
         SmartDashboard.putData("Distance offset +10", new InstantCommand(()-> shooter.setShooterDistanceOffset(10)));
         SmartDashboard.putData("Distance offset +20", new InstantCommand(()-> shooter.setShooterDistanceOffset(20)));
 

@@ -20,7 +20,11 @@ public class ClimbSetElevatorInches extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        //elevator.setHoldElevator();
-        return true;
+        return elevator.hasFinishedHoodTrajectory();
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        elevator.setControlMode(ClimbElevator.ClimbControlMode.MANUAL);
     }
 }

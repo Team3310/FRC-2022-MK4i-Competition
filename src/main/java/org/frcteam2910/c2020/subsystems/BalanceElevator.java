@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BalanceElevator extends SubsystemBase {
 
+
     public enum BalanceControlMode{
         MANUAL, MOTION_MAGIC, PID, ZERO
     }
@@ -28,6 +29,7 @@ public class BalanceElevator extends SubsystemBase {
     private BalanceControlMode controlMode = BalanceControlMode.MANUAL;
     private double targetPositionTicks = 0;
     private double manualBalanceElevatorSpeed = 0;
+    private boolean sysStatus = false;
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 2;
@@ -92,6 +94,12 @@ public class BalanceElevator extends SubsystemBase {
         return targetInches;
     }
 
+    public void setBalanceElevatorStatus(boolean status) {
+        sysStatus = status;
+    }
+    public boolean getBalanceElevatorStatus() {
+        return sysStatus;
+    }
 
     public double getBalanceElevatorRotations(){
         return balanceElevatorMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / BALANCE_ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
@@ -145,6 +153,9 @@ public class BalanceElevator extends SubsystemBase {
                 balanceElevatorMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
             }
         }
+
+        SmartDashboard.putNumber("Balance Elevator Height", getBalanceElevatorInches());
+
     }
 }
 

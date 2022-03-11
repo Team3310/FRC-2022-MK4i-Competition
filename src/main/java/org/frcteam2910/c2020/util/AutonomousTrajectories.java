@@ -27,6 +27,8 @@ public class AutonomousTrajectories {
     private final Trajectory StartPosition1ToBall3;
     private final Trajectory LoadToShootPosition;
     private final Trajectory TerminalToLoadPosition;
+    private final Trajectory TerminalToSingleBallLoad;
+    private final Trajectory SingleBallLoadToShootPosition;
     private final Trajectory StartPosition1ToShoot;
     private final Trajectory FiveBallEndToShoot;
 
@@ -85,6 +87,20 @@ public class AutonomousTrajectories {
 
         LoadToShootPosition = new Trajectory(
                 new SimplePathBuilder(new Vector2(65, -265), Rotation2.fromDegrees(225.0)) //51 -268
+                        .lineTo(new Vector2(130, -200), Rotation2.fromDegrees(188.0)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+
+        TerminalToSingleBallLoad = new Trajectory(
+                new SimplePathBuilder(new Vector2(54, -280), Rotation2.fromDegrees(225.0)) //51 -268
+                        .lineTo(new Vector2(35, -235), Rotation2.fromDegrees(225.0)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+
+        SingleBallLoadToShootPosition = new Trajectory(
+                new SimplePathBuilder(new Vector2(35, -235), Rotation2.fromDegrees(225.0)) //51 -268
                         .lineTo(new Vector2(130, -200), Rotation2.fromDegrees(188.0)) //209 -259
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
@@ -181,6 +197,13 @@ public class AutonomousTrajectories {
 
     public Trajectory get_TerminalToLoadPosition(){
             return TerminalToLoadPosition;
+    }
+
+    public Trajectory get_TerminalToSingleBallLoadPosition(){
+        return TerminalToSingleBallLoad;
+    }
+    public Trajectory get_SingleBallLoadToShootPosition(){
+        return SingleBallLoadToShootPosition;
     }
 
     public Trajectory get_LoadToShootPosition(){

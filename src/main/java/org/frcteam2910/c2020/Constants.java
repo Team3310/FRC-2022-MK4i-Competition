@@ -80,7 +80,7 @@ public class Constants {
 
     //Climb Elevator
     public static final int ELEVATOR_MOTOR_ID = 3;
-    public static final double ELEVATOR_MAX_INCHES = 54.8;
+    public static final double ELEVATOR_MAX_INCHES = 57.5;
     public static final double ELEVATOR_STAGE_ONE_INCHES = 35;
     public static final double ELEVATOR_STAGE_TWO_INCHES = 5;
     public static final double ELEVATOR_MIN_INCHES = -12.0;
@@ -91,7 +91,7 @@ public class Constants {
     //Balance Elevator
     public static final int BALANCE_ELEVATOR_ID = 4;
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
-    public static final double BALANCE_ELEVATOR_MAX_INCHES = 20.9; //18.9;
+    public static final double BALANCE_ELEVATOR_MAX_INCHES = 22.4; //18.9;
     public static final int BALANCE_ELEVATOR_MM_PORT = 0;
     public static final int BALANCE_ELEVATOR_PID_PORT = 1;
 
@@ -124,7 +124,7 @@ public class Constants {
         kLobRPMMap.put(new InterpolatingDouble(48.0), new InterpolatingDouble(1900.0));
         kLobRPMMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(1900.0));
         kLobRPMMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(2100.0));
-        kLobRPMMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(2150.0));
+        kLobRPMMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(2125.0));
         kLobRPMMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(2350.0));
         kLobRPMMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(2600.0));
         kLobRPMMap.put(new InterpolatingDouble(276.0), new InterpolatingDouble(2900.0));

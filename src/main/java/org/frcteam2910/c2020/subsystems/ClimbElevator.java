@@ -12,11 +12,13 @@ import org.frcteam2910.c2020.Constants;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.frcteam2910.c2020.util.Util;
 
 
 public class ClimbElevator extends SubsystemBase {
 
     public static final double AUTO_ZERO_MOTOR_CURRENT = 1.0;
+
 
     public enum ClimbControlMode{
         MANUAL, MOTION_MAGIC
@@ -32,6 +34,7 @@ public class ClimbElevator extends SubsystemBase {
     private double targetPositionTicks = 0;
     private double manualElevatorSpeed = 0;
     private double positionOffset = 0;
+    private boolean sysStatus = false;
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 1.163;
@@ -67,6 +70,18 @@ public class ClimbElevator extends SubsystemBase {
     public static ClimbElevator getInstance() {
         return INSTANCE;
     }
+
+    public ClimbControlMode getControlMode(){
+        return controlMode;
+    }
+
+    public void setHoodSystemStatus(boolean status) {
+        sysStatus = status;
+    }
+    public boolean getHoodSystemStatus() {
+        return sysStatus;
+    }
+
 
 
     private double limitElevatorInches(double targetInches) {
@@ -135,6 +150,11 @@ public class ClimbElevator extends SubsystemBase {
         return elevatorMotor.getStatorCurrent();
     }
 
+    public synchronized boolean hasFinishedHoodTrajectory() {
+        return controlMode == ClimbControlMode.MOTION_MAGIC
+                && Util.epsilonEquals(elevatorMotor.getActiveTrajectoryPosition(), targetPositionTicks, 100);
+    }
+
     public synchronized void setHoldElevator(){
         if(!isZeroing) {
             setElevatorMotionMagicPositionAbsolute(getElevatorInches());
@@ -152,6 +172,8 @@ public class ClimbElevator extends SubsystemBase {
                     setHoldElevator();
                 }
             }
+
+            SmartDashboard.putNumber("Climb Height", getElevatorInches());
         }
     }
 }

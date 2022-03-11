@@ -23,20 +23,20 @@ public class ClimbControlJoysticks extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = YAxis.get(true);
+  //      if(elevator.getControlMode() != ClimbElevator.ClimbControlMode.MOTION_MAGIC) {
+            double speed = YAxis.get(true);
 
-        if(Math.abs(speed) > Constants.MIN_CLIMB_ELEVATOR_PERCENT_BUS){
-            elevator.setElevatorSpeed(speed);
-        }
-        else{
-            elevator.setHoldElevator();
-        }
-        
+            if (Math.abs(speed) > Constants.MIN_CLIMB_ELEVATOR_PERCENT_BUS) {
+                elevator.setElevatorSpeed(speed);
+            } else {
+                elevator.setHoldElevator();
+            }
+  //      }
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        elevator.setHoldElevator();
-    }
+//    @Override
+//    public void end(boolean interrupted) {
+//        elevator.setHoldElevator();
+//    }
 
 }

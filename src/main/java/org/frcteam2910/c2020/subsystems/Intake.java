@@ -29,9 +29,9 @@ public class Intake extends SubsystemBase {
 
     // Misc
     private static final int kIntakeVelocitySlot = 0;
-    private double targetPositionTicks = 0;
     private Controller secondaryController;
     private boolean hasSetIntakeZero = true;
+    private boolean sysStatus = false;
 
     private final static Intake INSTANCE = new Intake();
 
@@ -62,6 +62,14 @@ public class Intake extends SubsystemBase {
     public static Intake getInstance() {
         return INSTANCE;
     }
+
+    public void setSystemStatus(boolean status) {
+        sysStatus = status;
+    }
+    public boolean getSystemStatus(){
+        return sysStatus;
+    }
+
 
     private Axis getRightTriggerAxis(){return secondaryController.getRightTriggerAxis();}
 

@@ -42,11 +42,12 @@ public class Shooter extends SubsystemBase {
 
     // Misc
     private double targetPositionTicks = 0.0;
-    private double heightOfGoalFromLimelight;
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
     private boolean hoodReset = false;
     private double distanceOffset = 0;
+    private boolean sysHoodStatus = false;
+    private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();
 
     private final static Shooter INSTANCE = new Shooter();
@@ -107,6 +108,22 @@ public class Shooter extends SubsystemBase {
 
     public static Shooter getInstance() {
         return INSTANCE;
+    }
+
+    public void setShooterSystemStatus(boolean status) {
+        sysShooterStatus = status;
+    }
+
+    public boolean getShooterSystemStatus(){
+        return sysShooterStatus;
+    }
+
+    public void setHoodSystemStatus(boolean status) {
+        sysHoodStatus = status;
+    }
+
+    public boolean getHoodSystemStatus(){
+        return sysHoodStatus;
     }
 
     public void setShooterSpeed(double speed) {
@@ -242,6 +259,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
         SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
         SmartDashboard.putBoolean("Hood Reset", hoodReset);
+        SmartDashboard.putNumber("Current Offset", distanceOffset);
     }
 }
 

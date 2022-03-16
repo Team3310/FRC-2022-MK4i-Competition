@@ -7,6 +7,7 @@ import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.util.Units;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.Pigeon;
 import org.frcteam2910.c2020.Robot;
@@ -57,6 +58,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private double frontRightOffset = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_COMP_OFFSET;
     private double backLeftOffset = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_COMP_OFFSET;
     private double backRightOffset = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_COMP_OFFSET;
+
+    public double rCurrPoseX;
+    public double rCurrPoseY;
+    public double rDistToGoal;
+    public double rTurretGoalAngle;
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
@@ -316,6 +322,18 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    public double getRobotToGoalAngle() {
+        rCurrPoseX = getPose().translation.x;
+        rCurrPoseY = getPose().translation.y;
+        return Math.toDegrees(Math.atan2(-(rCurrPoseY + 162), rCurrPoseX - 325));
+    }
+
+    public double getRobotToGoalDistance() {
+        rCurrPoseX = getPose().translation.x - 325;
+        rCurrPoseY = getPose().translation.y + 162;
+        return Math.sqrt(rCurrPoseX*rCurrPoseX + rCurrPoseY*rCurrPoseY);
+    }
+
     public void joystickDrive(){
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
@@ -528,6 +546,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         RigidTransform2 pose = getPose();
         odometryXEntry.setDouble(pose.translation.x);
         odometryYEntry.setDouble(pose.translation.y);
+        SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
+        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
+        SmartDashboard.putNumber("X", getPose().translation.x);
+        SmartDashboard.putNumber("Y", getPose().translation.y);
         odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
     }
 

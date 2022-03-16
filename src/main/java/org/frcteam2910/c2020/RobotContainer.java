@@ -12,10 +12,8 @@ import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
-import org.frcteam2910.common.robot.controller.Playstation;
 import org.frcteam2910.common.robot.input.Axis;
 import org.frcteam2910.common.robot.input.DPadButton;
-import org.frcteam2910.common.robot.input.PlaystationController;
 import org.frcteam2910.common.robot.input.XboxController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

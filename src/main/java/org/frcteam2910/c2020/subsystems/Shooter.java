@@ -49,6 +49,7 @@ public class Shooter extends SubsystemBase {
     private boolean sysHoodStatus = false;
     private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();
+    private boolean targetFound = false;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -82,7 +83,7 @@ public class Shooter extends SubsystemBase {
     
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
         statorCurrentConfigs.currentLimit = 60;
-        statorCurrentConfigs.enable = true;
+        statorCurrentConfigs.enable = false;
         statorCurrentConfigs.triggerThresholdCurrent = 80;
         statorCurrentConfigs.triggerThresholdTime = 0.5;
         shooterMotorMaster.configStatorCurrentLimit(statorCurrentConfigs);
@@ -104,6 +105,11 @@ public class Shooter extends SubsystemBase {
         hoodMotor.config_kP(Constants.HOOD_MM_PORT, 0.5);//.9
         hoodMotor.config_kI(Constants.HOOD_MM_PORT, 0.008);//.008
         hoodMotor.config_kD(Constants.HOOD_MM_PORT, 0.0);
+
+        hoodMotor.config_kF(Constants.HOOD_PID_PORT, 0.045);
+        hoodMotor.config_kP(Constants.HOOD_PID_PORT, 0.25);//.9
+        hoodMotor.config_kI(Constants.HOOD_PID_PORT, 0.008);//.008
+        hoodMotor.config_kD(Constants.HOOD_PID_PORT, 0.0);
     }
 
     public static Shooter getInstance() {
@@ -208,7 +214,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public synchronized void setHoodPIDPositionAbsoluteInternal(double angle) {
-        hoodMotor.selectProfileSlot(Constants.HOOD_MM_PORT, 0);
+        hoodMotor.selectProfileSlot(Constants.HOOD_PID_PORT, 0);
         double limitedAngle = limitHoodAngle(angle);
         targetPositionTicks = getHoodEncoderTicksAbsolute(limitedAngle);
         hoodMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.07);
@@ -235,6 +241,7 @@ public class Shooter extends SubsystemBase {
 
     public void updateAllFieldShot(){
         if(limelight.hasTarget()) {
+
             double dist = getdistanceFromGoal();
 
             InterpolatingDouble RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(dist));

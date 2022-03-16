@@ -107,6 +107,7 @@ public class Constants {
 
     public static final double IDLE_SHOOTER_RPM = 2150.0;
     public static final double IDLE_HOOD_ANGLE = 32.0;
+    public static final int HOOD_PID_PORT = 1;
 
     public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobHoodMap = new InterpolatingTreeMap<>();
     static {

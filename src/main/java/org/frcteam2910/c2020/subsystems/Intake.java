@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
@@ -21,7 +22,7 @@ import org.frcteam2910.common.robot.input.XboxController;
 public class Intake extends SubsystemBase {
 
     // Conversions
-    private static final double INTAKE_ROLLER_OUTPUT_TO_ENCODER_RATIO = 30.0 / 12.0;
+    private static final double INTAKE_ROLLER_OUTPUT_TO_ENCODER_RATIO = 40.0 / 10.0;
     public static final double INTAKE_ROLLER_REVOLUTIONS_TO_ENCODER_TICKS = INTAKE_ROLLER_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
 
     // Motor Controllers
@@ -132,6 +133,8 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic(){
         variableIntakeRPM();
+        SmartDashboard.putNumber("Intake Amperage", intakeMotor.getStatorCurrent());
+        SmartDashboard.putNumber("Intake Roller RPM", this.getRollerRPM());
     }
 
 //        SmartDashboard.putNumber("Intake Roller Rotations", this.getRollerRotations());

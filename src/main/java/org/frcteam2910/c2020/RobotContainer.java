@@ -81,6 +81,12 @@ public class RobotContainer {
         primaryController.getLeftBumperButton().whenPressed(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
+        primaryController.getDPadButton(DPadButton.Direction.RIGHT).whenPressed(
+                new LimelightSearch(drivetrain, true)
+        );
+        primaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
+                new LimelightSearch(drivetrain, false)
+        );
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
@@ -148,6 +154,7 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
         SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
         SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0));
+        SmartDashboard.putData("Set Intake speed 1", new IntakeSetSpeed(intake, 1.0));
         SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0));
 
         SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));

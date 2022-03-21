@@ -64,12 +64,13 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public double rCurrPoseY;
     public double rDistToGoal;
     public double rTurretGoalAngle;
+    public boolean isRight = true;
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
     public enum DriveControlMode{
         JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY,
-         ROBOT_CENTRIC
+         ROBOT_CENTRIC, LIMELIGHT_SEARCH
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
@@ -274,6 +275,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         return driveControlMode;
     }
 
+    public void setRotationRight(boolean isRight){
+        this.isRight = isRight;
+    }
+
     private Axis getDriveForwardAxis() {
         return primaryController.getLeftYAxis();
     }
@@ -365,6 +370,25 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             System.out.println("Reached target");
         }
         return rotationController.atGoal();
+    }
+
+    public void limelightSearch(){
+        if(!limelight.hasTarget()){
+
+            primaryController.getLeftXAxis().setInverted(true);
+            primaryController.getRightXAxis().setInverted(true);
+
+            double rotationOutput = 1.0;
+
+            if(!isRight){
+                rotationOutput *= -1;
+            }
+
+            drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
+        }
+        else{
+            setDriveControlMode(DriveControlMode.LIMELIGHT);
+        }
     }
 
     public void rotationDrive(){
@@ -513,6 +537,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break;
             case LIMELIGHT:
                 limelightDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case LIMELIGHT_SEARCH:
+                limelightSearch();
                 synchronized (stateLock) {
                     currentDriveSignal = this.driveSignal;
                 }

@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
@@ -45,11 +46,11 @@ public class Shooter extends SubsystemBase {
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
     private boolean hoodReset = false;
-    private double distanceOffset = 0;
+    private double distanceOffset = -5;
     private boolean sysHoodStatus = false;
     private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();
-    private boolean targetFound = false;
+    private double commandedRPM = 0;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -97,9 +98,10 @@ public class Shooter extends SubsystemBase {
         hoodMotor.configStatorCurrentLimit(statorCurrentHoodConfigs);
 
         shooterMotorMaster.config_kF(0, 0.049);
-        shooterMotorMaster.config_kP(0, 0.01);
-        shooterMotorMaster.config_kI(0, 0);
-        shooterMotorMaster.config_kD(0, 0); 
+        shooterMotorMaster.config_kP(0, 0.04); //.01
+        shooterMotorMaster.config_kI(0, 0.000005);
+        shooterMotorMaster.config_IntegralZone(0, this.shooterRPMToNativeUnits(100));
+        shooterMotorMaster.config_kD(0, 4.0);
 
         hoodMotor.config_kF(Constants.HOOD_MM_PORT, 0.045);
         hoodMotor.config_kP(Constants.HOOD_MM_PORT, 0.5);//.9
@@ -141,6 +143,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterRPM(double rpm) {
+        commandedRPM = rpm;
         this.shooterMotorMaster.set(ControlMode.Velocity, this.shooterRPMToNativeUnits(rpm));
     }
 
@@ -230,7 +233,7 @@ public class Shooter extends SubsystemBase {
         double heightLimelight = 30.56 + (13.1 * Math.sin(Math.toRadians(5 + getHoodAngleAbsoluteDegrees())));
         double heightOfGoal = 102.60;
 
-        distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getTargetVertOffset()));
+        distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getFilteredTargetVertOffset()));
 
         return distance + distanceOffset;
     }
@@ -238,6 +241,8 @@ public class Shooter extends SubsystemBase {
     public boolean hasTarget(){
         return limelight.hasTarget();
     }
+
+
 
     public void updateAllFieldShot(){
         if(limelight.hasTarget()) {
@@ -251,6 +256,7 @@ public class Shooter extends SubsystemBase {
             setHoodMotionMagicPositionAbsolute(angle.value);
         }
     }
+
 
     public void setReady(boolean isReady) {
         this.isReady = isReady;
@@ -267,6 +273,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
         SmartDashboard.putBoolean("Hood Reset", hoodReset);
         SmartDashboard.putNumber("Current Offset", distanceOffset);
+        SmartDashboard.putNumber("Commanded RPM", commandedRPM);
     }
 }
 

@@ -121,16 +121,16 @@ public class AutonomousTrajectories {
         );
 
         StartPosition0ToBall1 = new Trajectory(
-                new SimplePathBuilder(new Vector2(300, -254), Rotation2.fromDegrees(270)) //51 -268
-                        .lineTo(new Vector2(297, -294), Rotation2.fromDegrees(260)) //209 -259
+                new SimplePathBuilder(new Vector2(295, -254), Rotation2.fromDegrees(270)) //51 -268
+                        .lineTo(new Vector2(297, -294), Rotation2.fromDegrees(255)) //209 -259
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
 
         ThreeBallPartTwo = new Trajectory(
-                new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(260)) //51 -268
-                        .lineTo(new Vector2(242, -248), Rotation2.fromDegrees(207.8)) //209 -259
-                        .arcTo(new Vector2(216, -245), new Vector2(230, -260))
+                new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(255)) //51 -268
+                        .lineTo(new Vector2(252, -235), Rotation2.fromDegrees(207.8)) //209 -259
+                        .arcTo(new Vector2(220, -232), new Vector2(236, -250))
                         .lineTo(new Vector2(200, -260), Rotation2.fromDegrees(207.8))
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE

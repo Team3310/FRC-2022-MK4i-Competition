@@ -10,7 +10,7 @@ public class FeedBalls extends SequentialCommandGroup {
     public FeedBalls(Intake intake, Indexer indexer) {
         addCommands(
                 new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM),
-                new IndexerSetRPM(indexer, 750)
+                new IndexerSetRPM(indexer, 500)
         );
     }
 }

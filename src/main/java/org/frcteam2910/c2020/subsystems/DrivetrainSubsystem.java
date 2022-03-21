@@ -7,6 +7,7 @@ import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.util.Units;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.Pigeon;
@@ -72,7 +73,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(3.0, 0.03, 0.02, 0.02);
+    public PIDController limelightController = new PIDController(3.0, 0, 0.02, 0.02);
     
 
     DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
@@ -241,6 +242,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
 
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
+
+        limelightController.setTolerance(0.1);
     }
 
     public void setCoast(){
@@ -373,14 +376,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
     }
 
-    public void setLimelightTarget(){
-        limelightController.enableContinuousInput(0.0, Math.PI*2);
-        setDriveControlMode(DriveControlMode.LIMELIGHT);
-    }
-
     public void limelightDrive(){
 
-        limelightController.setSetpoint(Math.toRadians(-limelight.getTargetHorizOffset()) + getPose().rotation.toRadians());
+        limelightController.setSetpoint(Math.toRadians(-limelight.getFilteredTargetHorizOffset()) + getPose().rotation.toRadians());
 
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
@@ -543,6 +541,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     @Override
     public void periodic() {
+        limelight.updateTxFilter();
+        limelight.updateTyFilter();
+
         RigidTransform2 pose = getPose();
         odometryXEntry.setDouble(pose.translation.x);
         odometryYEntry.setDouble(pose.translation.y);

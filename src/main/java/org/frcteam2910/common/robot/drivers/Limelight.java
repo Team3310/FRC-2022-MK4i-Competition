@@ -1,5 +1,6 @@
 package org.frcteam2910.common.robot.drivers;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -15,6 +16,8 @@ public final class Limelight {
     private final NetworkTableEntry ta;
     private final NetworkTableEntry ts;
     private final NetworkTableEntry tl;
+    private LinearFilter txFilter;
+    private LinearFilter tyFilter;
 
     private final NetworkTableEntry tcornx;
     private final NetworkTableEntry tcorny;
@@ -24,6 +27,9 @@ public final class Limelight {
     private final NetworkTableEntry pipeline;
     private final NetworkTableEntry stream;
     private final NetworkTableEntry snapshot;
+
+    private double lastFilteredTxValue = 0;
+    private double lastFilteredTyValue = 0;
 
     private final static Limelight INSTANCE = new Limelight();
 
@@ -61,6 +67,9 @@ public final class Limelight {
         ts = table.getEntry("ts");
         tl = table.getEntry("tl");
 
+        txFilter = LinearFilter.movingAverage(3);
+        tyFilter = LinearFilter.movingAverage(3);
+
         tcornx = table.getEntry("tcornx");
         tcorny = table.getEntry("tcorny");
 
@@ -69,6 +78,7 @@ public final class Limelight {
         pipeline = table.getEntry("pipeline");
         stream = table.getEntry("stream");
         snapshot = table.getEntry("snapshot");
+
     }
 
 
@@ -275,5 +285,39 @@ public final class Limelight {
          * The primary camera stream is placed in the lower-right corner of the secondary camera stream
          */
         PIP_SECONDARY
+    }
+
+    public void updateTxFilter(){
+
+        if(!hasTarget()) {
+            clearTxFilter();
+        }
+
+        lastFilteredTxValue  = txFilter.calculate(getTargetHorizOffset());
+    }
+
+    public double getFilteredTargetHorizOffset(){
+        return lastFilteredTxValue;
+    }
+
+    public void clearTxFilter(){
+        txFilter.reset();
+    }
+
+    public double getFilteredTargetVertOffset(){
+        return lastFilteredTyValue;
+    }
+
+    public void clearTyFilter(){
+        tyFilter.reset();
+    }
+
+    public void updateTyFilter(){
+
+        if(!hasTarget()) {
+            clearTyFilter();
+        }
+
+        lastFilteredTyValue = tyFilter.calculate(getTargetVertOffset());
     }
 }

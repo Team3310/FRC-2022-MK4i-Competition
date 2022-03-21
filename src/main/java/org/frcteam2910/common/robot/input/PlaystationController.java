@@ -43,6 +43,7 @@ public final class PlaystationController extends Controller {
 	 * @param port The port the controller is on
 	 */
 	public PlaystationController(int port) {
+		super(port);
 		joystick = new Joystick(port);
 
 		aButton = new JoystickButton(joystick, 2);

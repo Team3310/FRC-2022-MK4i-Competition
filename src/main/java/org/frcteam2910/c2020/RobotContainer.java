@@ -2,6 +2,8 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
+import edu.wpi.first.wpilibj.Controller;
+import edu.wpi.first.wpilibj.GenericHID;
 import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.BalanceElevator;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
@@ -114,17 +116,21 @@ public class RobotContainer {
 
         //Shooter
         secondaryController.getAButton().whenPressed(
-                new ShooterShootWithHood(shooter, drivetrain, 1900, 12.0) //Fender
+                new ShooterShootWithHood(shooter, drivetrain, 1780, 11.0) //Fender
         );
         secondaryController.getBButton().whenPressed(
-                new ShooterShootWithHood(shooter, drivetrain, 2150, 32) //RT Wall 24
+                new ShooterShootWithHood(shooter, drivetrain, 2030, 30.7) //RT Wall 24
         );
         secondaryController.getYButton().whenPressed(
-                new ShooterShootWithHood(shooter, drivetrain, 2600, 42) //Terminal
+                new ShooterShootWithHood(shooter, drivetrain, 2230, 36) //Hangar Shot
         );
         secondaryController.getXButton().whenPressed(
                 new ShooterShootAllField(shooter, drivetrain)
         );
+        secondaryController.getStartButton().whenPressed(
+                new HoodAutoZero(shooter)
+        );
+
 
         //Misc
         secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
@@ -133,14 +139,22 @@ public class RobotContainer {
         secondaryController.getDPadButton(DPadButton.Direction.UP).whenReleased(
                 new IntakeIndexerHalt(intake, indexer)
         );
+        secondaryController.getDPadButton(DPadButton.Direction.DOWN).whenReleased(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
+
 
 
         SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
         SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
-        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));
         SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0));
         SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0));
-        SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
+
+        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));
+        SmartDashboard.putData("Set Shooter RPM 2975", new ShooterSetRPM(shooter, 2975));
+        SmartDashboard.putData("Set Shooter RPM 1780", new ShooterSetRPM(shooter, 1780));
+
+        SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45));
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));

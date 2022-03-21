@@ -27,7 +27,8 @@ public class ClimbElevator extends SubsystemBase {
     private boolean isZeroing = false;
 
     // Motor Controllers
-    private TalonFX elevatorMotor;
+    private TalonFX elevatorMotorMaster;
+    private TalonFX elevatorMotorSlave;
 
     // Misc
     private ClimbControlMode controlMode = ClimbControlMode.MANUAL;
@@ -38,33 +39,44 @@ public class ClimbElevator extends SubsystemBase {
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 1.163;
-    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (58 / 14) * (54 / 12);
+    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (50 / 12) * (50 / 22);
+    //private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (58 / 14) * (54 / 12);
     private static final double ELEVATOR_ROTATIONS_TO_INCHES = Math.PI * PULLEY_DIAMETER_INCHES;
     private static final double ELEVATOR_INCHES_TO_ENCODER_TICKS = ELEVATOR_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_ROTATIONS_TO_INCHES;
 
     private final static ClimbElevator INSTANCE = new ClimbElevator();
 
     private ClimbElevator() {
-        elevatorMotor = new TalonFX(Constants.ELEVATOR_MOTOR_ID, "Drivetrain");
+        elevatorMotorMaster = new TalonFX(Constants.ELEVATOR_MOTOR_MASTER_ID, "Drivetrain");
+        elevatorMotorSlave = new TalonFX(Constants.ELEVATOR_MOTOR_SLAVE_ID, "Drivetrain");
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-        elevatorMotor.configAllSettings(configs);
+        elevatorMotorMaster.configAllSettings(configs);
+        elevatorMotorSlave.configAllSettings(configs);
 
-        elevatorMotor.setNeutralMode(NeutralMode.Brake);
-        elevatorMotor.configMotionCruiseVelocity(6000);
-        elevatorMotor.configMotionAcceleration(14000);
-        elevatorMotor.configMotionSCurveStrength(4);
+        elevatorMotorSlave.follow(elevatorMotorMaster);
+
+        elevatorMotorMaster.setNeutralMode(NeutralMode.Brake);
+        elevatorMotorMaster.configMotionCruiseVelocity(6000);
+        elevatorMotorMaster.configMotionAcceleration(14000);
+        elevatorMotorMaster.configMotionSCurveStrength(4);
+
+        elevatorMotorSlave.setNeutralMode(NeutralMode.Brake);
+        elevatorMotorSlave.configMotionCruiseVelocity(6000);
+        elevatorMotorSlave.configMotionAcceleration(14000);
+        elevatorMotorSlave.configMotionSCurveStrength(4);
 
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
         statorCurrentConfigs.currentLimit = 60;
         statorCurrentConfigs.enable = true;
-        elevatorMotor.configStatorCurrentLimit(statorCurrentConfigs);
+        elevatorMotorMaster.configStatorCurrentLimit(statorCurrentConfigs);
+        elevatorMotorSlave.configStatorCurrentLimit(statorCurrentConfigs);
 
-        elevatorMotor.config_kF(Constants.CLIMB_ELEVATOR_MM_PORT, 0.055);
-        elevatorMotor.config_kP(Constants.CLIMB_ELEVATOR_MM_PORT, 0.20); //0.1
-        elevatorMotor.config_kI(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0001);
-        elevatorMotor.config_kD(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0);
+        elevatorMotorMaster.config_kF(Constants.CLIMB_ELEVATOR_MM_PORT, 0.055);
+        elevatorMotorMaster.config_kP(Constants.CLIMB_ELEVATOR_MM_PORT, 0.20); //0.1
+        elevatorMotorMaster.config_kI(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0001);
+        elevatorMotorMaster.config_kD(Constants.CLIMB_ELEVATOR_MM_PORT, 0.0);
     }
 
     public static ClimbElevator getInstance() {
@@ -103,7 +115,7 @@ public class ClimbElevator extends SubsystemBase {
     }
 
     public double getElevatorRotations(){
-        return elevatorMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
+        return elevatorMotorMaster.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
     }
 
     public double getElevatorInches(){
@@ -116,14 +128,14 @@ public class ClimbElevator extends SubsystemBase {
 
     public void setElevatorZero(double offset){
         positionOffset = offset;
-        elevatorMotor.setSelectedSensorPosition(0);
+        elevatorMotorMaster.setSelectedSensorPosition(0);
     }
 
     public synchronized void setElevatorMotionMagicPositionAbsolute(double inches) {
         controlMode = ClimbControlMode.MOTION_MAGIC;
-        elevatorMotor.selectProfileSlot(1, 0);
+        elevatorMotorMaster.selectProfileSlot(1, 0);
         targetPositionTicks = getElevatorEncoderTicksAbsolute(limitElevatorInches(inches - positionOffset));
-        elevatorMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+        elevatorMotorMaster.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
 
     public synchronized void setElevatorSpeed(double speed) {
@@ -138,21 +150,21 @@ public class ClimbElevator extends SubsystemBase {
                 curSpeed = 0;
             }
 
-            elevatorMotor.set(ControlMode.PercentOutput, curSpeed);
+            elevatorMotorMaster.set(ControlMode.PercentOutput, curSpeed);
         }
     }
 
     public synchronized void setElevatorSpeedZeroing(double speed) {
-        elevatorMotor.set(ControlMode.PercentOutput, speed);
+        elevatorMotorMaster.set(ControlMode.PercentOutput, speed);
     }
 
     public double getElevatorMotorCurrent(){
-        return elevatorMotor.getStatorCurrent();
+        return elevatorMotorMaster.getStatorCurrent();
     }
 
     public synchronized boolean hasFinishedHoodTrajectory() {
         return controlMode == ClimbControlMode.MOTION_MAGIC
-                && Util.epsilonEquals(elevatorMotor.getActiveTrajectoryPosition(), targetPositionTicks, 100);
+                && Util.epsilonEquals(elevatorMotorMaster.getActiveTrajectoryPosition(), targetPositionTicks, 100);
     }
 
     public synchronized void setHoldElevator(){

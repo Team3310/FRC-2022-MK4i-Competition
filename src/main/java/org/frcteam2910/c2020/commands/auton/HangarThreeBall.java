@@ -3,6 +3,7 @@ package org.frcteam2910.c2020.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
@@ -41,7 +42,7 @@ public class HangarThreeBall extends AutonCommandBase {
                         new WaitCommand(1.0),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer),
+                new FeedBalls(intake, indexer, Constants.AUTON_INDEXER_RPM),
                 new WaitCommand(0.5),
                 new IntakeIndexerHalt(intake, indexer)
         );

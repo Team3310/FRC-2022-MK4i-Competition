@@ -7,10 +7,10 @@ import org.frcteam2910.c2020.subsystems.Intake;
 
 public class FeedBalls extends SequentialCommandGroup {
 
-    public FeedBalls(Intake intake, Indexer indexer) {
+    public FeedBalls(Intake intake, Indexer indexer, double RPM) {
         addCommands(
                 new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM),
-                new IndexerSetRPM(indexer, 500)
+                new IndexerSetRPM(indexer, RPM)
         );
     }
 }

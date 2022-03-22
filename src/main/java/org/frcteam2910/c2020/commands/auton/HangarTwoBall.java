@@ -33,7 +33,7 @@ public class HangarTwoBall extends AutonCommandBase {
                         new WaitCommand(0.75),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer)
+                new FeedBalls(intake, indexer, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

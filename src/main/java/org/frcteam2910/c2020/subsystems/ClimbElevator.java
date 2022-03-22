@@ -39,8 +39,8 @@ public class ClimbElevator extends SubsystemBase {
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 1.163;
-    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (50 / 12) * (50 / 22);
-    //private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (58 / 14) * (54 / 12);
+    //private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (50 / 12) * (50 / 22); //Practice bot Settings
+    private static final double ELEVATOR_OUTPUT_TO_ENCODER_RATIO = (58 / 14) * (54 / 12); //Comp bot settings
     private static final double ELEVATOR_ROTATIONS_TO_INCHES = Math.PI * PULLEY_DIAMETER_INCHES;
     private static final double ELEVATOR_INCHES_TO_ENCODER_TICKS = ELEVATOR_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / ELEVATOR_ROTATIONS_TO_INCHES;
 

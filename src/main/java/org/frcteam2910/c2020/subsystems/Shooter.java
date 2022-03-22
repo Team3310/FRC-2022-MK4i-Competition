@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
     private boolean isReady;
     private boolean hoodReset = false;
-    private double distanceOffset = -5;
+    private double distanceOffset = 0.0; //-5
     private boolean sysHoodStatus = false;
     private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();

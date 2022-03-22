@@ -44,12 +44,12 @@ public class TerminalFiveBall extends AutonCommandBase {
                         new ShooterShootAllFieldAuto(shooter)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(1.0),
+                        new WaitCommand(0.5),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer),
-                new WaitCommand(0.5),
-                new IntakeIndexerHalt(intake, indexer)
+                new FeedBalls(intake, indexer,Constants.AUTON_INDEXER_RPM)
+//                new WaitCommand(0.5),
+//                new IntakeIndexerHalt(intake, indexer)
         );
     }
 }

@@ -2,8 +2,6 @@ package org.frcteam2910.c2020;
 
 import java.io.IOException;
 
-import edu.wpi.first.wpilibj.Controller;
-import edu.wpi.first.wpilibj.GenericHID;
 import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.BalanceElevator;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
@@ -81,12 +79,6 @@ public class RobotContainer {
         primaryController.getLeftBumperButton().whenPressed(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
-        primaryController.getDPadButton(DPadButton.Direction.RIGHT).whenPressed(
-                new LimelightSearch(drivetrain, true)
-        );
-        primaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
-                new LimelightSearch(drivetrain, false)
-        );
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
@@ -106,7 +98,7 @@ public class RobotContainer {
 
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
-                new FeedBalls(intake, indexer)
+                new FeedBalls(intake, indexer, Constants.INDEXER_RPM)
         );
         secondaryController.getRightBumperButton().whenReleased(
                 new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
@@ -136,6 +128,12 @@ public class RobotContainer {
         secondaryController.getStartButton().whenPressed(
                 new HoodAutoZero(shooter)
         );
+       secondaryController.getDPadButton(DPadButton.Direction.RIGHT).whenPressed(
+                new ShooterShootAllFieldSearch(shooter, drivetrain, true)
+        );
+       secondaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
+                new ShooterShootAllFieldSearch(shooter, drivetrain, false)
+       );
 
 
         //Misc

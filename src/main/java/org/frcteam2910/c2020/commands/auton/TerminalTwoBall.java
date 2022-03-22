@@ -22,14 +22,14 @@ public class TerminalTwoBall extends AutonCommandBase {
         this.addCommands(
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_StartPosition0ToBall1()),
-                        new ShooterShootWithHoodAuton(shooter, 2000, 30.7),
+                        new ShooterShootWithHoodAuton(shooter, 1950, 30.7),
                         new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(
                         new WaitCommand(0.5),
                         new LimelightAdjustAuto(drive)
                 ),
-                new FeedBalls(intake, indexer)
+                new FeedBalls(intake, indexer, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

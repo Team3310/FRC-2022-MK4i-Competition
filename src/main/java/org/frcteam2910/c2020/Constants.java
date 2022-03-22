@@ -63,7 +63,8 @@ public class Constants {
     public static final int INTAKE_MOTOR_CAN_ID = 2;
 
     // Indexer
-    public static final double INDEXER_RPM = 1550;
+    public static final double INDEXER_RPM = 500;
+    public static final double AUTON_INDEXER_RPM = 500;
     public static final int INDEX_MOTOR_ID = 12;
 
     //Shooter

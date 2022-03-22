@@ -62,8 +62,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public double rCurrPoseX;
     public double rCurrPoseY;
-    public double rDistToGoal;
-    public double rTurretGoalAngle;
     public boolean isRight = true;
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
@@ -74,7 +72,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(3.0, 0, 0.02, 0.02);
+    public PIDController limelightController = new PIDController(3.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02)
     
 
     DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
@@ -245,6 +243,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         tab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
 
         limelightController.setTolerance(0.1);
+        limelightController.setIntegratorRange(-1.0, 1.0);
     }
 
     public void setCoast(){
@@ -378,10 +377,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             primaryController.getLeftXAxis().setInverted(true);
             primaryController.getRightXAxis().setInverted(true);
 
-            double rotationOutput = 1.0;
+            double rotationOutput = 0.8;
 
-            if(!isRight){
-                rotationOutput *= -1;
+            if(isRight){
+                rotationOutput *= -1.0;
             }
 
             drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);

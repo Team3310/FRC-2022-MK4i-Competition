@@ -29,7 +29,7 @@ public class TerminalTwoBall extends AutonCommandBase {
                         new WaitCommand(0.5),
                         new LimelightAdjustAuto(drive)
                 ),
-                new FeedBalls(intake, indexer, Constants.AUTON_INDEXER_RPM)
+                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

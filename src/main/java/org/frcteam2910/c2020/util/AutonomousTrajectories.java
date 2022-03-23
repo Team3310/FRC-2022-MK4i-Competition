@@ -1,5 +1,6 @@
 package org.frcteam2910.c2020.util;
 
+import org.frcteam2910.c2020.commands.auton.HangarFourBallSteal;
 import org.frcteam2910.common.control.*;
 import org.frcteam2910.common.io.PathReader;
 import org.frcteam2910.common.math.Rotation2;
@@ -31,11 +32,13 @@ public class AutonomousTrajectories {
     private final Trajectory SingleBallLoadToShootPosition;
     private final Trajectory StartPosition1ToShoot;
     private final Trajectory FiveBallEndToShoot;
+    private final Trajectory MidPositionFourBallPart2;
 
     private final Trajectory StartPosition0ToBall1;
     private final Trajectory ThreeBallPartTwo;
     private final Trajectory HangarFourBallPartOne;
     private final Trajectory HangarFourBallPartTwo;
+    private final Trajectory HangarFourBallStealPartOne;
     private final Trajectory simpleShootThree;
 
     public AutonomousTrajectories(TrajectoryConstraint[] trajectoryConstraints) throws IOException {
@@ -58,10 +61,17 @@ public class AutonomousTrajectories {
                 trajectoryConstraints, SAMPLE_DISTANCE);
 
         StartPosition1ToBall1 = new Trajectory(
-                new SimplePathBuilder(new Vector2(257, -219), Rotation2.fromDegrees(200.8))
-                        .lineTo(new Vector2(209, -244), Rotation2.fromDegrees(207.8)) //-244
+                new SimplePathBuilder(new Vector2(260, -240), Rotation2.fromDegrees(200.8))
+                        .lineTo(new Vector2(200, -260), Rotation2.fromDegrees(207.8)) //-244
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
+        );
+
+        MidPositionFourBallPart2 = new Trajectory(
+                new SimplePathBuilder(new Vector2(200, -260), Rotation2.fromDegrees(207.8))
+                        .lineTo(new Vector2(54, -280), Rotation2.fromDegrees(225))
+                        .build(),
+                trajectoryConstraints, SAMPLE_DISTANCE
         );
 
         TerminalFiveBallPart2 = new Trajectory(
@@ -148,6 +158,15 @@ public class AutonomousTrajectories {
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
+        HangarFourBallStealPartOne = new Trajectory(
+                new SimplePathBuilder(new Vector2(130, -200), Rotation2.fromDegrees(225.0))
+                        .lineTo(new Vector2(140, -200), Rotation2.fromDegrees(20.0))
+                        .lineTo(new Vector2(160, -200), Rotation2.fromDegrees(20.0))
+                        .lineTo(new Vector2(265, -155), Rotation2.fromDegrees(-20.0))
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+
 
         sevenFeet = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
@@ -164,6 +183,7 @@ public class AutonomousTrajectories {
         );
     }
 
+    @SuppressWarnings("unused")
     private Path getPath(String name) throws IOException {
         InputStream in = getClass().getClassLoader().getResourceAsStream(name);
         if (in == null) {
@@ -186,6 +206,10 @@ public class AutonomousTrajectories {
     public Trajectory get_StartPosition1ToBall1(){
         return StartPosition1ToBall1;
 }
+
+    public Trajectory get_MidPositionFourBallPart2(){
+        return MidPositionFourBallPart2;
+    }
 
     public Trajectory get_TerminalFiveBallPart2(){
         return TerminalFiveBallPart2;
@@ -228,6 +252,10 @@ public class AutonomousTrajectories {
 
     public Trajectory get_HangarFourBallPartTwo(){
             return HangarFourBallPartTwo;
+    }
+
+    public Trajectory get_HangarFourBallStealPartOne(){
+        return HangarFourBallStealPartOne;
     }
 
     public Trajectory get_FiveBallEndToShoot(){

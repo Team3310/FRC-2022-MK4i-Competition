@@ -68,7 +68,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public enum DriveControlMode{
         JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY,
-         ROBOT_CENTRIC, LIMELIGHT_SEARCH
+         ROBOT_CENTRIC, LIMELIGHT_SEARCH, HOLD
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
@@ -411,6 +411,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
     }
 
+
     public double getAverageAbsoluteValueVelocity() {
         double averageVelocity = 0;
         for (var module : modules) {
@@ -471,6 +472,16 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         for (int i = 0; i < moduleOutputs.length; i++) {
             var module = modules[i];
             module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
+        }
+    }
+
+    private void updateModulesHold() {
+
+        double[] moduleAngles = {45.0, -45.0, -45.0, 45.0};
+
+        for (int i = 0; i < modules.length; i++) {
+            var module = modules[i];
+            module.set(0, Math.toRadians(moduleAngles[i]));
         }
     }
 
@@ -565,7 +576,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break; 
         }
 
-        updateModules(currentDriveSignal);
+        if(driveControlMode != DriveControlMode.HOLD) {
+            updateModules(currentDriveSignal);
+        }
+        else{
+            updateModulesHold();
+        }
     }
 
     @Override

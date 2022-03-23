@@ -29,7 +29,7 @@ public class MidPositionFourBall extends AutonCommandBase {
                 new WaitCommand(0.5),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
-                        new FollowTrajectoryCommand(drive, trajectories.get_TerminalFiveBallPart2()),
+                        new FollowTrajectoryCommand(drive, trajectories.get_MidPositionFourBallPart2()),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
@@ -42,12 +42,12 @@ public class MidPositionFourBall extends AutonCommandBase {
                         new ShooterShootAllFieldAuto(shooter)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(1.0),
+                        new WaitCommand(0.5),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer,Constants.AUTON_INDEXER_RPM),
-                new WaitCommand(0.5),
-                new IntakeIndexerHalt(intake, indexer)
+                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
+//                new WaitCommand(0.5),
+//                new IntakeIndexerHalt(intake, indexer)
         );
     }
 }

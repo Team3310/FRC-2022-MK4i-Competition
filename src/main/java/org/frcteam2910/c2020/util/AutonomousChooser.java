@@ -29,6 +29,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Mid Position Two Ball", AutonomousMode.MidPositionTwoBall);
         autonomousModeChooser.addOption("Terminal Three Ball", AutonomousMode.TerminalThreeBall);
         autonomousModeChooser.addOption("Terminal Two Ball", AutonomousMode.TerminalTwoBall);
+        autonomousModeChooser.addOption("Hangar Four Ball steal", AutonomousMode.HANGAR_FOUR_BALL_STEAL);
         autonomousModeChooser.addOption("Hangar Four Ball", AutonomousMode.HangarFourBall);
         autonomousModeChooser.addOption("Hangar Two Ball", AutonomousMode.HANGAR_TWO_BALL);
         autonomousModeChooser.addOption("Hangar Three Ball", AutonomousMode.HANGAR_THREE_BALL);
@@ -110,6 +111,8 @@ public class AutonomousChooser {
                 return new HangarTwoBall(container, trajectories);
             case HANGAR_THREE_BALL:
                 return new HangarThreeBall(container, trajectories);
+            case HANGAR_FOUR_BALL_STEAL:
+                return new HangarFourBallSteal(container, trajectories);
             default:
                 return getSevenFeet(container);
         }
@@ -134,6 +137,7 @@ public class AutonomousChooser {
         TerminalTwoBall,
         TerminalFiveBall,
         HangarFourBall,
+        HANGAR_FOUR_BALL_STEAL,
         HANGAR_TWO_BALL,
         HANGAR_THREE_BALL,
         MidPositionTwoBall,

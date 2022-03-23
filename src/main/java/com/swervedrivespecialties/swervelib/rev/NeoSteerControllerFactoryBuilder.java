@@ -174,7 +174,8 @@ public final class NeoSteerControllerFactoryBuilder {
         public void resetAbsoluteSteerAngle() {
             motorEncoder.setPosition(absoluteEncoder.getAbsoluteAngle());
         }
-        
+
+
         @Override
         public void setEncoderAutoResetIterations(int iterations) {
             resetEncoderIterations = iterations;

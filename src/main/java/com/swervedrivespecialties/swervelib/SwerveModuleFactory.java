@@ -69,6 +69,7 @@ public class SwerveModuleFactory<DriveConfiguration, SteerConfiguration> {
             steerController.resetAbsoluteSteerAngle();
         }
 
+
         @Override
         public void setEncoderAutoResetIterations(int iterations) {
             steerController .setEncoderAutoResetIterations(iterations);

@@ -47,7 +47,7 @@ public class TerminalFiveBall extends AutonCommandBase {
                         new WaitCommand(0.5),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer,Constants.AUTON_INDEXER_RPM)
+                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
 //                new WaitCommand(0.5),
 //                new IntakeIndexerHalt(intake, indexer)
         );

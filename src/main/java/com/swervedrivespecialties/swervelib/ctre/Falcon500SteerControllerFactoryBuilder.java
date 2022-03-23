@@ -231,6 +231,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
             motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / motorEncoderPositionCoefficient);
         }
 
+
         @Override
         public void setEncoderAutoResetIterations(int iterations) {
             resetEncoderIterations = iterations;

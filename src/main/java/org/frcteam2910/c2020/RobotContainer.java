@@ -98,7 +98,7 @@ public class RobotContainer {
 
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
-                new FeedBalls(intake, indexer, Constants.INDEXER_RPM)
+                new FeedBalls(intake, indexer, drivetrain, Constants.INDEXER_RPM)
         );
         secondaryController.getRightBumperButton().whenReleased(
                 new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)

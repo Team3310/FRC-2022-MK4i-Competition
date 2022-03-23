@@ -26,14 +26,14 @@ public class HangarTwoBall extends AutonCommandBase {
         addCommands(
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartOne()),
-                        new ShooterShootAllFieldAuto(shooter),
-                        new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM)
+                        new ShooterShootWithHoodAuton(shooter, 1950, 30.7),
+                        new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.75),
-                        new AllFieldAuton(shooter, drive)
+                        new WaitCommand(0.5),
+                        new LimelightAdjustAuto(drive)
                 ),
-                new FeedBalls(intake, indexer, Constants.AUTON_INDEXER_RPM)
+                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

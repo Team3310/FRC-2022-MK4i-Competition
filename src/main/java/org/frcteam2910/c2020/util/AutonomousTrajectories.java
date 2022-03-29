@@ -15,6 +15,11 @@ import java.util.Arrays;
 public class AutonomousTrajectories {
 
     private static final double SAMPLE_DISTANCE = 0.1;
+    private final Trajectory HangarTwoBallStealOne;
+    private final Trajectory HangarTwoBallStealOnePlace;
+    private final Trajectory HangarTwoBallStealOnePlaceBackup;
+    private final Trajectory HangarTwoBallStealTwo;
+    private final Trajectory HangarTwoBallStealTwoPlace;
 
 //     private static final String EIGHT_BALL_AUTO_PART_ONE_NAME = "autos/8BallAuto/8BallAutoPart1.path";
 //     private static final String EIGHT_BALL_AUTO_PART_TWO_NAME = "autos/8BallAuto/8BallAutoPart2.path";
@@ -97,7 +102,7 @@ public class AutonomousTrajectories {
 
         LoadToShootPosition = new Trajectory(
                 new SimplePathBuilder(new Vector2(65, -265), Rotation2.fromDegrees(225.0)) //51 -268
-                        .lineTo(new Vector2(130, -200), Rotation2.fromDegrees(188.0)) //209 -259
+                        .lineTo(new Vector2(160, -200), Rotation2.fromDegrees(188.0)) //209 -259
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
@@ -158,6 +163,42 @@ public class AutonomousTrajectories {
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
+        HangarTwoBallStealOne = new Trajectory(
+                new SimplePathBuilder(new Vector2(206, -89), Rotation2.fromDegrees(148)) //51 -268
+                        .lineTo(new Vector2(235, -80), Rotation2.fromDegrees(90)) //209 -259
+                        .lineTo(new Vector2(235, -50), Rotation2.fromDegrees(90))
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+        HangarTwoBallStealOnePlace = new Trajectory(
+                new SimplePathBuilder(new Vector2(235, -50), Rotation2.fromDegrees(90)) //51 -268
+                        .lineTo(new Vector2(260,-140), Rotation2.fromDegrees(335)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+        HangarTwoBallStealTwo = new Trajectory(
+                new SimplePathBuilder(new Vector2(260, -140), Rotation2.fromDegrees(335)) //51 -268
+                        .lineTo(new Vector2(240,-160), Rotation2.fromDegrees(215)) //209 -259
+                        .lineTo(new Vector2(190,-190), Rotation2.fromDegrees(215)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+        HangarTwoBallStealTwoPlace = new Trajectory(
+                new SimplePathBuilder(new Vector2(190,-190), Rotation2.fromDegrees(215)) //51 -268
+                        .lineTo(new Vector2(260, -140), Rotation2.fromDegrees(335)) //209 -259
+                        .build(),
+                mediumConstraints, SAMPLE_DISTANCE
+        );
+
+        HangarTwoBallStealOnePlaceBackup = new Trajectory(
+                new SimplePathBuilder(new Vector2(260, -140), Rotation2.fromDegrees(335)) //51 -268
+                        .lineTo(new Vector2(230,-140), Rotation2.fromDegrees(335)) //209 -259
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+
+
+
         HangarFourBallStealPartOne = new Trajectory(
                 new SimplePathBuilder(new Vector2(130, -200), Rotation2.fromDegrees(225.0))
                         .lineTo(new Vector2(140, -200), Rotation2.fromDegrees(20.0))
@@ -263,4 +304,14 @@ public class AutonomousTrajectories {
     }
 
     public Trajectory getSimpleShootThree() { return simpleShootThree; }
+
+    public Trajectory getHangarTwoBallStealOne(){return HangarTwoBallStealOne;}
+
+    public Trajectory getHangarTwoBallStealOnePlace() {return HangarTwoBallStealOnePlace;}
+
+    public Trajectory getHangarTwoBallStealOnePlaceBackup() {return HangarTwoBallStealOnePlaceBackup;}
+
+    public Trajectory getHangarTwoBallStealTwo(){return HangarTwoBallStealTwo;}
+
+    public Trajectory getHangarTwoBallStealTwoPlace() {return HangarTwoBallStealTwoPlace;}
 }

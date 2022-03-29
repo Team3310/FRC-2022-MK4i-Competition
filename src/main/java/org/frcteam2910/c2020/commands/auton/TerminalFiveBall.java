@@ -35,7 +35,7 @@ public class TerminalFiveBall extends AutonCommandBase {
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(1.0),
+                        new WaitCommand(0.8),
                         new FollowTrajectoryCommand(drive, trajectories.get_TerminalToLoadPosition()),
                         new IndexerBallStop(indexer)
                 ),

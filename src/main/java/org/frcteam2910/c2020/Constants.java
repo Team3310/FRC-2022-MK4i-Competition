@@ -62,6 +62,7 @@ public class Constants {
     public static final double INTAKE_REVERSE_RPM = -1000; // -1500
     public static final int INTAKE_MOTOR_CAN_ID = 2;
 
+
     // Indexer
     public static final double INDEXER_RPM = 500;
     public static final double AUTON_INDEXER_RPM = 500;
@@ -69,6 +70,7 @@ public class Constants {
 
     //Shooter
     public static final int SHOOTER_MASTER_CAN_ID = 13;
+
     public static final int SHOOTER_SLAVE_CAN_ID = 11;
     public static final int SHOOTER_FEEDER_MOTOR_CAN_ID = 0;
 
@@ -117,10 +119,10 @@ public class Constants {
         kLobHoodMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(22.0));
         kLobHoodMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(29.0));
         kLobHoodMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(32.0));
-        kLobHoodMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(39.0));
+        kLobHoodMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(38.0));
         kLobHoodMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(42.0));
-        kLobHoodMap.put(new InterpolatingDouble(276.0), new InterpolatingDouble(45.0));
-        kLobHoodMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(45.0));
+        kLobHoodMap.put(new InterpolatingDouble(266.0), new InterpolatingDouble(42.0));
+        //kLobHoodMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(45.0));
     }
 
     public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobRPMMap = new InterpolatingTreeMap<>();
@@ -129,10 +131,10 @@ public class Constants {
         kLobRPMMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(1800.0));
         kLobRPMMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(2000.0));
         kLobRPMMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(2055.0));
-        kLobRPMMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(2350.0));
-        kLobRPMMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(2600.0));
-        kLobRPMMap.put(new InterpolatingDouble(276.0), new InterpolatingDouble(2880.0));
-        kLobRPMMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(2975.0));
+        kLobRPMMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(2550.0));
+        kLobRPMMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(2700.0));
+        kLobRPMMap.put(new InterpolatingDouble(266.0), new InterpolatingDouble(3060.0));
+        //kLobRPMMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(2975.0));
     }
 
 }

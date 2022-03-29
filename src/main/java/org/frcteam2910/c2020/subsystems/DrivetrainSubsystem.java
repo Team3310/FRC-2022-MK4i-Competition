@@ -68,7 +68,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public enum DriveControlMode{
         JOYSTICKS, LIMELIGHT, ROTATION, TRAJECTORY,
-         ROBOT_CENTRIC, LIMELIGHT_SEARCH, HOLD
+         ROBOT_CENTRIC, LIMELIGHT_SEARCH, HOLD, LIMELIGHT_LOCKED
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
@@ -97,6 +97,13 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             new PidConstants(5.0, 0.0, 0.0),
             new HolonomicFeedforward(FEEDFORWARD_CONSTANTS)
     );
+
+//    private final SwerveKinematics swerveKinematics = new SwerveKinematics(
+//            new Vector2(-TRACKWIDTH*0.25, WHEELBASE / 2.0),         //front left
+//            new Vector2(-TRACKWIDTH*0.25, -WHEELBASE / 2.0),        //front right
+//            new Vector2(-TRACKWIDTH*1.25, WHEELBASE / 2.0),       //back left
+//            new Vector2(-TRACKWIDTH*1.25, -WHEELBASE / 2.0)        //back right
+//    );
 
     private final SwerveKinematics swerveKinematics = new SwerveKinematics(
             new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0),         //front left
@@ -310,7 +317,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
-            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity*0.75, isFieldOriented);
+            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity*0.85, isFieldOriented);
         }
     }
 
@@ -411,6 +418,17 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
     }
 
+    public void limelightLockedDrive(){
+
+        limelightController.setSetpoint(Math.toRadians(-limelight.getFilteredTargetHorizOffset()) + getPose().rotation.toRadians());
+
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        double rotationOutput = limelightController.calculate(getPose().rotation.toRadians());
+
+        drive(new Vector2(0, 0), rotationOutput, true);
+    }
 
     public double getAverageAbsoluteValueVelocity() {
         double averageVelocity = 0;
@@ -547,6 +565,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break;
             case LIMELIGHT:
                 limelightDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case LIMELIGHT_LOCKED:
+                limelightLockedDrive();
                 synchronized (stateLock) {
                     currentDriveSignal = this.driveSignal;
                 }

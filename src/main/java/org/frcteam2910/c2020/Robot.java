@@ -160,8 +160,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        robotContainer.getShooter().setShooterDistanceOffset(-10);
         robotContainer.getDrivetrainSubsystem().setBrake();
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
+        //robotContainer.getClimbElevator().setElevatorMotionMagicPositionAbsolute(27.0);
     }
 
     @Override

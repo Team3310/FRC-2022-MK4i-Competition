@@ -156,10 +156,13 @@ public class RobotContainer {
         SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0));
 
         SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));
-        SmartDashboard.putData("Set Shooter RPM 2975", new ShooterSetRPM(shooter, 2975));
-        SmartDashboard.putData("Set Shooter RPM 1780", new ShooterSetRPM(shooter, 1780));
+        SmartDashboard.putData("Set Shooter RPM 2055", new ShooterSetRPM(shooter, 2055));
 
+
+        SmartDashboard.putData("Set Hood 32", new HoodSetAngle(shooter, 32));
         SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45));
+        SmartDashboard.putData("Set Hood 42", new HoodSetAngle(shooter, 42));
+        SmartDashboard.putData("Set Hood 38", new HoodSetAngle(shooter, 38));
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));

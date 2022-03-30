@@ -7,8 +7,6 @@ import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.util.Units;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.Pigeon;
 import org.frcteam2910.c2020.Robot;
@@ -63,6 +61,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public double rCurrPoseX;
     public double rCurrPoseY;
     public boolean isRight = true;
+    private double vt = 0;
+    private double targetAngle = 0;
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
@@ -72,7 +72,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     }
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(3.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02)
+    public PIDController limelightController = new PIDController(1.7, 0.03, 0.02, 0.02); //(3.0, 0.03, 0.02)
     
 
     DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
@@ -117,6 +117,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final Object sensorLock = new Object();
     Limelight limelight = Limelight.getInstance();
 
+    private static DrivetrainSubsystem INSTANCE;
+
     @GuardedBy("sensorLock")
     private final Gyroscope gyroscope = new Pigeon(Constants.PIGEON_PORT);
 
@@ -144,7 +146,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     private final NetworkTableEntry odometryYEntry;
     private final NetworkTableEntry odometryAngleEntry;
 
-    public DrivetrainSubsystem() {
+    private DrivetrainSubsystem() {
         synchronized (sensorLock) {
             gyroscope.setInverted(false);
         }
@@ -265,6 +267,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
     }
 
+    public static DrivetrainSubsystem getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new DrivetrainSubsystem();
+        }
+        return INSTANCE;
+    }
 
     public void setController(XboxController controller){
         primaryController = controller;
@@ -406,9 +414,18 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
     }
 
-    public void limelightDrive(){
+    public double getLagAngleDegrees(){
+        double timeOfFlight = Shooter.getInstance().getBallFlightTime();
+        double distance = Shooter.getInstance().getActualDistanceFromGoal();
 
-        limelightController.setSetpoint(Math.toRadians(-limelight.getFilteredTargetHorizOffset()) + getPose().rotation.toRadians());
+        return Math.toDegrees(Math.atan((getVelocity().y * timeOfFlight)/distance));
+    }
+
+
+    public void limelightDrive(){
+        targetAngle = -limelight.getFilteredTargetHorizOffset() + getLagAngleDegrees();
+
+        limelightController.setSetpoint(Math.toRadians(targetAngle) + getPose().rotation.toRadians());
 
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
@@ -437,6 +454,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
         return averageVelocity / 4;
     }
+
 
     private void updateOdometry(double time, double dt) {
         Vector2[] moduleVelocities = new Vector2[modules.length];
@@ -620,6 +638,13 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
         SmartDashboard.putNumber("X", getPose().translation.x);
         SmartDashboard.putNumber("Y", getPose().translation.y);
+        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
+        SmartDashboard.putNumber("Y velocity", getVelocity().y);
+        SmartDashboard.putNumber("X velocity", getVelocity().x);
+        SmartDashboard.putNumber("Time of ball flight", Shooter.getInstance().getBallFlightTime());
+        SmartDashboard.putNumber("Actual distance", Shooter.getInstance().getActualDistanceFromGoal());
+        SmartDashboard.putNumber("Target Angle", targetAngle);
+        SmartDashboard.putNumber("Limelight Horizontal angle", limelight.getFilteredTargetHorizOffset());
         odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
     }
 

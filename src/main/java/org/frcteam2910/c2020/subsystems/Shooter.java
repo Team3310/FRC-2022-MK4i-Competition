@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
@@ -51,6 +50,11 @@ public class Shooter extends SubsystemBase {
     private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();
     private double commandedRPM = 0;
+    private final double kLoss = 0;
+    private InterpolatingDouble RPM = new InterpolatingDouble(0.0);
+    private InterpolatingDouble hoodAngle = new InterpolatingDouble(0.0);
+    private  InterpolatingDouble actualDist = new InterpolatingDouble(0.0);
+    private  double limeLightDistance;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -228,7 +232,7 @@ public class Shooter extends SubsystemBase {
                 && Util.epsilonEquals(hoodMotor.getActiveTrajectoryPosition(), targetPositionTicks, 100);
     }
 
-    public double getdistanceFromGoal(){
+    public double getLimelightDistanceFromGoal(){
         double distance;
         double heightLimelight = 30.56 + (13.1 * Math.sin(Math.toRadians(5 + getHoodAngleAbsoluteDegrees())));
         double heightOfGoal = 102.60;
@@ -237,6 +241,51 @@ public class Shooter extends SubsystemBase {
 
         return distance + distanceOffset;
     }
+
+    public double getBallVelocity(){
+        double mainShooterSurfaceVel = (RPM.value/60.0) * Math.PI * 4.0;
+        double kickerShooterSurfaceVel = mainShooterSurfaceVel*0.5*28.0/24.0;
+
+        return (mainShooterSurfaceVel + kickerShooterSurfaceVel) / 2.0;
+    }
+
+    public double getTrajectoryAngleDegrees(){
+        return 90.0 - hoodAngle.value;
+    }
+
+    public double getHorizontalBallVelocity(){
+        return  getBallVelocity() * Math.cos(Math.toRadians(getTrajectoryAngleDegrees()));
+    }
+
+    public double getVerticalBallVelocity(){
+        return  getBallVelocity() * Math.sin(Math.toRadians(getTrajectoryAngleDegrees()));
+    }
+
+    public double getMovingHoodAngleDegrees(){
+        double angle = Math.atan2(getHorizontalBallVelocity() + DrivetrainSubsystem.getInstance().getVelocity().x, getVerticalBallVelocity());
+        return Math.toDegrees(angle);
+    }
+
+    public double getMovingRPM(){
+        double ballVelocity = getHorizontalBallVelocity()/Math.sin(Math.toRadians(getMovingHoodAngleDegrees()));
+        double shooterMainVelocity = ballVelocity * 2.0 / (1.0 + 0.5 * 28.0 / 24.0);
+        return shooterMainVelocity * 60.0 / (Math.PI * 4.0);
+    }
+
+    public double getBallFlightTime(){
+        double vx = getHorizontalBallVelocity();
+        if(vx > 0.1){
+            return actualDist.value /getHorizontalBallVelocity();
+        }
+        else{
+            return 1.0;
+        }
+    }
+
+    public double getActualDistanceFromGoal(){
+        return actualDist.value;
+    }
+
 
     public boolean hasTarget(){
         return limelight.hasTarget();
@@ -247,13 +296,14 @@ public class Shooter extends SubsystemBase {
     public void updateAllFieldShot(){
         if(limelight.hasTarget()) {
 
-            double dist = getdistanceFromGoal();
+            limeLightDistance = getLimelightDistanceFromGoal();
 
-            InterpolatingDouble RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(dist));
-            InterpolatingDouble angle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(dist));
+            RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+            hoodAngle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+            actualDist = Constants.kLimelightDistanceMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
 
-            setShooterRPM(RPM.value);
-            setHoodMotionMagicPositionAbsolute(angle.value);
+            setShooterRPM(getMovingRPM());
+            setHoodMotionMagicPositionAbsolute(getMovingHoodAngleDegrees());
         }
     }
 
@@ -268,12 +318,16 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Distance form goal rim", getdistanceFromGoal());
+        SmartDashboard.putNumber("Distance form goal rim", getLimelightDistanceFromGoal());
         SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
         SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
         SmartDashboard.putBoolean("Hood Reset", hoodReset);
         SmartDashboard.putNumber("Current Offset", distanceOffset);
         SmartDashboard.putNumber("Commanded RPM", commandedRPM);
+        SmartDashboard.putNumber("Moving RPM", getMovingRPM());
+        SmartDashboard.putNumber("Moving hood angle", getMovingHoodAngleDegrees());
+        SmartDashboard.putNumber("Limelight hood angle", hoodAngle.value);
+        SmartDashboard.putNumber("Limelight RPM", RPM.value);
     }
 }
 

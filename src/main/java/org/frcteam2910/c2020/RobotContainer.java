@@ -27,7 +27,7 @@ public class RobotContainer {
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
     private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
-    private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+    private final DrivetrainSubsystem drivetrain = DrivetrainSubsystem.getInstance();
     private final Intake intake = Intake.getInstance();
     private final ClimbElevator climbElevator = ClimbElevator.getInstance();
     private final Shooter shooter = Shooter.getInstance();

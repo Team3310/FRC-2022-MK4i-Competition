@@ -10,7 +10,7 @@ public class FeedBalls extends SequentialCommandGroup {
 
     public FeedBalls(Intake intake, Indexer indexer, DrivetrainSubsystem drive, double RPM) {
         addCommands(
-                new ChangeDriveMode(drive, DrivetrainSubsystem.DriveControlMode.LIMELIGHT_LOCKED),
+                //new ChangeDriveMode(drive, DrivetrainSubsystem.DriveControlMode.LIMELIGHT_LOCKED),
                 new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_RPM),
                 new IndexerSetRPM(indexer, RPM)
         );

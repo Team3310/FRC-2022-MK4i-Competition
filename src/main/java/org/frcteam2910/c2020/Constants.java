@@ -137,4 +137,16 @@ public class Constants {
         //kLobRPMMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(2975.0));
     }
 
+    public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLimelightDistanceMap = new InterpolatingTreeMap<>();
+    static {
+        kLimelightDistanceMap.put(new InterpolatingDouble(48.0), new InterpolatingDouble(74.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(111.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(144.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(169.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(214.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(257.0));
+        kLimelightDistanceMap.put(new InterpolatingDouble(266.0), new InterpolatingDouble(297.0));
+        //kLobRPMMap.put(new InterpolatingDouble(295.0), new InterpolatingDouble(2975.0));
+    }
+
 }

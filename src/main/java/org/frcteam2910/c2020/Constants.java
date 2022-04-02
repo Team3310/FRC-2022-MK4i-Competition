@@ -148,4 +148,14 @@ public class Constants {
         kLimelightDistanceMap.put(new InterpolatingDouble(266.0), new InterpolatingDouble(297.0));
     }
 
+    public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kTimeOfFlightMap = new InterpolatingTreeMap<>();
+    static {
+        kTimeOfFlightMap.put(new InterpolatingDouble(48.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(84.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(114.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(135.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(184.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(226.0), new InterpolatingDouble(0.8));
+        kTimeOfFlightMap.put(new InterpolatingDouble(266.0), new InterpolatingDouble(0.8));
+    }
 }

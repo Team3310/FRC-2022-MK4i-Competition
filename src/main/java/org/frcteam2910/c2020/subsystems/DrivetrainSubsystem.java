@@ -140,7 +140,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
      *  @see DrivetrainSubsystem.update(double time, double dt)
      * */
     @GuardedBy("stateLock")
-    private HolonomicDriveSignal driveSignal = null;
+    private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new Vector2(0, 0), 0, true);
 
     private final Object kinematicsLock = new Object();
     
@@ -166,7 +166,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(1.7, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02)
+    public PIDController limelightController = new PIDController(2.5, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
     public PIDController ballTrackController = new PIDController(2.0, 0.03, 0.02, 0.02);
 
     public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = 
@@ -437,7 +437,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
-            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity*0.85, isFieldOriented);
+            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
         }
     }
 
@@ -448,7 +448,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         primaryController.getRightXAxis().setInverted(true);
 
         // Set the drive signal to a field-centric (last boolean parameter is true) joystick-based input.
-        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true), true);
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true) * 0.85, true);
     }
 
     public void rotationDrive(){
@@ -528,7 +528,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void limelightDrive(){
         // DriveControlMode is LIMELIGHT
-        targetAngle = -limelightGoal.getFilteredTargetHorizOffset() + getLagAngleDegrees();
+        targetAngle = -limelightGoal.getFilteredTargetHorizOffset();
 
         limelightController.setSetpoint(Math.toRadians(targetAngle) + getPose().rotation.toRadians());
 
@@ -801,9 +801,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         }
 
         Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
-        SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);   
+        SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
 
-        if(driveSignal.getTranslation().length < 0.05 && Math.abs(driveSignal.getRotation()) < 0.05){
+
+        if(driveSignal != null && driveSignal.getTranslation() != null && driveSignal.getTranslation().length < 0.05 && Math.abs(driveSignal.getRotation()) < 0.05){
             for (int i = 0; i < moduleOutputs.length; i++) {
                 var module = modules[i];
                 module.set(0.0, lastModuleAngle[i]);

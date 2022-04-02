@@ -35,6 +35,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Hangar Three Ball", AutonomousMode.HANGAR_THREE_BALL);
         autonomousModeChooser.addOption("Hangar Two Ball Steal One", AutonomousMode.HANGAR_TWO_BALL_STEAL_ONE);
         autonomousModeChooser.addOption("Hangar Two Ball Steal Two", AutonomousMode.HANGAR_TWO_BALL_STEAL_TWO);
+        autonomousModeChooser.addOption("Terminal Two Ball Steal Two", AutonomousMode.TERMINAL_TWO_BALL_STEAL_TWO);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -119,6 +120,8 @@ public class AutonomousChooser {
                 return new HangarTwoBallOneBallSteal(container, trajectories);
             case HANGAR_TWO_BALL_STEAL_TWO:
                 return new HangarTwoBallTwoBallSteal(container, trajectories);
+            case TERMINAL_TWO_BALL_STEAL_TWO:
+                return new TerminalTwoBallTwoBallSteal(container, trajectories);
             default:
                 return getSevenFeet(container);
         }
@@ -148,7 +151,8 @@ public class AutonomousChooser {
         HANGAR_THREE_BALL,
         MidPositionTwoBall,
         HANGAR_TWO_BALL_STEAL_ONE,
-        HANGAR_TWO_BALL_STEAL_TWO
+        HANGAR_TWO_BALL_STEAL_TWO,
+        TERMINAL_TWO_BALL_STEAL_TWO
         ;
     }
 }

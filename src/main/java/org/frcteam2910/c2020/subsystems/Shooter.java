@@ -286,6 +286,13 @@ public class Shooter extends SubsystemBase {
         return actualDist.value;
     }
 
+    public double getMovingDistance(){
+        double vx = DrivetrainSubsystem.getInstance().getVelocity().x;
+        double virtualDist = vx * getBallFlightTime();
+        double movingDist = limeLightDistance - virtualDist;
+        return movingDist;
+    }
+
 
     public boolean hasTarget(){
         return limelight.hasTarget();
@@ -295,11 +302,10 @@ public class Shooter extends SubsystemBase {
 
     public void updateAllFieldShot(){
         if(limelight.hasTarget()) {
-
             limeLightDistance = getLimelightDistanceFromGoal();
 
-            RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
-            hoodAngle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+            RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(getMovingDistance()));
+            hoodAngle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(getMovingDistance()));
             actualDist = Constants.kLimelightDistanceMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
 
             setShooterRPM(getMovingRPM());

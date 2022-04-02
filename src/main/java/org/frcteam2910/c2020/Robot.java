@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
     }
 
     public Robot() {
+       // super(0.04);
         instance = this;
     }
 

@@ -63,6 +63,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public boolean isRight = true;
     private double vt = 0;
     private double targetAngle = 0;
+    private double[] lastModuleAngle = new double[4];
 
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
@@ -361,6 +362,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         primaryController.getRightXAxis().setInverted(true);
 
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true), true);
+
     }
 
     public void robotCentricDrive(){
@@ -505,9 +507,19 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
         SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
-        for (int i = 0; i < moduleOutputs.length; i++) {
-            var module = modules[i];
-            module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
+
+        if(driveSignal.getTranslation().length < 0.05 && Math.abs(driveSignal.getRotation()) < 0.05){
+            for (int i = 0; i < moduleOutputs.length; i++) {
+                var module = modules[i];
+                module.set(0.0, lastModuleAngle[i]);
+            }
+        }
+        else{
+            for (int i = 0; i < moduleOutputs.length; i++) {
+                var module = modules[i];
+                module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
+                lastModuleAngle[i] = moduleOutputs[i].getAngle().toRadians();
+            }
         }
     }
 

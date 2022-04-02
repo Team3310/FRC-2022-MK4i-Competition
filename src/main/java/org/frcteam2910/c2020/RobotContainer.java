@@ -27,6 +27,8 @@ public class RobotContainer {
     private final XboxController primaryController = new XboxController(Constants.PRIMARY_CONTROLLER_PORT);
     private final XboxController secondaryController = new XboxController(Constants.SECONDARY_CONTROLLER_PORT);
 
+    private static RobotContainer instance;
+
     private final DrivetrainSubsystem drivetrain = DrivetrainSubsystem.getInstance();
     private final Intake intake = Intake.getInstance();
     private final ClimbElevator climbElevator = ClimbElevator.getInstance();
@@ -37,7 +39,6 @@ public class RobotContainer {
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
 
-    @SuppressWarnings("unused")
     private final DriverReadout driverReadout;
 
     public RobotContainer() {
@@ -60,6 +61,8 @@ public class RobotContainer {
         CommandScheduler.getInstance().setDefaultCommand(balanceElevator, new BalanceControlJoysticks(balanceElevator, getBalanceElevatorAxis()));
 
         configureButtonBindings();
+        
+        instance = this;
     }
 
     private void configureButtonBindings() {
@@ -77,6 +80,15 @@ public class RobotContainer {
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
         primaryController.getLeftBumperButton().whenPressed(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
+        );
+        primaryController.getLeftBumperButton().whenReleased(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
+        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
+        );
+        primaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
 
@@ -113,15 +125,23 @@ public class RobotContainer {
 
 
         //Shooter
+
+        // This is X on PS4!
         secondaryController.getAButton().whenPressed(
                 new ShooterShootWithHood(shooter, drivetrain, 1780, 11.0) //Fender
         );
+
+        // This is CIRCLE on PS4!
         secondaryController.getBButton().whenPressed(
                 new ShooterShootWithHood(shooter, drivetrain, 2030, 30.7) //RT Wall 24
         );
+
+        // This is TRIANGLE on PS4!
         secondaryController.getYButton().whenPressed(
                 new ShooterShootWithHood(shooter, drivetrain, 2230, 36) //Hangar Shot
         );
+
+        // This is SQUARE on PS4!
         secondaryController.getXButton().whenPressed(
                 new ShooterShootAllField(shooter, drivetrain)
         );
@@ -171,8 +191,6 @@ public class RobotContainer {
         SmartDashboard.putData("Distance offset +5", new InstantCommand(()-> shooter.setShooterDistanceOffset(5)));
         SmartDashboard.putData("Distance offset +10", new InstantCommand(()-> shooter.setShooterDistanceOffset(10)));
         SmartDashboard.putData("Distance offset +20", new InstantCommand(()-> shooter.setShooterDistanceOffset(20)));
-
-
     }
 
     public Command getAutonomousCommand() {
@@ -211,5 +229,16 @@ public class RobotContainer {
 
     public AutonomousChooser getAutonomousChooser() {
         return autonomousChooser;
+    }
+
+    public DriverReadout getDriverReadout() {
+        return driverReadout;
+    }
+
+    public static RobotContainer getInstance() {
+        if(instance == null) {
+            //throw new RuntimeException("Somehow, RobotContainer constructor was never called and/or never set the RobotContainer instance");
+        }
+        return instance;
     }
 }

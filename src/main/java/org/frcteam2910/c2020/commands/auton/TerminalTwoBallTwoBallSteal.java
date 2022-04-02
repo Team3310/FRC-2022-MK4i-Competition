@@ -12,40 +12,32 @@ import org.frcteam2910.c2020.subsystems.Intake;
 import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 
-public class HangarTwoBallTwoBallSteal extends AutonCommandBase {
+public class TerminalTwoBallTwoBallSteal extends AutonCommandBase {
 
-    public HangarTwoBallTwoBallSteal(RobotContainer container, AutonomousTrajectories trajectories){
+    public TerminalTwoBallTwoBallSteal(RobotContainer container, AutonomousTrajectories trajectories){
         this(container, trajectories, container.getShooter(), container.getIndexer(), container.getIntakeSubsystem(), container.getDrivetrainSubsystem());
     }
 
-    public HangarTwoBallTwoBallSteal(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
+    public TerminalTwoBallTwoBallSteal(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
 
         addCommands(
-                new HangarTwoBall(container, trajectories),
+                new TerminalTwoBall(container, trajectories),
                 new WaitCommand(0.5),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
-                        new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealOne()),
+                        new FollowTrajectoryCommand(drive, trajectories.getTerminalStealPartOne()),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
-                        new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealOnePlace()),
+                        new FollowTrajectoryCommand(drive, trajectories.getTerminalStealPartTwo()),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.5),
-                        new EjectBalls(intake, indexer, shooter)
-                ),
-                new ParallelDeadlineGroup(
-                        new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealTwo()),
+                        new FollowTrajectoryCommand(drive, trajectories.getTerminalStealPlace()),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
-                        new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealTwoPlace()),
-                        new IndexerBallStop(indexer)
-                ),
-                new ParallelDeadlineGroup(
-                        new WaitCommand(0.5),
+                        new WaitCommand(0.75),
                         new EjectBalls(intake, indexer, shooter)
                 ),
                 new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealOnePlaceBackup()),

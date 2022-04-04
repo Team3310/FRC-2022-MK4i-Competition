@@ -43,6 +43,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -528,6 +529,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void limelightDrive(){
         // DriveControlMode is LIMELIGHT
+        double angleToOuter = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0).rotation.toRadians() - limelightGoal.getTargetHorizOffset();
+
         targetAngle = -limelightGoal.getFilteredTargetHorizOffset();
 
         limelightController.setSetpoint(Math.toRadians(targetAngle) + getPose().rotation.toRadians());

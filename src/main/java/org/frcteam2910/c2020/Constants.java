@@ -61,6 +61,7 @@ public class Constants {
     public static final double INTAKE_COLLECT_AUTO_RPM = 1200; // 1500
     public static final double INTAKE_REVERSE_RPM = -1000; // -1500
     public static final int INTAKE_MOTOR_CAN_ID = 2;
+    public static final int INTAKE_LIFT_MOTOR_CAN_ID = 5;
 
 
     // Indexer
@@ -112,6 +113,13 @@ public class Constants {
     public static final double IDLE_SHOOTER_RPM = 2150.0;
     public static final double IDLE_HOOD_ANGLE = 32.0;
     public static final int HOOD_PID_PORT = 1;
+
+    public static final double LIFT_COMPETITION_HOME_POSITION_DEGREES = 39.0;
+    public static final int LIFT_MM_PORT = 0;
+    public static final int LIFT_PID_PORT = 1;
+    public static final double LIFT_MIN_ANGLE_DEGREES = 2.0;
+    public static final double LIFT_MAX_ANGLE_DEGREES = 39.0;
+    public static final double LIFT_ZERO_SPEED = 0.1;
 
     public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kLobHoodMap = new InterpolatingTreeMap<>();
     static {

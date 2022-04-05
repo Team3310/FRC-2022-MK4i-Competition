@@ -105,7 +105,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     //////////////////////////////////////////////////////////////
 
     private Controller primaryController;  // For the driver
-    private DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS; // Determines abilities of controller
+    private DriveControlMode driveControlMode = DriveControlMode.JOYSTICKS;
+    private SwervePivotPoint pivotPoint = SwervePivotPoint.CENTER;
+
+    // Determines abilities of controller
     public enum  DriveControlMode
     {
         JOYSTICKS,
@@ -119,12 +122,27 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         HOLD,
     }
 
-    private final SwerveKinematics swerveKinematics = new SwerveKinematics(
+    public enum SwervePivotPoint
+    {
+        CENTER,
+        BACK
+    }
+
+    private final SwerveKinematics swerveKinematicsCenter = new SwerveKinematics(
             new Vector2(TRACKWIDTH / 2.0, WHEELBASE / 2.0),         //front left
             new Vector2(TRACKWIDTH / 2.0, -WHEELBASE / 2.0),        //front right
             new Vector2(-TRACKWIDTH / 2.0, WHEELBASE / 2.0),       //back left
             new Vector2(-TRACKWIDTH / 2.0, -WHEELBASE / 2.0)        //back right
     );
+
+    private final SwerveKinematics swerveKinematicsBack = new SwerveKinematics(
+            new Vector2(TRACKWIDTH * 1.354 / 2.0, WHEELBASE / 2.0),         //front left
+            new Vector2(TRACKWIDTH * 1.354 / 2.0, -WHEELBASE / 2.0),        //front right
+            new Vector2(TRACKWIDTH * 0.354 / 2.0, WHEELBASE / 2.0),       //back left
+            new Vector2(TRACKWIDTH * 0.354 / 2.0, -WHEELBASE / 2.0)        //back right
+    );
+
+    private SwerveKinematics swerveKinematics = swerveKinematicsCenter;
 
     /*private final SwerveKinematics swerveKinematics = new SwerveKinematics(
             new Vector2(-TRACKWIDTH*0.25, WHEELBASE / 2.0),         //front left
@@ -154,7 +172,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     @GuardedBy("kinematicsLock")
     private final InterpolatingTreeMap<InterpolatingDouble, RigidTransform2> latencyCompensationMap = new InterpolatingTreeMap<>();
     @GuardedBy("kinematicsLock")
-    private final SwerveOdometry swerveOdometry = new SwerveOdometry(swerveKinematics, RigidTransform2.ZERO);
+    private final SwerveOdometry swerveOdometry = new SwerveOdometry(RigidTransform2.ZERO);
 
 
     //////////////////////////////////////////////////////////////
@@ -167,7 +185,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(2.5, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
+    public PIDController limelightController = new PIDController(2.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
     public PIDController ballTrackController = new PIDController(2.0, 0.03, 0.02, 0.02);
 
     public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = 
@@ -359,6 +377,17 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void setDriveControlMode(DriveControlMode mode){
         driveControlMode = mode;
+    }
+
+    public void setSwervePivotPoint(SwervePivotPoint pivotPoint){
+        synchronized (kinematicsLock) {
+            if (pivotPoint == SwervePivotPoint.CENTER) {
+                swerveKinematics = swerveKinematicsCenter;
+            } else if (pivotPoint == SwervePivotPoint.BACK) {
+                swerveKinematics = swerveKinematicsBack;
+            }
+            this.pivotPoint = pivotPoint;
+        }
     }
 
     public void setRotationRight(boolean isRight){
@@ -776,7 +805,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         synchronized (kinematicsLock) {
 
-            this.pose = swerveOdometry.update(angle, dt, moduleVelocities);
+            this.pose = swerveOdometry.update(swerveKinematics, angle, dt, moduleVelocities);
             if (latencyCompensationMap.size() > MAX_LATENCY_COMPENSATION_MAP_ENTRIES) {
                 latencyCompensationMap.remove(latencyCompensationMap.firstKey());
             }

@@ -10,15 +10,14 @@ import org.frcteam2910.common.math.Vector2;
  * Odometry allows a robot to track what it's position on the field is using the encoders on it's swerve modules.
  */
 public class SwerveOdometry {
-    private final SwerveKinematics kinematics;
+    //private final SwerveKinematics kinematics;
     private RigidTransform2 pose;
 
-    public SwerveOdometry(SwerveKinematics kinematics) {
-        this(kinematics, RigidTransform2.ZERO);
+    public SwerveOdometry() {
+        this( RigidTransform2.ZERO);
     }
 
-    public SwerveOdometry(SwerveKinematics kinematics, RigidTransform2 initialPose) {
-        this.kinematics = kinematics;
+    public SwerveOdometry(RigidTransform2 initialPose) {
         this.pose = initialPose;
     }
 
@@ -79,7 +78,7 @@ public class SwerveOdometry {
      *                         {@link SwerveKinematics} was given when it was instantiated.
      * @return The new pose of the robot.
      */
-    public RigidTransform2 update(Rotation2 gyroAngle, double dt, Vector2... moduleVelocities) {
+    public RigidTransform2 update(SwerveKinematics kinematics, Rotation2 gyroAngle, double dt, Vector2... moduleVelocities) {
         ChassisVelocity velocity = kinematics.toChassisVelocity(moduleVelocities);
 
         // Calculate the field-oriented translational velocity of the robot

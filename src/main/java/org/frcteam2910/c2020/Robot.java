@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        updateManager.startLoop(2.0e-2);
+        updateManager.startLoop(0.01);
         PortForwarder.add(5800, "limelight.local", 5800);
         PortForwarder.add(5801, "limelight.local", 5801);
         PortForwarder.add(5802, "limelight.local", 5802);
@@ -151,8 +151,10 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         robotContainer.getShooter().resetHoodHomePosition();
+        robotContainer.getIntakeSubsystem().resetLiftHomePosition();
         robotContainer.getClimbElevator().setElevatorZero(Constants.ELEVATOR_HOME_POSITION);
         robotContainer.getDrivetrainSubsystem().setBrake();
+        robotContainer.getIntakeSubsystem().setLiftBrake();
 
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
 
@@ -161,7 +163,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        robotContainer.getShooter().setShooterDistanceOffset(-10);
         robotContainer.getDrivetrainSubsystem().setBrake();
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.JOYSTICKS);
         //robotContainer.getClimbElevator().setElevatorMotionMagicPositionAbsolute(27.0);
@@ -171,6 +172,7 @@ public class Robot extends TimedRobot {
     public void disabledInit(){
         robotContainer.getDrivetrainSubsystem().alignWheels();
         robotContainer.getDrivetrainSubsystem().setCoast();
+        robotContainer.getIntakeSubsystem().setLiftCoast();
     }
 
     @Override

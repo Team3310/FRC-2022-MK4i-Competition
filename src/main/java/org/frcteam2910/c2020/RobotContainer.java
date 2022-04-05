@@ -79,18 +79,18 @@ public class RobotContainer {
         primaryController.getRightBumperButton().whenReleased(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
-        primaryController.getLeftBumperButton().whenPressed(
-                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
-        );
+//        primaryController.getLeftBumperButton().whenPressed(
+//                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.LIMELIGHT)
+//        );
         primaryController.getLeftBumperButton().whenReleased(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
-        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
-                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
-        );
-        primaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
-                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
-        );
+//        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
+//                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
+//        );
+//        primaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
+//                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+//        );
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
@@ -99,13 +99,16 @@ public class RobotContainer {
         secondaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
                 new IndexerSetSpeed(indexer, 0)
         );
+        secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
+                new IntakeLiftSetAngle(intake, Constants.LIFT_MIN_ANGLE_DEGREES)
+        );
+        secondaryController.getDPadButton(DPadButton.Direction.DOWN).whenPressed(
+                new IntakeLiftSetAngle(intake, Constants.LIFT_MAX_ANGLE_DEGREES)
+        );
 
         //Climb
         secondaryController.getBackButton().whenPressed(
                 new ClimbElevatorAutoZero(climbElevator)
-        );
-        secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
-                new ClimbSetElevatorInches(climbElevator, 10)
         );
 
         //Indexer
@@ -138,51 +141,49 @@ public class RobotContainer {
 
         // This is TRIANGLE on PS4!
         secondaryController.getYButton().whenPressed(
-                new ShooterShootWithHood(shooter, drivetrain, 2230, 36) //Hangar Shot
+                new ShooterShootWithHood(shooter, DrivetrainSubsystem.SwervePivotPoint.BACK, drivetrain, 2230, 36) //Hangar Shot
         );
 
         // This is SQUARE on PS4!
         secondaryController.getXButton().whenPressed(
                 new ShooterShootAllField(shooter, drivetrain)
         );
+
         secondaryController.getStartButton().whenPressed(
                 new HoodAutoZero(shooter)
         );
-       secondaryController.getDPadButton(DPadButton.Direction.RIGHT).whenPressed(
-                new ShooterShootAllFieldSearch(shooter, drivetrain, true)
-        );
-       secondaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
-                new ShooterShootAllFieldSearch(shooter, drivetrain, false)
-       );
 
 
         //Misc
-        secondaryController.getDPadButton(DPadButton.Direction.UP).whenPressed(
-                new ExperimentalEjectBalls(intake, indexer)
-        );
-        secondaryController.getDPadButton(DPadButton.Direction.UP).whenReleased(
-                new IntakeIndexerHalt(intake, indexer)
-        );
-        secondaryController.getDPadButton(DPadButton.Direction.DOWN).whenReleased(
+        secondaryController.getDPadButton(DPadButton.Direction.RIGHT).whenPressed(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
+        secondaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
+                new ExperimentalEjectBalls(intake, indexer)
         );
 
 
 
         SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
         SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
-        SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0));
+        SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0.0));
         SmartDashboard.putData("Set Intake speed 1", new IntakeSetSpeed(intake, 1.0));
-        SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0));
+        SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0.0));
 
-        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0));
+
+        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0.0));
         SmartDashboard.putData("Set Shooter RPM 2055", new ShooterSetRPM(shooter, 2055));
 
 
-        SmartDashboard.putData("Set Hood 32", new HoodSetAngle(shooter, 32));
-        SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45));
-        SmartDashboard.putData("Set Hood 42", new HoodSetAngle(shooter, 42));
-        SmartDashboard.putData("Set Hood 38", new HoodSetAngle(shooter, 38));
+        SmartDashboard.putData("Set Hood 32", new HoodSetAngle(shooter, 32.0));
+        SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45.0));
+        SmartDashboard.putData("Set Hood 42", new HoodSetAngle(shooter, 42.0));
+        SmartDashboard.putData("Set Hood 38", new HoodSetAngle(shooter, 38.0));
+
+        SmartDashboard.putData("Set Lift 0", new IntakeLiftSetAngle(intake, Constants.LIFT_MIN_ANGLE_DEGREES));
+        SmartDashboard.putData("Set Lift 15", new IntakeLiftSetAngle(intake, 15.0));
+        SmartDashboard.putData("Set Lift 35", new IntakeLiftSetAngle(intake, Constants.LIFT_MAX_ANGLE_DEGREES));
+        SmartDashboard.putData("Reset Lift", new InstantCommand(()-> intake.resetLiftHomePosition()));
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));

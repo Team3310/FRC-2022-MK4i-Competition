@@ -10,7 +10,7 @@ public class IntakeSetRPM extends CommandBase {
     public IntakeSetRPM(Intake intake, double rpm) {
         this.intake = intake;
         this.rpm = rpm;
-        addRequirements(this.intake);
+        //addRequirements(this.intake);
     }
 
     @Override

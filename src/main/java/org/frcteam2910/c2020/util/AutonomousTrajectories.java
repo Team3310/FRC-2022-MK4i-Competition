@@ -175,26 +175,26 @@ public class AutonomousTrajectories {
         );
         HangarTwoBallStealOnePlace = new Trajectory(
                 new SimplePathBuilder(new Vector2(235, -50), Rotation2.fromDegrees(90)) //51 -268
-                        .lineTo(new Vector2(260,-140), Rotation2.fromDegrees(335)) //209 -259
+                        .lineTo(new Vector2(250,-130), Rotation2.fromDegrees(335)) //209 -259
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );
         HangarTwoBallStealTwo = new Trajectory(
-                new SimplePathBuilder(new Vector2(260, -140), Rotation2.fromDegrees(335)) //51 -268
-                        .lineTo(new Vector2(240,-160), Rotation2.fromDegrees(215)) //209 -259
-                        .lineTo(new Vector2(190,-190), Rotation2.fromDegrees(215)) //209 -259
+                new SimplePathBuilder(new Vector2(250, -130), Rotation2.fromDegrees(335)) //51 -268
+                        .lineTo(new Vector2(210,-160), Rotation2.fromDegrees(215)) //209 -259
+                        .lineTo(new Vector2(180,-180), Rotation2.fromDegrees(210)) //209 -259
                         .build(),
-                mediumConstraints, SAMPLE_DISTANCE
+                slowConstraints, SAMPLE_DISTANCE
         );
         HangarTwoBallStealTwoPlace = new Trajectory(
-                new SimplePathBuilder(new Vector2(190,-190), Rotation2.fromDegrees(215)) //51 -268
-                        .lineTo(new Vector2(260, -140), Rotation2.fromDegrees(335)) //209 -259
+                new SimplePathBuilder(new Vector2(188,-184), Rotation2.fromDegrees(215)) //51 -268
+                        .lineTo(new Vector2(250,-130), Rotation2.fromDegrees(335))
                         .build(),
                 mediumConstraints, SAMPLE_DISTANCE
         );
 
         HangarTwoBallStealOnePlaceBackup = new Trajectory(
-                new SimplePathBuilder(new Vector2(260, -140), Rotation2.fromDegrees(335)) //51 -268
+                new SimplePathBuilder(new Vector2(250, -130), Rotation2.fromDegrees(335)) //51 -268
                         .lineTo(new Vector2(230,-140), Rotation2.fromDegrees(335)) //209 -259
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE

@@ -18,14 +18,14 @@ import org.frcteam2910.common.robot.input.XboxController;
 public class Intake extends SubsystemBase {
 
     public enum LiftControlMode{
-        PID, MOTION_MAGIC,
+        PID, MOTION_MAGIC, CURRENT
     }
 
     // Conversions
     private static final double INTAKE_ROLLER_OUTPUT_TO_ENCODER_RATIO = 40.0 / 10.0;
     public static final double INTAKE_ROLLER_REVOLUTIONS_TO_ENCODER_TICKS = INTAKE_ROLLER_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
 
-    private final double LIFT_OUTPUT_TO_ENCODER_RATIO = 48.0 / 10.0 * 54.0 / 14.0 * 16.0;
+    private final double LIFT_OUTPUT_TO_ENCODER_RATIO = 48.0 / 10.0 * 54.0 / 14.0 * 7.0;
     private final double LIFT_REVOLUTIONS_TO_ENCODER_TICKS = LIFT_OUTPUT_TO_ENCODER_RATIO * Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION;
     private final double LIFT_DEGREES_TO_ENCODER_TICKS = LIFT_REVOLUTIONS_TO_ENCODER_TICKS / 360.0;
     private double homePositionAngleDegrees = Constants.LIFT_COMPETITION_HOME_POSITION_DEGREES;
@@ -40,9 +40,9 @@ public class Intake extends SubsystemBase {
     private static final int kIntakeVelocitySlot = 0;
     private Controller secondaryController;
     private boolean hasSetIntakeZero = true;
-    private boolean sysStatus = false;
     private double targetPositionTicks = 0;
     public static final double AUTO_ZERO_MOTOR_CURRENT = 1.0;
+    private boolean isLifting = false;
 
     private final static Intake INSTANCE = new Intake();
 
@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase {
         intakeMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
         final StatorCurrentLimitConfiguration liftStatorCurrentConfigs = new StatorCurrentLimitConfiguration();
-        liftStatorCurrentConfigs.currentLimit = 15;
+        liftStatorCurrentConfigs.currentLimit = 20;
         liftStatorCurrentConfigs.enable = true;
         liftMotor.configStatorCurrentLimit(liftStatorCurrentConfigs);
 
@@ -89,7 +89,7 @@ public class Intake extends SubsystemBase {
         liftMotor.config_kD(Constants.LIFT_MM_PORT, 0.0);
 
         liftMotor.config_kF(Constants.LIFT_PID_PORT, 0.0);
-        liftMotor.config_kP(Constants.LIFT_PID_PORT, 0.05);//.9
+        liftMotor.config_kP(Constants.LIFT_PID_PORT, 0.03);//.9
         liftMotor.config_kI(Constants.LIFT_PID_PORT, 0.0);//.008
         liftMotor.config_kD(Constants.LIFT_PID_PORT, 0.0);
     }
@@ -97,14 +97,6 @@ public class Intake extends SubsystemBase {
     public static Intake getInstance() {
         return INSTANCE;
     }
-
-    public void setSystemStatus(boolean status) {
-        sysStatus = status;
-    }
-    public boolean getSystemStatus(){
-        return sysStatus;
-    }
-
 
     private Axis getRightTriggerAxis(){return secondaryController.getRightTriggerAxis();}
 
@@ -220,6 +212,13 @@ public class Intake extends SubsystemBase {
     }
 
     public synchronized void setLiftPIDPositionAbsoluteInternal(double angle) {
+        setLiftControlMode(LiftControlMode.PID);
+        if(angle > 10){
+            isLifting = true;
+        }
+        else{
+            isLifting = false;
+        }
         liftMotor.selectProfileSlot(Constants.LIFT_PID_PORT, 0);
         double limitedAngle = limitLiftAngle(angle);
         targetPositionTicks = getLiftEncoderTicksAbsolute(limitedAngle);
@@ -243,10 +242,14 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic(){
         variableIntakeRPM();
-        SmartDashboard.putNumber("Intake Amperage", intakeMotor.getStatorCurrent());
-        SmartDashboard.putNumber("Intake Roller RPM", this.getRollerRPM());
-        SmartDashboard.putNumber("Intake lift Angle", getLiftAngleAbsoluteDegrees());
-        SmartDashboard.putNumber("Intake lift Current", getLiftCurrent());
+        if(getLiftControlMode() != LiftControlMode.CURRENT && !isLifting && getLiftAngleAbsoluteDegrees() < 10.0){
+            setLiftControlMode(LiftControlMode.CURRENT);
+            liftMotor.set(TalonFXControlMode.PercentOutput, -0.05);
+        }
+//        SmartDashboard.putNumber("Intake Amperage", intakeMotor.getStatorCurrent());
+//        SmartDashboard.putNumber("Intake Roller RPM", this.getRollerRPM());
+//        SmartDashboard.putNumber("Intake lift Angle", getLiftAngleAbsoluteDegrees());
+//        SmartDashboard.putNumber("Intake lift Current", getLiftCurrent());
     }
 
 //        SmartDashboard.putNumber("Intake Roller Rotations", this.getRollerRotations());

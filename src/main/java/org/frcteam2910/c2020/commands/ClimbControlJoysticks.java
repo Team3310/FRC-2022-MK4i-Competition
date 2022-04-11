@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.subsystems.ClimbElevator;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
+import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.input.Axis;
 

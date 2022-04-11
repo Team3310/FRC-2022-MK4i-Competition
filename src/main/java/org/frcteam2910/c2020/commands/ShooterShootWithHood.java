@@ -27,7 +27,12 @@ public class ShooterShootWithHood extends CommandBase {
 
     @Override
     public void initialize() {
-        drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
+        if(drive.getLimelightOverride()) {
+            drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT_BROKEN);
+        }
+        else {
+            drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
+        }
         drive.setSwervePivotPoint(pivotPoint);
         shooter.setHoodMotionMagicPositionAbsolute(angle);
         shooter.setShooterRPM(RPM);
@@ -40,7 +45,9 @@ public class ShooterShootWithHood extends CommandBase {
 
     @Override
     public void end(boolean interrupted){
+        drive.setSwervePivotPoint(DrivetrainSubsystem.SwervePivotPoint.CENTER);
         shooter.setShooterRPM(Constants.IDLE_SHOOTER_RPM);
         shooter.setHoodMotionMagicPositionAbsolute(Constants.IDLE_HOOD_ANGLE);
+
     }
 }

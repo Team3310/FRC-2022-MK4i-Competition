@@ -23,7 +23,7 @@ public class TerminalTwoBall extends AutonCommandBase {
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_StartPosition0ToBall1()),
                         new IntakeLiftSetAngle(intake, 0),
-                        new ShooterShootWithHoodAuton(shooter, 1950, 30.7),
+                        new ShooterShootWithHoodAuton(shooter, 1900, 30.7),
                         new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(

@@ -11,12 +11,7 @@ import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.Pigeon;
 import org.frcteam2910.c2020.Robot;
 import org.frcteam2910.c2020.RobotContainer;
-import org.frcteam2910.common.control.CentripetalAccelerationConstraint;
-import org.frcteam2910.common.control.FeedforwardConstraint;
-import org.frcteam2910.common.control.HolonomicMotionProfiledTrajectoryFollower;
-import org.frcteam2910.common.control.MaxAccelerationConstraint;
-import org.frcteam2910.common.control.PidConstants;
-import org.frcteam2910.common.control.TrajectoryConstraint;
+import org.frcteam2910.common.control.*;
 import org.frcteam2910.common.drivers.Gyroscope;
 import org.frcteam2910.common.kinematics.ChassisVelocity;
 import org.frcteam2910.common.kinematics.SwerveKinematics;
@@ -62,19 +57,20 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     private static DrivetrainSubsystem INSTANCE;
 
-    public static final double TRACKWIDTH = 0.502;
-    public static final double WHEELBASE = 0.502;
-    public static final double WHEEL_DIAMETER_INCHES = 4.00;  // Actual is 3.89"
+    private static final double TRACKWIDTH = 0.502;
+    private static final double WHEELBASE = 0.502;
+    private static final double WHEEL_DIAMETER_INCHES = 4.00;  // Actual is 3.89"
 
     private double frontLeftOffset = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_COMP_OFFSET;
     private double frontRightOffset = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_COMP_OFFSET;
     private double backLeftOffset = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_COMP_OFFSET;
     private double backRightOffset = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_COMP_OFFSET;
 
-    public double rCurrPoseX;
-    public double rCurrPoseY;
-    public boolean isRight = true;
-    public double targetAngle; // for limelight and probably ball tracking
+    private double rCurrPoseX;
+    private double rCurrPoseY;
+    private boolean isRight = true;
+    private double targetAngle; // for limelight and probably ball tracking
+    private boolean isLimelightOverride = false;
 
     
     // Initialized in constructor
@@ -120,6 +116,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         LIMELIGHT_LOCKED,
         TRAJECTORY,
         HOLD,
+        LIMELIGHT_BROKEN
+        ;
     }
 
     public enum SwervePivotPoint
@@ -183,6 +181,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     
     public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
 
+    //private PidConstants RotationConstants = new PidConstants(0.0, 0.0, 0.0);
+    //public PidController limelightController = new PidController(RotationConstants);
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
     public PIDController limelightController = new PIDController(2.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
@@ -410,6 +410,20 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         return primaryController.getRightXAxis();
     }
 
+    public void setLimelightOverride(boolean isOveridden){
+        isLimelightOverride = isOveridden;
+        if(isOveridden) {
+            limelightGoal.setLedMode(Limelight.LedMode.OFF);
+        }
+        else{
+            limelightGoal.setLedMode(Limelight.LedMode.ON);
+        }
+    }
+
+    public boolean getLimelightOverride(){
+        return isLimelightOverride;
+    }
+
     public RigidTransform2 getPose() {
         synchronized (kinematicsLock) {
             return pose;
@@ -452,17 +466,17 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         odometryXEntry.setDouble(pose.translation.x);
         odometryYEntry.setDouble(pose.translation.y);
         odometryAngleEntry.setDouble(pose.rotation.toDegrees());
-        SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
-        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
-        SmartDashboard.putNumber("X", pose.translation.x);
-        SmartDashboard.putNumber("Y", pose.translation.y);
-        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
-        SmartDashboard.putNumber("Y velocity", getVelocity().y);
-        SmartDashboard.putNumber("X velocity", getVelocity().x);
-        SmartDashboard.putNumber("Time of ball flight", Shooter.getInstance().getBallFlightTime());
-        SmartDashboard.putNumber("Actual distance", Shooter.getInstance().getActualDistanceFromGoal());
-        SmartDashboard.putNumber("Target Angle", targetAngle);
-        SmartDashboard.putNumber("Limelight Horizontal angle", limelightGoal.getFilteredTargetHorizOffset());
+//        SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
+//        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
+//        SmartDashboard.putNumber("X", pose.translation.x);
+//        SmartDashboard.putNumber("Y", pose.translation.y);
+//        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
+//        SmartDashboard.putNumber("Y velocity", getVelocity().y);
+//        SmartDashboard.putNumber("X velocity", getVelocity().x);
+//        SmartDashboard.putNumber("Time of ball flight", Shooter.getInstance().getBallFlightTime());
+//        SmartDashboard.putNumber("Actual distance", Shooter.getInstance().getActualDistanceFromGoal());
+//        SmartDashboard.putNumber("Target Angle", targetAngle);
+//        SmartDashboard.putNumber("Limelight Horizontal angle", limelightGoal.getFilteredTargetHorizOffset());
     }
 
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
@@ -478,7 +492,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         primaryController.getRightXAxis().setInverted(true);
 
         // Set the drive signal to a field-centric (last boolean parameter is true) joystick-based input.
-        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true) * 0.85, true);
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), getDriveRotationAxis().get(true) * 0.80, true);
     }
 
     public void rotationDrive(){
@@ -558,11 +572,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void limelightDrive(){
         // DriveControlMode is LIMELIGHT
-        double angleToOuter = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0).rotation.toRadians() - limelightGoal.getTargetHorizOffset();
+        targetAngle = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0 - 0.06).rotation.toRadians() - Math.toRadians(limelightGoal.getFilteredTargetHorizOffset());
 
-        targetAngle = -limelightGoal.getFilteredTargetHorizOffset();
+        //targetAngle = Math.toRadians(-limelightGoal.getFilteredTargetHorizOffset()) + getPose().rotation.toRadians();
 
-        limelightController.setSetpoint(Math.toRadians(targetAngle) + getPose().rotation.toRadians());
+        limelightController.setSetpoint(targetAngle);
 
         primaryController.getLeftXAxis().setInverted(true);
         primaryController.getRightXAxis().setInverted(true);
@@ -715,6 +729,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                     currentDriveSignal = this.driveSignal;
                 }
                 break;
+            case LIMELIGHT_BROKEN:
+                joystickDrive();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
             case ROTATION:
                 rotationDrive();
                 synchronized (stateLock) {
@@ -800,7 +820,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             angularVelocity = gyroscope.getRate();
         }
 
-        SmartDashboard.putNumber("Current Gyro Angle", angle.toDegrees());
+        //SmartDashboard.putNumber("Current Gyro Angle", angle.toDegrees());
         ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
 
         synchronized (kinematicsLock) {

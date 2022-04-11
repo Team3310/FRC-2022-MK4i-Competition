@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        updateManager.startLoop(0.01);
+        updateManager.startLoop(0.02);
         PortForwarder.add(5800, "limelight.local", 5800);
         PortForwarder.add(5801, "limelight.local", 5801);
         PortForwarder.add(5802, "limelight.local", 5802);
@@ -155,6 +155,7 @@ public class Robot extends TimedRobot {
         robotContainer.getClimbElevator().setElevatorZero(Constants.ELEVATOR_HOME_POSITION);
         robotContainer.getDrivetrainSubsystem().setBrake();
         robotContainer.getIntakeSubsystem().setLiftBrake();
+        robotContainer.getDrivetrainSubsystem().setLimelightOverride(false);
 
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
 

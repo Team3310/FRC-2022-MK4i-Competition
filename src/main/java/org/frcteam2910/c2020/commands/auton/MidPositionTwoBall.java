@@ -27,6 +27,7 @@ public class MidPositionTwoBall extends AutonCommandBase {
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_StartPosition1ToBall1()),
                         new ShooterShootWithHoodAuton(shooter, 1950, 30.7),
+                        new IntakeLiftSetAngle(intake, 0),
                         new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(

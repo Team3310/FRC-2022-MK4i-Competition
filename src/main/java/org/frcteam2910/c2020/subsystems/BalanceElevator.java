@@ -154,7 +154,7 @@ public class BalanceElevator extends SubsystemBase {
             }
         }
 
-        SmartDashboard.putNumber("Balance Elevator Height", getBalanceElevatorInches());
+        //SmartDashboard.putNumber("Balance Elevator Height", getBalanceElevatorInches());
 
     }
 }

@@ -85,6 +85,10 @@ public class RobotContainer {
         primaryController.getLeftBumperButton().whenReleased(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
+
+        primaryController.getXButton().whenReleased(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
 //        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
 //                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
 //        );
@@ -161,6 +165,12 @@ public class RobotContainer {
         secondaryController.getDPadButton(DPadButton.Direction.LEFT).whenPressed(
                 new ExperimentalEjectBalls(intake, indexer)
         );
+        secondaryController.getLeftJoystickButton().whenPressed(
+                new InstantCommand(()-> drivetrain.setLimelightOverride(true))
+        );
+        secondaryController.getRightJoystickButton().whenPressed(
+                new InstantCommand(()-> drivetrain.setLimelightOverride(false))
+        );
 
 
 
@@ -192,8 +202,11 @@ public class RobotContainer {
         SmartDashboard.putData("Distance offset +5", new InstantCommand(()-> shooter.setShooterDistanceOffset(5)));
         SmartDashboard.putData("Distance offset +10", new InstantCommand(()-> shooter.setShooterDistanceOffset(10)));
         SmartDashboard.putData("Distance offset +20", new InstantCommand(()-> shooter.setShooterDistanceOffset(20)));
-    }
 
+        SmartDashboard.putData("Limelight broken", new InstantCommand(()-> drivetrain.setLimelightOverride(true)));
+        SmartDashboard.putData("Limelight working", new InstantCommand(()-> drivetrain.setLimelightOverride(false)));
+
+    }
     public Command getAutonomousCommand() {
         return autonomousChooser.getCommand(this);
     }

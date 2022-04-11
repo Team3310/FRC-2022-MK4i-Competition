@@ -35,7 +35,6 @@ public class ClimbElevator extends SubsystemBase {
     private double targetPositionTicks = 0;
     private double manualElevatorSpeed = 0;
     private double positionOffset = 0;
-    private boolean sysStatus = false;
 
     //Conversions
     private static final double PULLEY_DIAMETER_INCHES = 1.163;
@@ -86,15 +85,6 @@ public class ClimbElevator extends SubsystemBase {
     public ClimbControlMode getControlMode(){
         return controlMode;
     }
-
-    public void setHoodSystemStatus(boolean status) {
-        sysStatus = status;
-    }
-    public boolean getHoodSystemStatus() {
-        return sysStatus;
-    }
-
-
 
     private double limitElevatorInches(double targetInches) {
         if (targetInches < Constants.ELEVATOR_MIN_INCHES) {
@@ -185,7 +175,7 @@ public class ClimbElevator extends SubsystemBase {
                 }
             }
 
-            SmartDashboard.putNumber("Climb Height", getElevatorInches());
+            //SmartDashboard.putNumber("Climb Height", getElevatorInches());
         }
     }
 }

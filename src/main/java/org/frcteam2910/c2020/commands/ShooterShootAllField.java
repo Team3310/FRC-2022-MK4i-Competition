@@ -30,7 +30,7 @@ public class ShooterShootAllField extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return drive.getDriveControlMode() == DrivetrainSubsystem.DriveControlMode.JOYSTICKS;
+        return drive.getLimelightOverride() || drive.getDriveControlMode() == DrivetrainSubsystem.DriveControlMode.JOYSTICKS;
     }
 
     @Override

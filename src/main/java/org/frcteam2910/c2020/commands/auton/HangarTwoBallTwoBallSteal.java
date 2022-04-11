@@ -3,6 +3,7 @@ package org.frcteam2910.c2020.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.*;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
@@ -38,6 +39,7 @@ public class HangarTwoBallTwoBallSteal extends AutonCommandBase {
                 ),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealTwo()),
+                        new IntakeSetRPM(intake , Constants.INTAKE_COLLECT_AUTO_RPM),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(

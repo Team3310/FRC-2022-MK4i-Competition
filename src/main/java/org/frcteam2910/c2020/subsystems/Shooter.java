@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
     public static final double AUTO_ZERO_MOTOR_CURRENT = 1.0;
 
     public enum HoodControlMode {
-        MANUAL, MOTION_MAGIC, LIMELIGHT
+        MANUAL, MOTION_MAGIC,
     };
 
     // Motor Controllers
@@ -43,14 +43,8 @@ public class Shooter extends SubsystemBase {
     // Misc
     private double targetPositionTicks = 0.0;
     private HoodControlMode hoodControlMode = HoodControlMode.MANUAL;
-    private boolean isReady;
-    private boolean hoodReset = false;
     private double distanceOffset = -5.0; //-5
-    private boolean sysHoodStatus = false;
-    private boolean sysShooterStatus = false;
     Limelight limelight = Limelight.getInstance();
-    private double commandedRPM = 0;
-    private final double kLoss = 0;
     private InterpolatingDouble RPM = new InterpolatingDouble(0.0);
     private InterpolatingDouble hoodAngle = new InterpolatingDouble(0.0);
     private  InterpolatingDouble actualDist = new InterpolatingDouble(0.0);
@@ -122,22 +116,6 @@ public class Shooter extends SubsystemBase {
         return INSTANCE;
     }
 
-    public void setShooterSystemStatus(boolean status) {
-        sysShooterStatus = status;
-    }
-
-    public boolean getShooterSystemStatus(){
-        return sysShooterStatus;
-    }
-
-    public void setHoodSystemStatus(boolean status) {
-        sysHoodStatus = status;
-    }
-
-    public boolean getHoodSystemStatus(){
-        return sysHoodStatus;
-    }
-
     public void setShooterSpeed(double speed) {
         this.shooterMotorMaster.set(ControlMode.PercentOutput, speed);
     }
@@ -147,7 +125,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterRPM(double rpm) {
-        commandedRPM = rpm;
         this.shooterMotorMaster.set(ControlMode.Velocity, this.shooterRPMToNativeUnits(rpm));
     }
 
@@ -192,7 +169,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void resetHoodHomePosition() {
-        hoodReset = true;
         hoodMotor.setSelectedSensorPosition(0);
     }
 
@@ -316,27 +292,18 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-
-    public void setReady(boolean isReady) {
-        this.isReady = isReady;
-    }
-
-    public boolean isReady() {
-        return isReady;
-    }
-
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Distance form goal rim", getLimelightDistanceFromGoal());
-        SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
-        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
-        SmartDashboard.putBoolean("Hood Reset", hoodReset);
-        SmartDashboard.putNumber("Current Offset", distanceOffset);
-        SmartDashboard.putNumber("Commanded RPM", commandedRPM);
-        SmartDashboard.putNumber("Moving RPM", getMovingRPM());
-        SmartDashboard.putNumber("Moving hood angle", getMovingHoodAngleDegrees());
-        SmartDashboard.putNumber("Limelight hood angle", hoodAngle.value);
-        SmartDashboard.putNumber("Limelight RPM", RPM.value);
+//        SmartDashboard.putNumber("Distance from goal rim", getLimelightDistanceFromGoal());
+//        SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
+//        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
+//        SmartDashboard.putBoolean("Hood Reset", hoodReset);
+//        SmartDashboard.putNumber("Current Offset", distanceOffset);
+//        SmartDashboard.putNumber("Commanded RPM", commandedRPM);
+//        SmartDashboard.putNumber("Moving RPM", getMovingRPM());
+//        SmartDashboard.putNumber("Moving hood angle", getMovingHoodAngleDegrees());
+//        SmartDashboard.putNumber("Limelight hood angle", hoodAngle.value);
+//        SmartDashboard.putNumber("Limelight RPM", RPM.value);
     }
 }
 

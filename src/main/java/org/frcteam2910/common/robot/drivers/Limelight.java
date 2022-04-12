@@ -67,7 +67,7 @@ public final class Limelight {
         ts = table.getEntry("ts");
         tl = table.getEntry("tl");
 
-        txFilter = LinearFilter.movingAverage(3);
+        txFilter = LinearFilter.movingAverage(10);
         tyFilter = LinearFilter.movingAverage(3);
 
         tcornx = table.getEntry("tcornx");

@@ -34,7 +34,7 @@ public class MidPositionTwoBall extends AutonCommandBase {
                         new WaitCommand(0.5),
                         new LimelightAdjustAuto(drive)
                 ),
-                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
+                new FeedBalls(intake, indexer, drive,  shooter, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

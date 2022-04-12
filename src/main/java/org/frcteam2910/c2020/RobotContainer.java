@@ -117,16 +117,16 @@ public class RobotContainer {
 
         //Indexer
         secondaryController.getRightBumperButton().whenPressed(
-                new FeedBalls(intake, indexer, drivetrain, Constants.INDEXER_RPM)
+                new FeedBalls(intake, indexer, drivetrain, shooter, Constants.INDEXER_RPM)
         );
         secondaryController.getRightBumperButton().whenReleased(
-                new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
+                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain)
         );
         secondaryController.getLeftBumperButton().whenPressed(
                 new EjectBalls(intake, indexer, shooter)
         );
         secondaryController.getLeftBumperButton().whenReleased(
-                new IntakeIndexerHaltTeleOp(intake, indexer, drivetrain)
+                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain)
         );
 
 

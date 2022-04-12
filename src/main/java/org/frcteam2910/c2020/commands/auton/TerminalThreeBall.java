@@ -36,7 +36,7 @@ public class TerminalThreeBall extends AutonCommandBase {
                         new WaitCommand(0.5),
                         new AllFieldAuton(shooter, drive)
                 ),
-                new FeedBalls(intake, indexer, drive, Constants.AUTON_INDEXER_RPM)
+                new FeedBalls(intake, indexer, drive,  shooter, Constants.AUTON_INDEXER_RPM)
         );
     }
 }

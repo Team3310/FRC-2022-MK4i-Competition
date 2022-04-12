@@ -452,33 +452,6 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     //                                                          //
     //////////////////////////////////////////////////////////////
 
-    @Override
-    public void periodic() {
-        // Must update the Tx/Ty filter to provide it samples for calculation
-        limelightGoal.updateTxFilter();
-        limelightGoal.updateTyFilter();
-
-        limelightBall.updateTxFilter();
-        limelightBall.updateTyFilter();
-
-        // Update SmartDashboard/Shuffleboard data
-        RigidTransform2 pose = getPose();
-        odometryXEntry.setDouble(pose.translation.x);
-        odometryYEntry.setDouble(pose.translation.y);
-        odometryAngleEntry.setDouble(pose.rotation.toDegrees());
-//        SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
-//        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
-//        SmartDashboard.putNumber("X", pose.translation.x);
-//        SmartDashboard.putNumber("Y", pose.translation.y);
-//        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
-//        SmartDashboard.putNumber("Y velocity", getVelocity().y);
-//        SmartDashboard.putNumber("X velocity", getVelocity().x);
-//        SmartDashboard.putNumber("Time of ball flight", Shooter.getInstance().getBallFlightTime());
-//        SmartDashboard.putNumber("Actual distance", Shooter.getInstance().getActualDistanceFromGoal());
-//        SmartDashboard.putNumber("Target Angle", targetAngle);
-//        SmartDashboard.putNumber("Limelight Horizontal angle", limelightGoal.getFilteredTargetHorizOffset());
-    }
-
     public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
         synchronized (stateLock) {
             driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
@@ -572,7 +545,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
     public void limelightDrive(){
         // DriveControlMode is LIMELIGHT
-        targetAngle = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0 - 0.06).rotation.toRadians() - Math.toRadians(limelightGoal.getFilteredTargetHorizOffset());
+        targetAngle = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0).rotation.toRadians() - Math.toRadians(limelightGoal.getFilteredTargetHorizOffset());
 
         //targetAngle = Math.toRadians(-limelightGoal.getFilteredTargetHorizOffset()) + getPose().rotation.toRadians();
 
@@ -692,7 +665,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public double getRobotToGoalAngle() {
         rCurrPoseX = getPose().translation.x;
         rCurrPoseY = getPose().translation.y;
-        return Math.toDegrees(Math.atan2(-(rCurrPoseY + 162), rCurrPoseX - 325));
+        double fieldAngle = Math.toDegrees(Math.atan2(-(rCurrPoseY + 162), rCurrPoseX - 325));
+
+        return getPose().rotation.toDegrees() - fieldAngle;
     }
 
     public double getRobotToGoalDistance() {
@@ -879,5 +854,32 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
             var module = modules[i];
             module.set(0, Math.toRadians(moduleAngles[i]));
         }
+    }
+
+    @Override
+    public void periodic() {
+        // Must update the Tx/Ty filter to provide it samples for calculation
+        limelightGoal.updateTxFilter();
+        limelightGoal.updateTyFilter();
+
+        limelightBall.updateTxFilter();
+        limelightBall.updateTyFilter();
+
+        // Update SmartDashboard/Shuffleboard data
+        RigidTransform2 pose = getPose();
+        odometryXEntry.setDouble(pose.translation.x);
+        odometryYEntry.setDouble(pose.translation.y);
+        odometryAngleEntry.setDouble(pose.rotation.toDegrees());
+        SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
+//        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
+//        SmartDashboard.putNumber("X", pose.translation.x);
+//        SmartDashboard.putNumber("Y", pose.translation.y);
+//        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
+//        SmartDashboard.putNumber("Y velocity", getVelocity().y);
+//        SmartDashboard.putNumber("X velocity", getVelocity().x);
+//        SmartDashboard.putNumber("Time of ball flight", Shooter.getInstance().getBallFlightTime());
+//        SmartDashboard.putNumber("Actual distance", Shooter.getInstance().getActualDistanceFromGoal());
+//        SmartDashboard.putNumber("Target Angle", targetAngle);
+//        SmartDashboard.putNumber("Limelight Horizontal angle", limelightGoal.getFilteredTargetHorizOffset());
     }
 }

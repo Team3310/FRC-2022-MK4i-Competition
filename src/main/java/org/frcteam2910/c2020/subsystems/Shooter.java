@@ -49,6 +49,7 @@ public class Shooter extends SubsystemBase {
     private InterpolatingDouble hoodAngle = new InterpolatingDouble(0.0);
     private  InterpolatingDouble actualDist = new InterpolatingDouble(0.0);
     private  double limeLightDistance;
+    private boolean isShooting = false;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -114,6 +115,14 @@ public class Shooter extends SubsystemBase {
 
     public static Shooter getInstance() {
         return INSTANCE;
+    }
+
+    public void setIsShooting(boolean isShooting){
+        this.isShooting = isShooting;
+    }
+
+    public boolean isShooting(){
+        return isShooting;
     }
 
     public void setShooterSpeed(double speed) {
@@ -210,10 +219,10 @@ public class Shooter extends SubsystemBase {
 
     public double getLimelightDistanceFromGoal(){
         double distance;
-        double heightLimelight = 30.56 + (13.1 * Math.sin(Math.toRadians(5 + getHoodAngleAbsoluteDegrees())));
+        double heightLimelight = 30.56 + (13.1 * Math.sin(Math.toRadians(5.0 + getHoodAngleAbsoluteDegrees())));
         double heightOfGoal = 102.60;
 
-        distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65 - getHoodAngleAbsoluteDegrees()) + limelight.getFilteredTargetVertOffset()));
+        distance = (heightOfGoal - heightLimelight) / Math.tan(Math.toRadians((65.0 - getHoodAngleAbsoluteDegrees()) + limelight.getFilteredTargetVertOffset()));
 
         return distance + distanceOffset;
     }
@@ -277,7 +286,7 @@ public class Shooter extends SubsystemBase {
 
 
     public void updateAllFieldShot(){
-        if(limelight.hasTarget()) {
+        if(limelight.hasTarget() && !isShooting) {
             limeLightDistance = getLimelightDistanceFromGoal();
 
             RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(limeLightDistance));

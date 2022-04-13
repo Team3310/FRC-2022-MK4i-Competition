@@ -65,7 +65,7 @@ public class Constants {
     public static final int INTAKE_LIFT_MOTOR_CAN_ID = 5;
 
     //Intake Lift
-    public static final double LIFT_COMPETITION_HOME_POSITION_DEGREES = 39.0;
+    public static final double LIFT_COMPETITION_HOME_POSITION_DEGREES = 0.0;//39.0;
     public static final int LIFT_MM_PORT = 0;
     public static final int LIFT_PID_PORT = 1;
     public static final double LIFT_MIN_ANGLE_DEGREES = 0.0;

@@ -194,6 +194,8 @@ public class RobotContainer {
         SmartDashboard.putData("Set Lift 15", new IntakeLiftSetAngle(intake, 15.0));
         SmartDashboard.putData("Set Lift 35", new IntakeLiftSetAngle(intake, Constants.LIFT_MAX_ANGLE_DEGREES));
         SmartDashboard.putData("Reset Lift", new InstantCommand(()-> intake.resetLiftHomePosition()));
+ 
+        SmartDashboard.putData("Turn to Goal", new InstantCommand(()-> drivetrain.setTurnToTarget()));
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));

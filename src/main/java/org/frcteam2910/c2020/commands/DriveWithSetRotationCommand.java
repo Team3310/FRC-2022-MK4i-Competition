@@ -21,7 +21,7 @@ public class DriveWithSetRotationCommand extends CommandBase {
         this.strafe = strafe;
         this.setRotation = setRotation;
 
-        rotationController.setInputRange(0.0, 2*Math.PI);
+        rotationController.setInputRange(-Math.PI, Math.PI);
         rotationController.setContinuous(true);
 
         addRequirements(drivetrain);

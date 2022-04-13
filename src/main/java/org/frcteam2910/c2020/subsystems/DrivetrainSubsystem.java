@@ -109,7 +109,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     {
         JOYSTICKS,
         ROBOT_CENTRIC,
-        ROTATION,
+        TURN_TO_GOAL,
         BALL_TRACK,
         LIMELIGHT,
         LIMELIGHT_SEARCH,
@@ -478,6 +478,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         // Set the drive signal to a robot-centric joystick-based input for drive & strafe only (not rotation/chassis angle).
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
+
+        if(Math.toDegrees(rotationController.getPositionError()) < 5.0 && limelightGoal.hasTarget()) {
+            setDriveControlMode(DriveControlMode.LIMELIGHT);
+        }
     }
 
     public void robotCentricDrive(){
@@ -640,7 +644,15 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         rotationController.reset(getPose().rotation.toRadians());
         rotationController.setGoal(goal + getPose().rotation.toRadians());
         rotationController.setTolerance(0.087);
-        setDriveControlMode(DriveControlMode.ROTATION);
+        setDriveControlMode(DriveControlMode.TURN_TO_GOAL);
+    }    
+    
+    public void setTurnToTarget(){
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+        rotationController.reset(getPose().rotation.toRadians());
+        rotationController.setGoal(Math.toRadians(getRobotToGoalAngle()));
+        rotationController.setTolerance(0.087);
+        setDriveControlMode(DriveControlMode.TURN_TO_GOAL);
     }
 
     public boolean atRotationTarget(){
@@ -665,9 +677,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public double getRobotToGoalAngle() {
         rCurrPoseX = getPose().translation.x;
         rCurrPoseY = getPose().translation.y;
-        double fieldAngle = Math.toDegrees(Math.atan2(-(rCurrPoseY + 162), rCurrPoseX - 325));
+        double fieldAngle = Math.toDegrees(Math.atan2(rCurrPoseY + 162, rCurrPoseX - 325));
 
-        return getPose().rotation.toDegrees() - fieldAngle;
+        return fieldAngle;
     }
 
     public double getRobotToGoalDistance() {
@@ -710,7 +722,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                     currentDriveSignal = this.driveSignal;
                 }
                 break;
-            case ROTATION:
+            case TURN_TO_GOAL:
                 rotationDrive();
                 synchronized (stateLock) {
                     currentDriveSignal = this.driveSignal;
@@ -871,9 +883,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         odometryYEntry.setDouble(pose.translation.y);
         odometryAngleEntry.setDouble(pose.rotation.toDegrees());
         SmartDashboard.putNumber("Angle to goal", getRobotToGoalAngle());
-//        SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
-//        SmartDashboard.putNumber("X", pose.translation.x);
-//        SmartDashboard.putNumber("Y", pose.translation.y);
+       SmartDashboard.putNumber("Distance to goal", getRobotToGoalDistance());
+       SmartDashboard.putNumber("X", pose.translation.x);
+       SmartDashboard.putNumber("Y", pose.translation.y);
 //        SmartDashboard.putNumber("Lag angle", getLagAngleDegrees());
 //        SmartDashboard.putNumber("Y velocity", getVelocity().y);
 //        SmartDashboard.putNumber("X velocity", getVelocity().x);

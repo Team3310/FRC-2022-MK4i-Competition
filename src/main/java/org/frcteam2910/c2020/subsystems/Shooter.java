@@ -14,6 +14,10 @@ import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import org.frcteam2910.common.math.RigidTransform2;
+import org.frcteam2910.common.math.Rotation2;
+import org.frcteam2910.common.math.Vector2;
 import org.frcteam2910.common.robot.drivers.Limelight;
 import org.frcteam2910.common.util.InterpolatingDouble;
 
@@ -50,6 +54,7 @@ public class Shooter extends SubsystemBase {
     private  InterpolatingDouble actualDist = new InterpolatingDouble(0.0);
     private  double limeLightDistance;
     private boolean isShooting = false;
+    private boolean isPoseUpdated = false;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -118,6 +123,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setIsShooting(boolean isShooting){
+        if (this.isShooting == false && isShooting == true) {
+            this.isPoseUpdated = false;
+        }
         this.isShooting = isShooting;
     }
 
@@ -286,19 +294,42 @@ public class Shooter extends SubsystemBase {
 
 
     public void updateAllFieldShot(){
-        if(limelight.hasTarget() && !isShooting) {
-            limeLightDistance = getLimelightDistanceFromGoal();
+        if(limelight.hasTarget()) {
+            // While shooting freeze rpm and hood angle adjustments and update pose
+            if (isShooting && !isPoseUpdated) {
+                RigidTransform2 newPose = getPoseBasedOnLimelightAndGyro();
+                if (newPose != RigidTransform2.ZERO) {
+                    DrivetrainSubsystem.getInstance().resetPose(newPose);
+                    isPoseUpdated = true;
+                }
+            }
 
-            RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
-            hoodAngle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
-            actualDist = Constants.kLimelightDistanceMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+            // Update RPM and hood angle based on limelight distance
+            else {
+                limeLightDistance = getLimelightDistanceFromGoal();
 
-//            setShooterRPM(getMovingRPM());
-//            setHoodMotionMagicPositionAbsolute(getMovingHoodAngleDegrees());
+                RPM = Constants.kLobRPMMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+                hoodAngle = Constants.kLobHoodMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
+                actualDist = Constants.kLimelightDistanceMap.getInterpolated(new InterpolatingDouble(limeLightDistance));
 
-            setShooterRPM(RPM.value);
-            setHoodMotionMagicPositionAbsolute(hoodAngle.value);
+    //            setShooterRPM(getMovingRPM());
+    //            setHoodMotionMagicPositionAbsolute(getMovingHoodAngleDegrees());
+
+                setShooterRPM(RPM.value);
+                setHoodMotionMagicPositionAbsolute(hoodAngle.value);
+            }
         }
+    }
+    
+    public RigidTransform2 getPoseBasedOnLimelightAndGyro() {
+        if (limelight.getFilteredTargetHorizOffset() < 3.0) {
+            Rotation2 gyroRotation = DrivetrainSubsystem.getInstance().getPose().rotation;
+            double x = actualDist.value * gyroRotation.cos + 325.0;
+            double y = actualDist.value * gyroRotation.sin - 162.0;
+            return new RigidTransform2(new Vector2(x, y), gyroRotation);
+        }
+
+        return RigidTransform2.ZERO;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class ShooterShootAllField extends CommandBase {
         if(!shooter.hasTarget()){
             shooter.setHoodMotionMagicPositionAbsolute(30);
         }
-        drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
+        drive.setTurnToTarget();
     }
 
     @Override

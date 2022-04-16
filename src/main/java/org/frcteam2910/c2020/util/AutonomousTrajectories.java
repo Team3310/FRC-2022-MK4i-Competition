@@ -223,6 +223,7 @@ public class AutonomousTrajectories {
         TerminalStealPartOne = new Trajectory(
                 new SimplePathBuilder(new Vector2(297, -294), Rotation2.fromDegrees(255))
                         .lineTo(new Vector2(349, -292), Rotation2.fromDegrees(0))
+                
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );

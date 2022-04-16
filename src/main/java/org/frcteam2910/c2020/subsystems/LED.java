@@ -10,10 +10,11 @@ import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.frcteam2910.common.robot.UpdateManager;
 
 
 /** Add your docs here. */
-public class LED extends SubsystemBase {
+public class LED extends SubsystemBase implements UpdateManager.Updatable{
   private CANdle led = new CANdle(0);
   private Shooter shooter;
   private Indexer indexer;
@@ -38,8 +39,8 @@ public class LED extends SubsystemBase {
   // private final int ballsLoadedStart = 4;
   // private final int ballsLoadedLength = 4;
 
-  private final Color shooterStatus_Locked_Color = Color.GREEN;
-  private final Color shooter_Searching_Color = Color.YELLOW;
+  private final Color shooterStatus_Locked_Color = Color.WHITE;
+  private final Color shooter_Searching_Color = Color.MAGENTA;
   private final Color shooterStatus_Manual_Color = Color.RED;
   private final Color ballsLoaded_ZERO_Color = Color.RED;
   private final Color ballsLoaded_ONE_Color = Color.GREEN;
@@ -115,13 +116,12 @@ public class LED extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public void update(double time, double dt) {
     shooterStatus = shooter.isLocked();
     if(indexer.getIndexerSensor())
       ballsLoaded = BallsLoadedEnum.ONE;
     else
       ballsLoaded = BallsLoadedEnum.ZERO;  
-    try{Thread.sleep(20);}catch(Exception e){}
     if(shooterStatus != ShooterStatusEnum.OFF)
       setShooterStatusLEDs();
      else

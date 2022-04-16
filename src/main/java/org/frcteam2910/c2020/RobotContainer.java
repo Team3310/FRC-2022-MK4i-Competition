@@ -9,6 +9,8 @@ import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Indexer;
 import org.frcteam2910.c2020.subsystems.Intake;
 import org.frcteam2910.c2020.subsystems.Shooter;
+import org.frcteam2910.c2020.subsystems.LED.ShooterStatusEnum;
+import org.frcteam2910.c2020.subsystems.LED;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
@@ -35,6 +37,7 @@ public class RobotContainer {
     private final Shooter shooter = Shooter.getInstance();
     private final BalanceElevator balanceElevator = BalanceElevator.getInstance();
     private final Indexer indexer = Indexer.getInstance();
+    private final LED led = new LED(shooter, indexer);
 
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
@@ -120,13 +123,13 @@ public class RobotContainer {
                 new FeedBalls(intake, indexer, drivetrain, shooter, Constants.INDEXER_RPM)
         );
         secondaryController.getRightBumperButton().whenReleased(
-                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain)
+                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain, led)
         );
         secondaryController.getLeftBumperButton().whenPressed(
                 new EjectBalls(intake, indexer, shooter)
         );
         secondaryController.getLeftBumperButton().whenReleased(
-                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain)
+                new IntakeIndexerHaltTeleOp(intake, indexer, shooter, drivetrain, led)
         );
 
 
@@ -239,6 +242,9 @@ public class RobotContainer {
     }
     public Indexer getIndexer() {
         return indexer;
+    }
+    public LED getLED(){
+            return led;
     }
 
     public XboxController getPrimaryController() {

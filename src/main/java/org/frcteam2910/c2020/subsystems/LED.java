@@ -122,9 +122,9 @@ public class LED extends SubsystemBase {
     else
       ballsLoaded = BallsLoadedEnum.ZERO;  
     try{Thread.sleep(20);}catch(Exception e){}
-    //if(shooterStatus != ShooterStatusEnum.OFF)
+    if(shooterStatus != ShooterStatusEnum.OFF)
       setShooterStatusLEDs();
-    // else
-    //   setBallsLoadedLEDs();  
+     else
+      setBallsLoadedLEDs();  
   }
 }

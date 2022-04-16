@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.Timer;
 import org.frcteam2910.c2020.Constants;
+import org.frcteam2910.c2020.subsystems.LED.ShooterStatusEnum;
 import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,8 @@ public class Shooter extends SubsystemBase {
     private double timeStarted = 0;
     private double timeToWindUp = 0;
     private boolean timerEnded = false;
+    private double commandedRPM;
+    private double commandedHoodAngle;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -159,6 +162,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterRPM(double rpm) {
+        this.commandedRPM = rpm;
         this.shooterMotorMaster.set(ControlMode.Velocity, this.shooterRPMToNativeUnits(rpm));
     }
 
@@ -220,6 +224,7 @@ public class Shooter extends SubsystemBase {
         if (getHoodControlMode() != HoodControlMode.MOTION_MAGIC) {
             setHoodControlMode(HoodControlMode.MOTION_MAGIC);
         }
+        this.commandedHoodAngle = angle;
         setHoodMotionMagicPositionAbsoluteInternal(angle);
     }
 
@@ -347,6 +352,14 @@ public class Shooter extends SubsystemBase {
         }
 
         return RigidTransform2.ZERO;
+    }
+
+    public ShooterStatusEnum isLocked(){
+        if(hasTarget()){
+            if(Math.abs(getShooterRPM()-commandedRPM) <=50 && Math.abs(getHoodAngleAbsoluteDegrees() - commandedHoodAngle)<=1)
+                return ShooterStatusEnum.LOCKED;
+        }
+        return ShooterStatusEnum.SEARCHING;
     }
 
     @Override

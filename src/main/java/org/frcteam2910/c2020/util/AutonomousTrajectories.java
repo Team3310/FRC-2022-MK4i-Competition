@@ -48,6 +48,7 @@ public class AutonomousTrajectories {
     private final Trajectory TerminalStealPartOne;
     private final Trajectory TerminalStealPartTwo;
     private final Trajectory TerminalBallStealPlace;
+    private final Trajectory TerminalStealOnePlace;
 
     public AutonomousTrajectories(TrajectoryConstraint[] trajectoryConstraints) throws IOException {
         TrajectoryConstraint[] slowConstraints = Arrays.copyOf(trajectoryConstraints, trajectoryConstraints.length + 1);
@@ -240,6 +241,13 @@ public class AutonomousTrajectories {
                 trajectoryConstraints, SAMPLE_DISTANCE
         );
 
+        TerminalStealOnePlace = new Trajectory(
+                new SimplePathBuilder(new Vector2(349, -292), Rotation2.fromDegrees(280))
+                        .lineTo(new Vector2(224, -208), Rotation2.fromDegrees(48))
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
+
         simpleShootThree = new Trajectory(
                 new SimplePathBuilder(Vector2.ZERO, Rotation2.ZERO)
                         .lineTo(new Vector2(40.0, 0.0))
@@ -344,4 +352,6 @@ public class AutonomousTrajectories {
     public Trajectory getTerminalStealPartTwo() {return TerminalStealPartTwo;}
 
     public Trajectory getTerminalStealPlace() {return TerminalBallStealPlace;}
+
+    public Trajectory getTerminalStealOnePlace() {return TerminalStealOnePlace;}
 }

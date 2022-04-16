@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.Timer;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.util.Util;
 
@@ -55,6 +56,9 @@ public class Shooter extends SubsystemBase {
     private  double limeLightDistance;
     private boolean isShooting = false;
     private boolean isPoseUpdated = false;
+    private double timeStarted = 0;
+    private double timeToWindUp = 0;
+    private boolean timerEnded = false;
 
     private final static Shooter INSTANCE = new Shooter();
 
@@ -131,6 +135,19 @@ public class Shooter extends SubsystemBase {
 
     public boolean isShooting(){
         return isShooting;
+    }
+
+    public void startTimer() {
+        timeStarted = Timer.getFPGATimestamp();
+    }
+
+    public void endTimer(){
+        timeToWindUp = Timer.getFPGATimestamp() - timeStarted;
+        timerEnded = true;
+    }
+
+    public void resetTimer(){
+        timerEnded = false;
     }
 
     public void setShooterSpeed(double speed) {
@@ -344,6 +361,10 @@ public class Shooter extends SubsystemBase {
 //        SmartDashboard.putNumber("Moving hood angle", getMovingHoodAngleDegrees());
 //        SmartDashboard.putNumber("Limelight hood angle", hoodAngle.value);
 //        SmartDashboard.putNumber("Limelight RPM", RPM.value);
+        if((getShooterRPM() == RPM.value + 30.0 || getShooterRPM() == RPM.value - 30.0) && timerEnded){
+            endTimer();
+        }
+        //System.out.println("Shooter wind up time: " + timeToWindUp);
     }
 }
 

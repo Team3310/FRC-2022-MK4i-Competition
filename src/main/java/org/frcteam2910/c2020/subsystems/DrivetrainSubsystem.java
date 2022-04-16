@@ -480,7 +480,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
 
         if(Math.toDegrees(rotationController.getPositionError()) < 5.0 && limelightGoal.hasTarget()) {
-            setDriveControlMode(DriveControlMode.LIMELIGHT);
+            //setDriveControlMode(DriveControlMode.LIMELIGHT);
         }
     }
 

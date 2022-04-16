@@ -173,29 +173,29 @@ public class RobotContainer {
         );
 
 
-
-        SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
-        SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
-        SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0.0));
-        SmartDashboard.putData("Set Intake speed 1", new IntakeSetSpeed(intake, 1.0));
-        SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0.0));
-
-
-        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0.0));
-        SmartDashboard.putData("Set Shooter RPM 2055", new ShooterSetRPM(shooter, 2055));
+            SmartDashboard.putData("Auto Zero Hood", new HoodAutoZero(shooter));
+            SmartDashboard.putData("Auto Zero Climb", new ClimbElevatorAutoZero(climbElevator));
+            SmartDashboard.putData("Set Intake speed 0", new IntakeSetSpeed(intake, 0.0));
+            SmartDashboard.putData("Set Intake speed 1", new IntakeSetSpeed(intake, 1.0));
+            SmartDashboard.putData("Set Indexer speed 0", new IndexerSetSpeed(indexer, 0.0));
 
 
-        SmartDashboard.putData("Set Hood 32", new HoodSetAngle(shooter, 32.0));
-        SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45.0));
-        SmartDashboard.putData("Set Hood 42", new HoodSetAngle(shooter, 42.0));
-        SmartDashboard.putData("Set Hood 38", new HoodSetAngle(shooter, 38.0));
+            SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0.0));
+            SmartDashboard.putData("Set Shooter RPM 2055", new ShooterSetRPM(shooter, 2055));
 
-        SmartDashboard.putData("Set Lift 0", new IntakeLiftSetAngle(intake, Constants.LIFT_MIN_ANGLE_DEGREES));
-        SmartDashboard.putData("Set Lift 15", new IntakeLiftSetAngle(intake, 15.0));
-        SmartDashboard.putData("Set Lift 35", new IntakeLiftSetAngle(intake, Constants.LIFT_MAX_ANGLE_DEGREES));
-        SmartDashboard.putData("Reset Lift", new InstantCommand(()-> intake.resetLiftHomePosition()));
- 
-        SmartDashboard.putData("Turn to Goal", new InstantCommand(()-> drivetrain.setTurnToTarget()));
+
+            SmartDashboard.putData("Set Hood 32", new HoodSetAngle(shooter, 32.0));
+            SmartDashboard.putData("Set Hood 45", new HoodSetAngle(shooter, 45.0));
+            SmartDashboard.putData("Set Hood 42", new HoodSetAngle(shooter, 42.0));
+            SmartDashboard.putData("Set Hood 38", new HoodSetAngle(shooter, 38.0));
+
+            SmartDashboard.putData("Set Lift 0", new IntakeLiftSetAngle(intake, Constants.LIFT_MIN_ANGLE_DEGREES));
+            SmartDashboard.putData("Set Lift 15", new IntakeLiftSetAngle(intake, 15.0));
+            SmartDashboard.putData("Set Lift 35", new IntakeLiftSetAngle(intake, Constants.LIFT_MAX_ANGLE_DEGREES));
+            SmartDashboard.putData("Reset Lift", new InstantCommand(() -> intake.resetLiftHomePosition()));
+
+            SmartDashboard.putData("Turn to Goal", new InstantCommand(() -> drivetrain.setTurnToTarget()));
+
 
         SmartDashboard.putData("Distance offset -20", new InstantCommand(()-> shooter.setShooterDistanceOffset(-20)));
         SmartDashboard.putData("Distance offset -10", new InstantCommand(()-> shooter.setShooterDistanceOffset(-10)));
@@ -204,6 +204,8 @@ public class RobotContainer {
         SmartDashboard.putData("Distance offset +5", new InstantCommand(()-> shooter.setShooterDistanceOffset(5)));
         SmartDashboard.putData("Distance offset +10", new InstantCommand(()-> shooter.setShooterDistanceOffset(10)));
         SmartDashboard.putData("Distance offset +20", new InstantCommand(()-> shooter.setShooterDistanceOffset(20)));
+
+        SmartDashboard.putData("Set Shooter speed 0", new ShooterSetSpeed(shooter, 0.0));
 
         SmartDashboard.putData("Limelight broken", new InstantCommand(()-> drivetrain.setLimelightOverride(true)));
         SmartDashboard.putData("Limelight working", new InstantCommand(()-> drivetrain.setLimelightOverride(false)));

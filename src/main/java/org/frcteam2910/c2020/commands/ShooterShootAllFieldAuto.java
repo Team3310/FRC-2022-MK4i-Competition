@@ -17,6 +17,7 @@ public class ShooterShootAllFieldAuto extends CommandBase {
         if(!shooter.hasTarget()){
             shooter.setHoodMotionMagicPositionAbsolute(30);
         }
+        shooter.startTimer();
     }
 
     @Override
@@ -27,5 +28,10 @@ public class ShooterShootAllFieldAuto extends CommandBase {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        shooter.resetTimer();
     }
 }

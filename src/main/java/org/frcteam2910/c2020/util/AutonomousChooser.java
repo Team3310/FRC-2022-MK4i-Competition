@@ -2,9 +2,6 @@ package org.frcteam2910.c2020.util;
 
 import org.frcteam2910.c2020.RobotContainer;
 import org.frcteam2910.c2020.commands.FollowTrajectoryCommand;
-import org.frcteam2910.c2020.commands.auton.TerminalFiveBall;
-import org.frcteam2910.c2020.commands.auton.MidPositionFourBall;
-import org.frcteam2910.c2020.commands.auton.TerminalThreeBall;
 import org.frcteam2910.c2020.commands.auton.*;
 import org.frcteam2910.common.control.Trajectory;
 import org.frcteam2910.common.math.RigidTransform2;
@@ -35,6 +32,8 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Hangar Three Ball", AutonomousMode.HANGAR_THREE_BALL);
         autonomousModeChooser.addOption("Hangar Two Ball Steal One", AutonomousMode.HANGAR_TWO_BALL_STEAL_ONE);
         autonomousModeChooser.addOption("Hangar Two Ball Steal Two", AutonomousMode.HANGAR_TWO_BALL_STEAL_TWO);
+        autonomousModeChooser.addOption("Hangar Two Ball Steal Two Direct", AutonomousMode.HANGAR_TWO_BALL_STEAL_TWO_DIRECT);
+        autonomousModeChooser.addOption("Terminal Two Ball Steal One", AutonomousMode.TERMINAL_TWO_BALL_STEAL_ONE);
         autonomousModeChooser.addOption("Terminal Two Ball Steal Two", AutonomousMode.TERMINAL_TWO_BALL_STEAL_TWO);
     }
 
@@ -122,6 +121,10 @@ public class AutonomousChooser {
                 return new HangarTwoBallTwoBallSteal(container, trajectories);
             case TERMINAL_TWO_BALL_STEAL_TWO:
                 return new TerminalTwoBallTwoBallSteal(container, trajectories);
+            case TERMINAL_TWO_BALL_STEAL_ONE:
+                return new TerminalTwoBallStealOne(container, trajectories);
+            case HANGAR_TWO_BALL_STEAL_TWO_DIRECT:
+                return new HangarTwoBallTwoBallStealDirect(container, trajectories);        
             default:
                 return getSevenFeet(container);
         }
@@ -152,7 +155,9 @@ public class AutonomousChooser {
         MidPositionTwoBall,
         HANGAR_TWO_BALL_STEAL_ONE,
         HANGAR_TWO_BALL_STEAL_TWO,
-        TERMINAL_TWO_BALL_STEAL_TWO
+        TERMINAL_TWO_BALL_STEAL_TWO,
+        TERMINAL_TWO_BALL_STEAL_ONE,
+        HANGAR_TWO_BALL_STEAL_TWO_DIRECT
         ;
     }
 }

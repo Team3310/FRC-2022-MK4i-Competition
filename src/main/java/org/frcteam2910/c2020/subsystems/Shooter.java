@@ -310,10 +310,10 @@ public class Shooter extends SubsystemBase {
 
 
 
-    public void updateAllFieldShot(){
+    public void updateAllFieldShot(boolean isAuton){
         if(limelight.hasTarget()) {
             // While shooting freeze rpm and hood angle adjustments and update pose
-            if (isShooting && !isPoseUpdated) {
+            if (isShooting && !isPoseUpdated && !isAuton) {
                 RigidTransform2 newPose = getPoseBasedOnLimelightAndGyro();
                 if (newPose != RigidTransform2.ZERO) {
                     DrivetrainSubsystem.getInstance().resetPose(newPose);

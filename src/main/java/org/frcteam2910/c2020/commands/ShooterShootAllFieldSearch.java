@@ -27,7 +27,7 @@ public class ShooterShootAllFieldSearch extends CommandBase {
 
     @Override
     public void execute(){
-        shooter.updateAllFieldShot();
+        shooter.updateAllFieldShot(false);
     }
 
     @Override

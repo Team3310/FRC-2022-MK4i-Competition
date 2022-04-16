@@ -25,17 +25,11 @@ public class AllFieldAuton extends CommandBase {
 
     @Override
     public void execute(){
-        shooter.updateAllFieldShot();
+        shooter.updateAllFieldShot(true);
     }
 
     @Override
     public boolean isFinished() {
         return false;
     }
-
-//    @Override
-//    public void end(boolean interrupted){
-//        shooter.setShooterRPM(Constants.IDLE_SHOOTER_RPM);
-//        shooter.setHoodMotionMagicPositionAbsolute(Constants.IDLE_HOOD_ANGLE);
-//    }
 }

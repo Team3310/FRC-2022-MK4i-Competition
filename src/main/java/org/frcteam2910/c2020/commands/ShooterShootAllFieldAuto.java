@@ -22,7 +22,7 @@ public class ShooterShootAllFieldAuto extends CommandBase {
 
     @Override
     public void execute(){
-        shooter.updateAllFieldShot();
+        shooter.updateAllFieldShot(true);
     }
 
     @Override

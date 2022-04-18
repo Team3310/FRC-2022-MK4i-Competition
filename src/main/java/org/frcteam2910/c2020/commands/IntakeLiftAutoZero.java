@@ -29,7 +29,7 @@ public class IntakeLiftAutoZero extends CommandBase {
 		double elevatorPositionChange = lastLiftPosition - currentLiftPosition;
 		lastLiftPosition = currentLiftPosition;
 		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && intake.getLiftCurrent() > intake.AUTO_ZERO_MOTOR_CURRENT;
-		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + intake.getLiftCurrent());
+		//System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + intake.getLiftCurrent());
 		
 		if (Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE) {
 			encoderCount++;

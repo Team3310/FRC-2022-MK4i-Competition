@@ -481,9 +481,9 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         // Set the drive signal to a robot-centric joystick-based input for drive & strafe only (not rotation/chassis angle).
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
 
-        System.out.println("Position Error" + Math.abs(rotationController.getPositionError()) + ", Target = " + rotationController.getGoal());
+        //System.out.println("Position Error" + Math.abs(rotationController.getPositionError()) + ", Target = " + rotationController.getGoal());
 
-        if(Math.abs(rotationController.getPositionError()) < 0.03 && limelightGoal.hasTarget()) {
+        if(Math.abs(Math.toDegrees(rotationController.getPositionError())) < 3.0 && limelightGoal.hasTarget()) {
             setDriveControlMode(DriveControlMode.HOLD);
         }
     }
@@ -677,7 +677,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     public boolean atRotationTarget(){
         
         if(rotationController.atGoal()){
-            System.out.println("Reached target");
+            //System.out.println("Reached target");
         }
         return rotationController.atGoal();
     }
@@ -728,7 +728,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         HolonomicDriveSignal currentDriveSignal = null;
 
-        System.out.println("Control Mode: " + driveControlMode);
+        //System.out.println("Control Mode: " + driveControlMode);
 
         switch(i_controlMode){
             case JOYSTICKS:

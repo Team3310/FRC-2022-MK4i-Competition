@@ -79,7 +79,7 @@ public final class NeoDriveControllerFactoryBuilder {
 
         @Override
         public void setMotorNeutralMode(NeutralMode neutralMode){
-            System.out.println("Switch to falcons");
+            //System.out.println("Switch to falcons");
         }
 
         @Override

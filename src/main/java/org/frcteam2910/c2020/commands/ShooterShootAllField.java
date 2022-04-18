@@ -19,14 +19,14 @@ public class ShooterShootAllField extends CommandBase {
     @Override
     public void initialize() {
         if(!shooter.hasTarget()){
-            shooter.setHoodMotionMagicPositionAbsolute(30);
+            shooter.setHoodMotionMagicPositionAbsolute(Constants.IDLE_HOOD_ANGLE);
             drive.setTurnToTarget();
         }
-        else if(shooter.hasTarget() && Limelight.getInstance().getFilteredTargetHorizOffset() > 3.0){
-            drive.setTurnToTarget();
+        else if(shooter.hasTarget() && Math.abs(Limelight.getInstance().getFilteredTargetHorizOffset()) < 3.0){
+            drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
         }
         else{
-            drive.setDriveControlMode(DrivetrainSubsystem.DriveControlMode.LIMELIGHT);
+            drive.setTurnToTarget();
         }
     }
 

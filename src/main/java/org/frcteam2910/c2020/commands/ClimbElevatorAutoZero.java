@@ -32,7 +32,7 @@ public class ClimbElevatorAutoZero extends CommandBase {
 		double elevatorPositionChange = lastElevatorPosition - currentElevatorPosition;
 		lastElevatorPosition = currentElevatorPosition;
 		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && elevator.getElevatorMotorCurrent() > elevator.AUTO_ZERO_MOTOR_CURRENT;
-		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + elevator.getElevatorMotorCurrent());
+		//System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + elevator.getElevatorMotorCurrent());
 		
 		if (Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE) {
 			encoderCount++;

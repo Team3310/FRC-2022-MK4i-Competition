@@ -106,7 +106,7 @@ public class Constants {
 
     //Balance Elevator
     public static final double BALANCE_ELEVATOR_MIN_INCHES = 0;
-    public static final double BALANCE_ELEVATOR_MAX_INCHES = 22.4; //18.9;
+    public static final double BALANCE_ELEVATOR_MAX_INCHES = 21.4; //18.9;
     public static final int BALANCE_ELEVATOR_MM_PORT = 0;
     public static final int BALANCE_ELEVATOR_PID_PORT = 1;
     public static final double MIN_BALANCE_ELEVATOR_PERCENT_BUS = 0.06;

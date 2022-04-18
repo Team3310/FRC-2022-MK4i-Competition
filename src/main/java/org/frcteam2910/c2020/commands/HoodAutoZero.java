@@ -30,7 +30,7 @@ public class HoodAutoZero extends CommandBase {
 		double elevatorPositionChange = lastHoodPosition - currentHoodPosition;
 		lastHoodPosition = currentHoodPosition;
 		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && shooter.getHoodCurrent() > shooter.AUTO_ZERO_MOTOR_CURRENT;
-		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + shooter.getHoodCurrent());
+		//System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + shooter.getHoodCurrent());
 		
 		if (Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE) {
 			encoderCount++;

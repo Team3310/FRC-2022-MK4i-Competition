@@ -9,9 +9,9 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.frcteam2910.c2020.Constants;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -23,11 +23,11 @@ public class BalanceElevator extends SubsystemBase {
     }
 
     // Motor Controllers
-    private TalonFX balanceElevatorMotor;
+    private TalonFX balanceElevatorRightMotor;
+    private TalonFX balanceElevatorLeftMotor;
 
     // Misc
     private BalanceControlMode controlMode = BalanceControlMode.MANUAL;
-    private double targetPositionTicks = 0;
     private double manualBalanceElevatorSpeed = 0;
     private boolean sysStatus = false;
 
@@ -42,34 +42,54 @@ public class BalanceElevator extends SubsystemBase {
 
     private BalanceElevator() {
 
-        balanceElevatorMotor = new TalonFX(Constants.BALANCE_ELEVATOR_ID, "Drivetrain");
+        balanceElevatorRightMotor = new TalonFX(Constants.BALANCE_ELEVATOR_MASTER_ID, "Drivetrain");
+        balanceElevatorLeftMotor = new TalonFX(Constants.BALANCE_ELEVATOR_SLAVE_ID, "Drivetrain");
 
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-        balanceElevatorMotor.configAllSettings(configs);
+        balanceElevatorRightMotor.configAllSettings(configs);
+        balanceElevatorLeftMotor.configAllSettings(configs);
 
-        balanceElevatorMotor.setNeutralMode(NeutralMode.Brake);
-        balanceElevatorMotor.configMotionCruiseVelocity(10000);
-        balanceElevatorMotor.configMotionAcceleration(28000);
-        balanceElevatorMotor.configMotionSCurveStrength(4);
+        balanceElevatorRightMotor.setNeutralMode(NeutralMode.Brake);
+        balanceElevatorRightMotor.configMotionCruiseVelocity(10000);
+        balanceElevatorRightMotor.configMotionAcceleration(28000);
+        balanceElevatorRightMotor.configMotionSCurveStrength(4);
 
-        balanceElevatorMotor.setInverted(TalonFXInvertType.Clockwise);
+        balanceElevatorLeftMotor.setNeutralMode(NeutralMode.Brake);
+        balanceElevatorLeftMotor.configMotionCruiseVelocity(10000);
+        balanceElevatorLeftMotor.configMotionAcceleration(28000);
+        balanceElevatorLeftMotor.configMotionSCurveStrength(4);
+
+        balanceElevatorRightMotor.setInverted(TalonFXInvertType.Clockwise);
+        balanceElevatorLeftMotor.setInverted(TalonFXInvertType.CounterClockwise);
 
         final StatorCurrentLimitConfiguration statorCurrentConfigs = new StatorCurrentLimitConfiguration();
         statorCurrentConfigs.currentLimit = 120;
+
         statorCurrentConfigs.enable = false;
-        balanceElevatorMotor.configStatorCurrentLimit(statorCurrentConfigs);
+        balanceElevatorRightMotor.configStatorCurrentLimit(statorCurrentConfigs);
+        balanceElevatorLeftMotor.configStatorCurrentLimit(statorCurrentConfigs);
 
-        balanceElevatorMotor.config_kF(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0); //.055
-        balanceElevatorMotor.config_kP(Constants.BALANCE_ELEVATOR_MM_PORT, 0.40);
-        balanceElevatorMotor.config_kI(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0001);
-        balanceElevatorMotor.config_kD(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0);
+        balanceElevatorRightMotor.config_kF(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0); //.055
+        balanceElevatorRightMotor.config_kP(Constants.BALANCE_ELEVATOR_MM_PORT, 0.40);
+        balanceElevatorRightMotor.config_kI(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0001);
+        balanceElevatorRightMotor.config_kD(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0);
 
-        balanceElevatorMotor.config_kF(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0); //.055
-        balanceElevatorMotor.config_kP(Constants.BALANCE_ELEVATOR_PID_PORT, 0.40);
-        balanceElevatorMotor.config_kI(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0001);
-        balanceElevatorMotor.config_kD(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0);
+        balanceElevatorRightMotor.config_kF(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0); //.055
+        balanceElevatorRightMotor.config_kP(Constants.BALANCE_ELEVATOR_PID_PORT, 0.40);
+        balanceElevatorRightMotor.config_kI(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0001);
+        balanceElevatorRightMotor.config_kD(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0);
+
+        balanceElevatorLeftMotor.config_kF(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0); //.055
+        balanceElevatorLeftMotor.config_kP(Constants.BALANCE_ELEVATOR_MM_PORT, 0.40);
+        balanceElevatorLeftMotor.config_kI(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0001);
+        balanceElevatorLeftMotor.config_kD(Constants.BALANCE_ELEVATOR_MM_PORT, 0.0);
+
+        balanceElevatorLeftMotor.config_kF(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0); //.055
+        balanceElevatorLeftMotor.config_kP(Constants.BALANCE_ELEVATOR_PID_PORT, 0.40);
+        balanceElevatorLeftMotor.config_kI(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0001);
+        balanceElevatorLeftMotor.config_kD(Constants.BALANCE_ELEVATOR_PID_PORT, 0.0);
     }
 
     public static BalanceElevator getInstance() {
@@ -101,12 +121,20 @@ public class BalanceElevator extends SubsystemBase {
         return sysStatus;
     }
 
-    public double getBalanceElevatorRotations(){
-        return balanceElevatorMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / BALANCE_ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
+    public double getBalanceElevatorRotationsLeft(){
+        return balanceElevatorLeftMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / BALANCE_ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
     }
 
-    public double getBalanceElevatorInches(){
-        return getBalanceElevatorRotations() * BALANCE_ELEVATOR_ROTATIONS_TO_INCHES;
+    public double getBalanceElevatorInchesLeft(){
+        return getBalanceElevatorRotationsLeft() * BALANCE_ELEVATOR_ROTATIONS_TO_INCHES;
+    }
+
+    public double getBalanceElevatorRotationsRight(){
+        return balanceElevatorRightMotor.getSelectedSensorPosition() / Constants.ENCODER_TICKS_PER_MOTOR_REVOLUTION / BALANCE_ELEVATOR_OUTPUT_TO_ENCODER_RATIO;
+    }
+
+    public double getBalanceElevatorInchesRight(){
+        return getBalanceElevatorRotationsRight() * BALANCE_ELEVATOR_ROTATIONS_TO_INCHES;
     }
 
     public double getBalanceElevatorEncoderTicksAbsolute(double inches){
@@ -114,21 +142,34 @@ public class BalanceElevator extends SubsystemBase {
     }
 
     public void setElevatorZero(){
-        balanceElevatorMotor.setSelectedSensorPosition(0);
+        balanceElevatorRightMotor.setSelectedSensorPosition(0);
+        balanceElevatorLeftMotor.setSelectedSensorPosition(0);
     }
 
-    public synchronized void setBalanceElevatorMotionMagicPositionAbsolute(double inches) {
+    public synchronized void setBalanceElevatorMotionMagicPositionAbsoluteRight(double inches) {
         controlMode = BalanceControlMode.MOTION_MAGIC;
-        balanceElevatorMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_MM_PORT, 0);
-        targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
-        balanceElevatorMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+        balanceElevatorRightMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_MM_PORT, 0);
+        double targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
+        balanceElevatorRightMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
 
-    public synchronized void setBalanceElevatorHoldPID(double inches){
-        controlMode = BalanceControlMode.PID;
-        balanceElevatorMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_PID_PORT, 0);
-        targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
-        balanceElevatorMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+    public synchronized void setBalanceElevatorMotionMagicPositionAbsoluteLeft(double inches) {
+        controlMode = BalanceControlMode.MOTION_MAGIC;
+        balanceElevatorLeftMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_MM_PORT, 0);
+        double targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
+        balanceElevatorLeftMotor.set(ControlMode.MotionMagic, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+    }
+
+    public synchronized void setBalanceElevatorHoldPIDRight(double inches){
+        balanceElevatorRightMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_PID_PORT, 0);
+        double targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
+        balanceElevatorRightMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
+    }
+
+    public synchronized void setBalanceElevatorHoldPIDLeft(double inches){
+        balanceElevatorLeftMotor.selectProfileSlot(Constants.BALANCE_ELEVATOR_PID_PORT, 0);
+        double targetPositionTicks = getBalanceElevatorEncoderTicksAbsolute(limitBalanceElevator(inches));
+        balanceElevatorLeftMotor.set(ControlMode.Position, targetPositionTicks, DemandType.ArbitraryFeedForward, 0.04);
     }
 
     public synchronized void setBalanceElevatorSpeed(double speed) {
@@ -140,21 +181,35 @@ public class BalanceElevator extends SubsystemBase {
     }
 
     public synchronized void setHoldBalanceElevator(){
-        setBalanceElevatorHoldPID(getBalanceElevatorInches());
+        controlMode = BalanceControlMode.PID;
+        setBalanceElevatorHoldPIDRight(getBalanceElevatorInchesRight());
+        setBalanceElevatorHoldPIDLeft(getBalanceElevatorInchesLeft());
     }
 
     @Override
     public void periodic() {
         if (controlMode == BalanceControlMode.MANUAL) {
-            if (getBalanceElevatorInches() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
-            } else if (getBalanceElevatorInches() > Constants.BALANCE_ELEVATOR_MAX_INCHES && manualBalanceElevatorSpeed > 0.0) {
+            if (getBalanceElevatorInchesRight() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
+                setBalanceElevatorHoldPIDRight(getBalanceElevatorInchesRight());
+            } else if (getBalanceElevatorInchesRight() > Constants.BALANCE_ELEVATOR_MAX_INCHES && manualBalanceElevatorSpeed > 0.0) {
+                setBalanceElevatorHoldPIDRight(getBalanceElevatorInchesRight());
             }
             else{
-                balanceElevatorMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
+                balanceElevatorRightMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
+            }
+
+            if (getBalanceElevatorInchesLeft() < Constants.BALANCE_ELEVATOR_MIN_INCHES && manualBalanceElevatorSpeed < 0.0) {
+                setBalanceElevatorHoldPIDLeft(getBalanceElevatorInchesLeft());
+            } else if (getBalanceElevatorInchesLeft() > Constants.BALANCE_ELEVATOR_MAX_INCHES && manualBalanceElevatorSpeed > 0.0) {
+                setBalanceElevatorHoldPIDLeft(getBalanceElevatorInchesLeft());
+            }
+            else{
+                balanceElevatorLeftMotor.set(ControlMode.PercentOutput, manualBalanceElevatorSpeed);
             }
         }
 
-        //SmartDashboard.putNumber("Balance Elevator Height", getBalanceElevatorInches());
+        SmartDashboard.putNumber("Left Balance Elevator Height", getBalanceElevatorInchesLeft());
+        SmartDashboard.putNumber("Right Balance Elevator Height", getBalanceElevatorInchesRight());
 
     }
 }

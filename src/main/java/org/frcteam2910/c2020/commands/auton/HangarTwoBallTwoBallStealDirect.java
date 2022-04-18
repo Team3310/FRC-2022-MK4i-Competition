@@ -31,18 +31,17 @@ public class HangarTwoBallTwoBallStealDirect extends AutonCommandBase {
                 ),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.getHangarStealTwoDirect()),
-                        new IntakeSetRPM(intake , Constants.INTAKE_COLLECT_AUTO_RPM),
                         new IndexerBallStop(indexer)
                 ),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealTwoPlace()),
                         new IndexerBallStop(indexer)
                 ),
+                new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealOnePlaceBackup()),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.5),
+                        new WaitCommand(2.0),
                         new EjectBalls(intake, indexer, shooter)
                 ),
-                new FollowTrajectoryCommand(drive, trajectories.getHangarTwoBallStealOnePlaceBackup()),
                 new IntakeIndexerHalt(intake, indexer)
         );
     }

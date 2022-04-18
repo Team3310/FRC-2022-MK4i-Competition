@@ -110,7 +110,9 @@ public class Constants {
     public static final int BALANCE_ELEVATOR_MM_PORT = 0;
     public static final int BALANCE_ELEVATOR_PID_PORT = 1;
     public static final double MIN_BALANCE_ELEVATOR_PERCENT_BUS = 0.06;
-    public static final int BALANCE_ELEVATOR_ID = 4;
+    public static final int BALANCE_ELEVATOR_MASTER_ID = 4;
+    public static final int BALANCE_ELEVATOR_SLAVE_ID = 16;
+
 
 
 

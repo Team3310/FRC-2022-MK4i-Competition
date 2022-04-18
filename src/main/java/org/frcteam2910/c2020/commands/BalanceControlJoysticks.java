@@ -25,7 +25,7 @@ public class BalanceControlJoysticks extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = YAxis.get(true)*0.4;
+        double speed = YAxis.get(true)*0.2;
 
         if(Math.abs(speed) > Constants.MIN_BALANCE_ELEVATOR_PERCENT_BUS){
             elevator.setBalanceElevatorSpeed(speed);

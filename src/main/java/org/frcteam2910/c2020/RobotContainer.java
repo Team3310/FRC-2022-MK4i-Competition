@@ -11,6 +11,7 @@ import org.frcteam2910.c2020.subsystems.Intake;
 import org.frcteam2910.c2020.subsystems.Shooter;
 import org.frcteam2910.c2020.subsystems.LED.ShooterStatusEnum;
 import org.frcteam2910.c2020.subsystems.LED;
+import org.frcteam2910.c2020.subsystems.*;
 import org.frcteam2910.c2020.util.AutonomousChooser;
 import org.frcteam2910.c2020.util.AutonomousTrajectories;
 import org.frcteam2910.c2020.util.DriverReadout;
@@ -39,6 +40,8 @@ public class RobotContainer {
     private final Indexer indexer = Indexer.getInstance();
     private final LED led = new LED(shooter, indexer);
 
+    private final LED candle;
+
     private AutonomousTrajectories autonomousTrajectories;
     private final AutonomousChooser autonomousChooser;
 
@@ -55,6 +58,7 @@ public class RobotContainer {
 
         drivetrain.setController(primaryController);
         intake.setController(secondaryController);
+        candle = new LED(shooter, indexer);
 
         driverReadout = new DriverReadout(this);
 
@@ -92,12 +96,12 @@ public class RobotContainer {
         primaryController.getXButton().whenReleased(
                 new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
         );
-//        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
-//                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
-//        );
-//        primaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
-//                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
-//        );
+        primaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.BALL_TRACK)
+        );
+        primaryController.getRightTriggerAxis().getButton(0.5).whenReleased(
+                new ChangeDriveMode(drivetrain, DrivetrainSubsystem.DriveControlMode.JOYSTICKS)
+        );
 
         //Intake
         secondaryController.getRightTriggerAxis().getButton(0.5).whenPressed(
@@ -237,6 +241,7 @@ public class RobotContainer {
     public Intake getIntakeSubsystem() {
         return intake;
     }
+
     public Shooter getShooter() {
         return shooter;
     }
@@ -245,6 +250,10 @@ public class RobotContainer {
     }
     public LED getLED(){
             return led;
+    }
+
+    public BalanceElevator getBalanceElevator(){
+        return balanceElevator;
     }
 
     public XboxController getPrimaryController() {

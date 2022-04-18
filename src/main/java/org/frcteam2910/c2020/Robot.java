@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
     }
 
     public Robot() {
-       // super(0.04);
+        //super(0.01);
         instance = this;
     }
 
@@ -139,6 +139,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         updateManager.startLoop(0.02);
         CANdleUpdateManager.startLoop(0.02);
+        updateManager.startLoop(0.01);
         PortForwarder.add(5800, "limelight.local", 5800);
         PortForwarder.add(5801, "limelight.local", 5801);
         PortForwarder.add(5802, "limelight.local", 5802);
@@ -160,6 +161,7 @@ public class Robot extends TimedRobot {
         robotContainer.getDrivetrainSubsystem().setBrake();
         robotContainer.getIntakeSubsystem().setLiftBrake();
         robotContainer.getDrivetrainSubsystem().setLimelightOverride(false);
+        robotContainer.getBalanceElevator().setElevatorZero();
 
         robotContainer.getDrivetrainSubsystem().setDriveControlMode(DrivetrainSubsystem.DriveControlMode.TRAJECTORY);
 

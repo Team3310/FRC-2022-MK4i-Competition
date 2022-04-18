@@ -32,8 +32,8 @@ public class TerminalTwoBallStealOne extends AutonCommandBase {
                         new FollowTrajectoryCommand(drive, trajectories.getTerminalStealOnePlace())
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.75),
-                        new EjectBalls(intake, indexer, shooter)
+                        new WaitCommand(3.0),
+                        new EjectBallsAuton(intake, indexer, shooter)
                 ),
                 new IntakeIndexerHalt(intake, indexer)
         );

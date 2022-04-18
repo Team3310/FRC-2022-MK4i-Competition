@@ -16,8 +16,8 @@ public class BalanceSetElevatorDeltaInches extends CommandBase {
 
     @Override
     public void initialize() {
-        inches = elevator.getBalanceElevatorInches() + deltaInches;
-        elevator.setBalanceElevatorMotionMagicPositionAbsolute(inches);
+        inches = elevator.getBalanceElevatorInchesLeft() + deltaInches;
+        elevator.setBalanceElevatorMotionMagicPositionAbsoluteRight(inches);
     }
 
     @Override

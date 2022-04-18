@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frcteam2910.c2020.Constants;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.c2020.subsystems.Shooter;
+import org.frcteam2910.common.robot.drivers.Limelight;
 import org.frcteam2910.common.util.InterpolatingDouble;
 
 public class ShooterShootAllField extends CommandBase {
@@ -19,6 +20,9 @@ public class ShooterShootAllField extends CommandBase {
     public void initialize() {
         if(!shooter.hasTarget()){
             shooter.setHoodMotionMagicPositionAbsolute(30);
+            drive.setTurnToTarget();
+        }
+        else if(shooter.hasTarget() && Limelight.getInstance().getFilteredTargetHorizOffset() > 3.0){
             drive.setTurnToTarget();
         }
         else{

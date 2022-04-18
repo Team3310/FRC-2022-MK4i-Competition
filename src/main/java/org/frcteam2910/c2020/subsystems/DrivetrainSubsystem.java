@@ -116,7 +116,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         LIMELIGHT_LOCKED,
         TRAJECTORY,
         HOLD,
-        LIMELIGHT_BROKEN
+        LIMELIGHT_BROKEN,
+        LIMELIGHT_PROFILED,
         ;
     }
 
@@ -179,14 +180,15 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     //                                                          //
     //////////////////////////////////////////////////////////////
     
-    public TrapezoidProfile.Constraints constraints = new Constraints(6.0, 6.0);
+    public TrapezoidProfile.Constraints constraints = new Constraints(20.0, 3.0);
 
     //private PidConstants RotationConstants = new PidConstants(0.0, 0.0, 0.0);
     //public PidController limelightController = new PidController(RotationConstants);
 
     public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(2.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
-    public PIDController ballTrackController = new PIDController(2.0, 0.03, 0.02, 0.02);
+    public ProfiledPIDController profiledLimelightController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
+    public PIDController limelightController = new PIDController(1.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
+    public PIDController ballTrackController = new PIDController(1.0, 0.03, 0.25, 0.02);
 
     public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = 
         new DrivetrainFeedforwardConstants(
@@ -479,8 +481,10 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         // Set the drive signal to a robot-centric joystick-based input for drive & strafe only (not rotation/chassis angle).
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
 
-        if(Math.toDegrees(rotationController.getPositionError()) < 5.0 && limelightGoal.hasTarget()) {
-            //setDriveControlMode(DriveControlMode.LIMELIGHT);
+        System.out.println("Position Error" + Math.abs(rotationController.getPositionError()) + ", Target = " + rotationController.getGoal());
+
+        if(Math.abs(rotationController.getPositionError()) < 0.03 && limelightGoal.hasTarget()) {
+            setDriveControlMode(DriveControlMode.HOLD);
         }
     }
 
@@ -563,6 +567,21 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
     }
 
+    public void limelightProfiledDrive(){
+        // DriveControlMode is LIMELIGHT
+
+        primaryController.getLeftXAxis().setInverted(true);
+        primaryController.getRightXAxis().setInverted(true);
+
+        double rotationOutput = profiledLimelightController.calculate(getPose().rotation.toRadians());
+
+        drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
+
+        if(Math.toDegrees(profiledLimelightController.getPositionError()) < 0.05 && limelightGoal.hasTarget()) {
+            setDriveControlMode(DriveControlMode.LIMELIGHT);
+        }
+    }
+
     public void limelightLockedDrive(){
         // DriveControlMode is LIMELIGHT_LOCKED
 
@@ -643,7 +662,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         rotationController.enableContinuousInput(0.0, Math.PI*2);
         rotationController.reset(getPose().rotation.toRadians());
         rotationController.setGoal(goal + getPose().rotation.toRadians());
-        rotationController.setTolerance(0.087);
+        rotationController.setTolerance(0.017);
         setDriveControlMode(DriveControlMode.TURN_TO_GOAL);
     }    
     
@@ -651,7 +670,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
         rotationController.reset(getPose().rotation.toRadians());
         rotationController.setGoal(Math.toRadians(getRobotToGoalAngle()));
-        rotationController.setTolerance(0.087);
+        rotationController.setTolerance(0.017);
         setDriveControlMode(DriveControlMode.TURN_TO_GOAL);
     }
 
@@ -709,6 +728,8 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
         HolonomicDriveSignal currentDriveSignal = null;
 
+        System.out.println("Control Mode: " + driveControlMode);
+
         switch(i_controlMode){
             case JOYSTICKS:
                 joystickDrive();
@@ -754,6 +775,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 break;
             case LIMELIGHT_SEARCH:
                 limelightSearch();
+                synchronized (stateLock) {
+                    currentDriveSignal = this.driveSignal;
+                }
+                break;
+            case LIMELIGHT_PROFILED:
+                limelightProfiledDrive();
                 synchronized (stateLock) {
                     currentDriveSignal = this.driveSignal;
                 }

@@ -139,13 +139,12 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         updateManager.startLoop(0.02);
         CANdleUpdateManager.startLoop(0.02);
-        updateManager.startLoop(0.01);
-        PortForwarder.add(5800, "limelight.local", 5800);
-        PortForwarder.add(5801, "limelight.local", 5801);
-        PortForwarder.add(5802, "limelight.local", 5802);
-        PortForwarder.add(5803, "limelight.local", 5803);
-        PortForwarder.add(5804, "limelight.local", 5804);
-        PortForwarder.add(5805, "limelight.local", 5805);
+//        PortForwarder.add(5800, "limelight.local", 5800);
+//        PortForwarder.add(5801, "limelight.local", 5801);
+//        PortForwarder.add(5802, "limelight.local", 5802);
+//        PortForwarder.add(5803, "limelight.local", 5803);
+//        PortForwarder.add(5804, "limelight.local", 5804);
+//        PortForwarder.add(5805, "limelight.local", 5805);
     }
 
     @Override

@@ -180,14 +180,14 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
     //                                                          //
     //////////////////////////////////////////////////////////////
     
-    public TrapezoidProfile.Constraints constraints = new Constraints(20.0, 3.0);
+    public TrapezoidProfile.Constraints constraints = new Constraints(20.0, 6.0);
 
     //private PidConstants RotationConstants = new PidConstants(0.0, 0.0, 0.0);
     //public PidController limelightController = new PidController(RotationConstants);
 
-    public ProfiledPIDController rotationController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
+    public ProfiledPIDController rotationController = new ProfiledPIDController(2.0, 0.03, 0.02, constraints, 0.02);
     public ProfiledPIDController profiledLimelightController = new ProfiledPIDController(1.0, 0.03, 0.02, constraints, 0.02);
-    public PIDController limelightController = new PIDController(1.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
+    public PIDController limelightController = new PIDController(2.0, 0.03, 0.25, 0.02); //(3.0, 0.03, 0.02) (1.7, 0.03, 0.25) 0.02
     public PIDController ballTrackController = new PIDController(1.0, 0.03, 0.25, 0.02);
 
     public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = 
@@ -481,10 +481,14 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         // Set the drive signal to a robot-centric joystick-based input for drive & strafe only (not rotation/chassis angle).
         drive(new Vector2(getDriveForwardAxis().get(true), getDriveStrafeAxis().get(true)), rotationOutput, true);
 
-        //System.out.println("Position Error" + Math.abs(rotationController.getPositionError()) + ", Target = " + rotationController.getGoal());
+        double target = getPoseAtTime(Timer.getFPGATimestamp() - limelightGoal.getPipelineLatency() / 1000.0).rotation.toRadians() - Math.toRadians(limelightGoal.getFilteredTargetHorizOffset());
 
-        if(Math.abs(Math.toDegrees(rotationController.getPositionError())) < 3.0 && limelightGoal.hasTarget()) {
-            setDriveControlMode(DriveControlMode.HOLD);
+        //System.out.println("Goal = " + Math.toDegrees(rotationController.getGoal().position) +", Target = " + Math.toDegrees(target) + ", Gyro Angle = " + getPose().rotation.toDegrees() + ", Position Error" + Math.abs(rotationController.getPositionError()) + ", Control Mode = " + driveControlMode);
+
+        double error = Math.toDegrees(rotationController.getGoal().position) - getPose().rotation.toDegrees();
+        if(Math.abs(error) < 3.0 && limelightGoal.hasTarget()) {
+            setDriveControlMode(DriveControlMode.LIMELIGHT);
+            //System.out.println("Position Error" + Math.abs(rotationController.getPositionError()) + ", Control Mode = " + driveControlMode);
         }
     }
 

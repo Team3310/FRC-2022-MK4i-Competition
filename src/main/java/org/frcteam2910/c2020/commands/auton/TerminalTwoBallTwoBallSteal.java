@@ -22,7 +22,7 @@ public class TerminalTwoBallTwoBallSteal extends AutonCommandBase {
 
         addCommands(
                 new TerminalTwoBall(container, trajectories),
-                new WaitCommand(0.5),
+                new WaitCommand(0.8),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.getTerminalStealPartOne()),

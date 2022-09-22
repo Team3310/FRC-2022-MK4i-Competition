@@ -27,7 +27,7 @@ public class TerminalTwoBall extends AutonCommandBase {
                         new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.3),
+                        new WaitCommand(0.1),
                         new LimelightAdjustAuto(drive)
                 ),
                 new FeedBalls(intake, indexer, drive,  shooter, Constants.AUTON_INDEXER_RPM)

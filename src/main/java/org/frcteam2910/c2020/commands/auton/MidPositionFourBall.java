@@ -26,7 +26,7 @@ public class MidPositionFourBall extends AutonCommandBase {
     public MidPositionFourBall(RobotContainer container, AutonomousTrajectories trajectories, Shooter shooter, Indexer indexer, Intake intake, DrivetrainSubsystem drive) {
         this.addCommands(
                 new MidPositionTwoBall(container, trajectories),
-                new WaitCommand(0.5),
+                new WaitCommand(0.8),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_MidPositionFourBallPart2()),

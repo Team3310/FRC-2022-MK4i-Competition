@@ -368,12 +368,16 @@ public class Shooter extends SubsystemBase {
 //        SmartDashboard.putNumber("Hood Angle", getHoodAngleAbsoluteDegrees());
 //        SmartDashboard.putNumber("Shooter RPM", getShooterRPM());
 //        SmartDashboard.putBoolean("Hood Reset", hoodReset);
-//        SmartDashboard.putNumber("Current Offset", distanceOffset);
+        SmartDashboard.putNumber("Current Offset", distanceOffset);
 //        SmartDashboard.putNumber("Commanded RPM", commandedRPM);
 //        SmartDashboard.putNumber("Moving RPM", getMovingRPM());
 //        SmartDashboard.putNumber("Moving hood angle", getMovingHoodAngleDegrees());
 //        SmartDashboard.putNumber("Limelight hood angle", hoodAngle.value);
 //        SmartDashboard.putNumber("Limelight RPM", RPM.value);
+        SmartDashboard.putNumber("Shooter 1 Supply Amps", shooterMotorMaster.getSupplyCurrent());
+        SmartDashboard.putNumber("Shooter 1 Stator Amps", shooterMotorMaster.getStatorCurrent());
+        SmartDashboard.putNumber("Shooter 2 Supply Amps", shooterMotorSlave.getSupplyCurrent());
+        SmartDashboard.putNumber("Shooter 2 Stator Amps", shooterMotorSlave.getStatorCurrent());
         if((getShooterRPM() == RPM.value + 30.0 || getShooterRPM() == RPM.value - 30.0) && timerEnded){
             endTimer();
         }

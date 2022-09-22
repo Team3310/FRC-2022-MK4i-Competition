@@ -31,7 +31,7 @@ public class HangarTwoBall extends AutonCommandBase {
                         new IntakeSetRPM(intake, Constants.INTAKE_COLLECT_AUTO_RPM)
                 ),
                 new ParallelDeadlineGroup(
-                        new WaitCommand(0.5),
+                        new WaitCommand(0.2),
                         new LimelightAdjustAuto(drive)
                 ),
                 new FeedBalls(intake, indexer, drive, shooter, Constants.AUTON_INDEXER_RPM)

@@ -23,7 +23,7 @@ public class HangarThreeBall extends AutonCommandBase {
 
         addCommands(
                 new HangarTwoBall(container, trajectories),
-                new WaitCommand(0.5),
+                new WaitCommand(0.8),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_HangarFourBallPartTwo()),

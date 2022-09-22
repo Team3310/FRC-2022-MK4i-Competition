@@ -26,7 +26,7 @@ public class TerminalThreeBall extends AutonCommandBase {
         //follow(container, trajectories.get_tarmacPosition1ToBall2());
         this.addCommands(
             new TerminalTwoBall(container, trajectories),
-                new WaitCommand(0.75),
+                new WaitCommand(1.0),
                 new ChangeDriveMode(drive, DriveControlMode.TRAJECTORY),
                 new ParallelDeadlineGroup(
                         new FollowTrajectoryCommand(drive, trajectories.get_ThreeBallPartTwo()),

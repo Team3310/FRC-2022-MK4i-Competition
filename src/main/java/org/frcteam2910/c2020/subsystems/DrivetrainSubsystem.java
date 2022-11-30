@@ -36,6 +36,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -214,9 +215,12 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
         );
 
     // Logging of odometry to SmartDashboard/Shuffleboard
-    private final NetworkTableEntry odometryXEntry;
-    private final NetworkTableEntry odometryYEntry;
-    private final NetworkTableEntry odometryAngleEntry;
+    // private final NetworkTableEntry odometryXEntry;
+    // private final NetworkTableEntry odometryYEntry;
+    // private final NetworkTableEntry odometryAngleEntry;
+    private final GenericEntry odometryXEntry;
+    private final GenericEntry odometryYEntry;
+    private final GenericEntry odometryAngleEntry;
 
     //////////////////////////////////////////////////////////////
     //                                                          //

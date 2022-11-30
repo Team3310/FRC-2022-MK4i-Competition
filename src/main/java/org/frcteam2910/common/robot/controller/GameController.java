@@ -254,7 +254,7 @@ public class GameController extends Joystick {
 		}
 		
 		@Override
-		public boolean get() {
+		public boolean getAsBoolean() {
 			return controller.getDpadAngle() == buttonAngle;
 		}
 	}

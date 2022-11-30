@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
-import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.net.PortForwarder;
 import org.frcteam2910.c2020.subsystems.DrivetrainSubsystem;
 import org.frcteam2910.common.Logger;
 import org.frcteam2910.common.math.RigidTransform2;

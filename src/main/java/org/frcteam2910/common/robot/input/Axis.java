@@ -62,7 +62,7 @@ public abstract class Axis {
 	public Button getButton(double tolerance) {
 		return new Button() {
 			@Override
-			public boolean get() {
+			public boolean getAsBoolean() {
 				return Math.abs(Axis.this.get()) > tolerance;
 			}
 		};

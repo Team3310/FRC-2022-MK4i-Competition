@@ -136,11 +136,11 @@ public class Intake extends SubsystemBase {
     public void variableIntakeRPM(){
 
 
-        if(getRightTriggerAxis().getButton(0.1).get()){
+        if(getRightTriggerAxis().getButton(0.1).getAsBoolean()){
             setRollerRPM(getRightTriggerAxis().get(true) * Constants.INTAKE_COLLECT_RPM);
             hasSetIntakeZero = false;
         }
-        else if(getLeftTriggerAxis().getButton(0.1).get()){
+        else if(getLeftTriggerAxis().getButton(0.1).getAsBoolean()){
             setRollerRPM( -getLeftTriggerAxis().get(true) * Constants.INTAKE_COLLECT_RPM);
             hasSetIntakeZero = false;
         }

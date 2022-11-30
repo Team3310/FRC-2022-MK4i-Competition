@@ -14,7 +14,7 @@ public final class NullButton extends Button {
 	}
 
 	@Override
-	public boolean get() {
+	public boolean getAsBoolean() {
 		return value;
 	}
 

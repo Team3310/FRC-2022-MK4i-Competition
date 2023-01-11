@@ -9,9 +9,11 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import com.ctre.phoenixpro.hardware.*;
+import com.ctre.phoenixpro.configs.*;
+
 import edu.wpi.first.wpilibj.Timer;
 import org.frcteam2910.c2020.Constants;
-import org.frcteam2910.c2020.subsystems.LED.ShooterStatusEnum;
 import org.frcteam2910.c2020.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -352,14 +354,6 @@ public class Shooter extends SubsystemBase {
         }
 
         return RigidTransform2.ZERO;
-    }
-
-    public ShooterStatusEnum isLocked(){
-        if(hasTarget()){
-            if(Math.abs(getShooterRPM()-commandedRPM) <=50 && Math.abs(getHoodAngleAbsoluteDegrees() - commandedHoodAngle)<=1)
-                return ShooterStatusEnum.LOCKED;
-        }
-        return ShooterStatusEnum.SEARCHING;
     }
 
     @Override

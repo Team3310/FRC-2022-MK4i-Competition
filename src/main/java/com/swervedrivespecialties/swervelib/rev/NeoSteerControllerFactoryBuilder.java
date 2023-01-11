@@ -2,6 +2,8 @@ package com.swervedrivespecialties.swervelib.rev;
 
 import com.revrobotics.*;
 import com.swervedrivespecialties.swervelib.*;
+import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
+
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static com.swervedrivespecialties.swervelib.rev.RevUtils.checkNeoError;
@@ -58,7 +60,7 @@ public final class NeoSteerControllerFactoryBuilder {
         @Override
         public void addDashboardEntries(ShuffleboardContainer container, ControllerImplementation controller) {
             SteerControllerFactory.super.addDashboardEntries(container, controller);
-            container.addNumber("Absolute Encoder Angle", () -> Math.toDegrees(controller.absoluteEncoder.getAbsoluteAngle()));
+            container.addNumber("Absolute Encoder Angle", () -> Math.toDegrees(controller.motorEncoder.getPosition()));
         }
 
         @Override

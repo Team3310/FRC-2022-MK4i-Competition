@@ -38,9 +38,6 @@ public class Robot extends TimedRobot {
     private UpdateManager updateManager = new UpdateManager(
             robotContainer.getDrivetrainSubsystem()
     );
-    private UpdateManager CANdleUpdateManager = new UpdateManager(
-            robotContainer.getLED()
-    );
 
     static {
         List<byte[]> macAddresses;
@@ -138,7 +135,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         updateManager.startLoop(0.02);
-        CANdleUpdateManager.startLoop(0.02);
 //        PortForwarder.add(5800, "limelight.local", 5800);
 //        PortForwarder.add(5801, "limelight.local", 5801);
 //        PortForwarder.add(5802, "limelight.local", 5802);

@@ -1,6 +1,6 @@
 package org.frcteam2910.c2020;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenixpro.hardware.*;
 import org.frcteam2910.common.drivers.Gyroscope;
 import org.frcteam2910.common.math.Rotation2;
 
@@ -17,7 +17,7 @@ public class Pigeon extends Gyroscope {
 
     @Override
     public Rotation2 getUnadjustedAngle() {
-        return Rotation2.fromDegrees(handle.getYaw());
+        return Rotation2.fromDegrees(handle.getYaw().getValue());
     }
 
     @Override

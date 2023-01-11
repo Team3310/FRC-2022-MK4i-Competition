@@ -37,7 +37,7 @@ public class CharacterizeDrivetrainCommand extends CommandBase {
         drivetrain.resetGyroAngle(Rotation2.ZERO);
         drivetrain.resetPose(RigidTransform2.ZERO);
 
-        NetworkTableInstance.getDefault().setUpdateRate(10.0e-3);
+        //NetworkTableInstance.getDefault().setUpdateRate(10.0e-3);
     }
 
     @Override
